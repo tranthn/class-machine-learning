@@ -29,59 +29,57 @@ def read_csv(file_path, fieldnames):
 
 # def hot_code(data):
 
-def equal_width_bin(values):
-    N = 3
-    m1 = min(values)
-    m2 = max(values)
-    interval = (m2 - m1) / N
-    bins = [0] * (N+1)
-    bins[0] = m1
-
-    for i in range(1, N+1):
-        bins[i] = bins[i - 1] + interval
-
-    values2 = np.digitize(values, bins)
-    print(values2)
-    return values2
-
 def bin_continuous(df, bin_fields):
     for f in bin_fields:
         values = df[f]
-        binned_values = equal_width_bin(values)
-        df[f] = binned_values
+        m1 = min(values)
+        m2 = max(values)
+
+        arr = np.histogram_bin_edges(values, bins='fd')
+        print(f)
+        print(values)
+        print('---')
+        df = df.copy()
+        df.loc[:, f] = pd.cut(x = values, bins = arr, include_lowest=True)
     return df
 
 ############### main ###############
 ## last column = malignancy (2 = benign, 4 = malignant)
 ## missing: 16 rows - missing 1 column value for bare_nuclei
-## each column has domain: 1-10
-breast_fields = ['sample_code_number','clump_thickness','uniformity_of_cell_size','uniformity_of_cell_shape','marginal_adhesion','single_epithelial_cell_size','bare_nuclei','bland_chromatin','normal_nucleoli','mitoses','class']
+## each column has domain: 1-10, need to be binned (except sample-code-number, class)
+breast_fields = ['sample-code-number','clump-thickness','uniformity-of-cell-size','uniformity-of-cell-shape','marginal-adhesion','single-epithelial-cell-size','bare-nuclei','bland-chromatin','normal-nucleoli','mitoses','class']
+bin_fields = breast_fields[1:-1]
 bdf = read_csv(breast, breast_fields)
-bdf2 = bdf[bdf['bare_nuclei'] != '?']
+bdf2 = bdf[bdf['bare-nuclei'] != '?']
+bdf2 = bdf2.astype({ 'bare-nuclei': int })
+bdf3 = bin_continuous(bdf2, bin_fields)
+print(bdf3)
 
-## attribute values need values binned into ranges (except Type)
+## attribute values need values binned into ranges (except id, type)
 ## missing: none
-glass_fields = ['Id','RI','Na','Mg', 'Al','Si','K','Ca','Ba','Fe','Type']
-bin_fields = glass_fields[:-1]
-print(bin_fields)
+glass_fields = ['id','ri','na','mg', 'al','si','k','ca','ba','fe','type']
+bin_fields = glass_fields[1:-1]
 gdf = read_csv(glass, glass_fields)
-# print(gdf)
 gdf2 = bin_continuous(gdf, bin_fields)
 print(gdf2)
 
-"""
 ## attribute values need values binned into ranges (except class)
 ## missing: none
-iris_fields = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'class']
-out = read_csv(iris, iris_fields)
+iris_fields = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
+bin_fields = iris_fields[:-1]
+irdf = read_csv(iris, iris_fields)
+irdf2 = bin_continuous(irdf, bin_fields)
+print(irdf2)
 
 ## attribute values are either multi-categorical or binary (assuming no missing)
 ## missing: none
 soybean_fields = ['date','plant-stand','precip','temp','hail','crop-hist','area-damaged','severity','seed-tmt','germination','plant-growth','leaves','leafspots-halo','leafspots-marg','leafspot-size','leaf-shread','leaf-malf','leaf-mild','stem','lodging','stem-cankers','canker-lesion','fruiting-bodies','external decay','mycelium','int-discolor','sclerotia','fruit-pods','fruit spots','seed','mold-growth','seed-discolor','seed-size','shriveling','roots']
-out = read_csv(soybean, soybean_fields)
+soydf = read_csv(soybean, soybean_fields)
+print(soydf)
 
+## attribute values are either multi-categorical or binary (assuming no missing)
 ## ? = abstain, not missing values
 ## missing: none
 house_fields = ['class', 'handicapped-infants', 'water-project-cost-sharing', 'adoption-of-the-budget-resolution', 'physician-fee-freeze', 'el-salvador-aid', 'religious-groups-in-schools', 'anti-satellite-test-ban', 'aid-to-nicaraguan-contras', 'mx-missile', 'immigration', 'synfuels-corporation-cutback', 'education-spending', 'superfund-right-to-sue', 'crime', 'duty-free-exports', 'export-administration-act-south-africa']
-out = read_csv(house, house_fields)
-"""
+housedf = read_csv(house, house_fields)
+print(housedf)
