@@ -24,11 +24,7 @@ def read_csv(file_path, fieldnames):
 ## data pre-processing
 ## for multi-value categorical: one-hot coding to turn each potential category value to its own boolean column
 ## only one of the category options will be "hot", i.e = 1, in a given row
-
 ## for values with continuous ranges - bin them into ranges, then do one-hot coding
-
-# def hot_code(data):
-
 def bin_continuous(df, bin_fields):
     for f in bin_fields:
         values = df[f]
@@ -36,12 +32,7 @@ def bin_continuous(df, bin_fields):
         m2 = max(values)
 
         arr = np.histogram_bin_edges(values, bins='fd')
-        print(f)
-        print(values)
-        print('---')
-        df = df.copy()
         df.loc[:, f] = pd.cut(x = values, bins = arr, include_lowest=True)
-    return df
 
 ############### main ###############
 ## last column = malignancy (2 = benign, 4 = malignant)
@@ -52,34 +43,51 @@ bin_fields = breast_fields[1:-1]
 bdf = read_csv(breast, breast_fields)
 bdf2 = bdf[bdf['bare-nuclei'] != '?']
 bdf2 = bdf2.astype({ 'bare-nuclei': int })
-bdf3 = bin_continuous(bdf2, bin_fields)
-print(bdf3)
+bdf3 = bdf2.copy()
+bin_continuous(bdf3, bin_fields)
+bdf4 = pd.get_dummies(bdf3)
+for c in bdf4.columns.tolist():
+    print(c)
+print('---')
 
 ## attribute values need values binned into ranges (except id, type)
 ## missing: none
 glass_fields = ['id','ri','na','mg', 'al','si','k','ca','ba','fe','type']
 bin_fields = glass_fields[1:-1]
 gdf = read_csv(glass, glass_fields)
-gdf2 = bin_continuous(gdf, bin_fields)
-print(gdf2)
+gdf2 = gdf.copy()
+bin_continuous(gdf2, bin_fields)
+gdf3 = pd.get_dummies(gdf2)
+for c in gdf3.columns.tolist():
+    print(c)
+print('---')
 
 ## attribute values need values binned into ranges (except class)
 ## missing: none
 iris_fields = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
 bin_fields = iris_fields[:-1]
 irdf = read_csv(iris, iris_fields)
-irdf2 = bin_continuous(irdf, bin_fields)
-print(irdf2)
+irdf2 = irdf.copy()
+bin_continuous(irdf2, bin_fields)
+for c in irdf2.columns.tolist():
+    print(c)
+print('---')
 
 ## attribute values are either multi-categorical or binary (assuming no missing)
 ## missing: none
 soybean_fields = ['date','plant-stand','precip','temp','hail','crop-hist','area-damaged','severity','seed-tmt','germination','plant-growth','leaves','leafspots-halo','leafspots-marg','leafspot-size','leaf-shread','leaf-malf','leaf-mild','stem','lodging','stem-cankers','canker-lesion','fruiting-bodies','external decay','mycelium','int-discolor','sclerotia','fruit-pods','fruit spots','seed','mold-growth','seed-discolor','seed-size','shriveling','roots']
 soydf = read_csv(soybean, soybean_fields)
-print(soydf)
+soydf2 = pd.get_dummies(soydf)
+for c in soydf2.columns.tolist():
+    print(c)
+print('---')
 
 ## attribute values are either multi-categorical or binary (assuming no missing)
 ## ? = abstain, not missing values
 ## missing: none
 house_fields = ['class', 'handicapped-infants', 'water-project-cost-sharing', 'adoption-of-the-budget-resolution', 'physician-fee-freeze', 'el-salvador-aid', 'religious-groups-in-schools', 'anti-satellite-test-ban', 'aid-to-nicaraguan-contras', 'mx-missile', 'immigration', 'synfuels-corporation-cutback', 'education-spending', 'superfund-right-to-sue', 'crime', 'duty-free-exports', 'export-administration-act-south-africa']
 housedf = read_csv(house, house_fields)
-print(housedf)
+housedf2 = pd.get_dummies(housedf)
+for c in housedf2.columns.tolist():
+    print(c)
+print('---')
