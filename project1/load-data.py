@@ -34,6 +34,13 @@ def bin_continuous(df, bin_fields):
         arr = np.histogram_bin_edges(values, bins='fd')
         df.loc[:, f] = pd.cut(x = values, bins = arr, include_lowest=True)
 
+def split_tuning_training_data(df):
+    tuning = df.sample(frac = 0.1)
+    remainder = df.drop(tuning.index)
+    train = remainder.sample(frac = 0.666667)
+    test = remainder.drop(train.index)
+    return {'tuning': tuning, 'train': train, 'test': test}
+
 ############### main ###############
 ## last column = malignancy (2 = benign, 4 = malignant)
 ## missing: 16 rows - missing 1 column value for bare_nuclei
@@ -46,10 +53,17 @@ bdf2 = bdf2.astype({ 'bare-nuclei': int })
 bdf3 = bdf2.copy()
 bin_continuous(bdf3, bin_fields)
 bdf4 = pd.get_dummies(bdf3)
-for c in bdf4.columns.tolist():
-    print(c)
+
+# for c in bdf4.columns.tolist():
+#     print(c)
+
+print('data length', len(bdf4))
+data_sets = split_tuning_training_data(bdf4)
+print('data length, split', len(data_sets['tuning']), len(data_sets['train']), len(data_sets['test']))
+
 print('---')
 
+"""
 ## attribute values need values binned into ranges (except id, type)
 ## missing: none
 glass_fields = ['id','ri','na','mg', 'al','si','k','ca','ba','fe','type']
@@ -91,3 +105,4 @@ housedf2 = pd.get_dummies(housedf)
 for c in housedf2.columns.tolist():
     print(c)
 print('---')
+"""
