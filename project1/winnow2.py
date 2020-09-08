@@ -16,18 +16,24 @@ alpha = 2
 
 def weighted_sum(row, weights):
     acc = 0
-    row = row.drop('class') # class does not factor into weights
     for idx, val in enumerate(row.to_numpy()):
         acc += val * (weights[idx])
     return acc
 
-# def promote(row, weights, alpha):
+def promote(row, weights, alpha):
+    row = row.copy().drop('class')
+    new_weights = weights.copy()
+    for idx, val in enumerate(row.to_numpy()):
+        if (val == 1):
+           new_weights[idx] = weights[idx] * alpha
+    
+    return new_weights
 
 # divide weights of attr = 1
 def demote(row, weights, alpha):
-    row = row.drop('class')
+    row_nc = row.copy().drop('class')
     new_weights = weights.copy()
-    for idx, val in enumerate(row.to_numpy()):
+    for idx, val in enumerate(row_nc.to_numpy()):
         if (val == 1):
            new_weights[idx] = weights[idx] / alpha
     
@@ -39,17 +45,53 @@ def build_table(df):
     weights = [1.0] * n
 
     for _, row in df.iterrows():
-        ws = weighted_sum(row, weights)
+        row_nc = row.copy().drop('class') # class does not factor into weights
+        ws = weighted_sum(row_nc, weights)
 
-        # h(x) = 0
+        # predicted h(x) = 0
         if (ws <= theta):
             if row[label] == 1:
-                weights = demote(row, weights, alpha)
+                print('false negative, demote')
+                weights = promote(row, weights, alpha)
         
-        # h(x) = 1
+        # predicted h(x) = 1
         else:
             if row[label] == 0:
-                print('false negative, demote')
+                print('false positive, demote')
                 weights = demote(row, weights, alpha)
     
-    print(weights)
+    return weights
+
+def test_model(df, weights):
+    label = 'class'
+    true_pos = 0
+    false_pos = 0
+    true_neg = 0
+    false_neg = 0
+    print('---')
+    print(df)
+
+    for _, row in df.iterrows():
+        row_nc = row.copy().drop('class') # class does not factor into weights
+        ws = weighted_sum(row_nc, weights)
+
+        # predicted h(x) = 0
+        if (ws <= theta):
+            if row[label] == 1:
+                false_neg += 1
+            else:
+                true_neg += 1
+        
+        # predicted h(x) = 1
+        else:
+            if row[label] == 0:
+                false_pos += 1
+            else:
+                true_pos += 1
+
+    print('Summary statistics')
+    print('------------------')
+    print('True +\t', true_pos)
+    print('False +\t', false_pos)
+    print('True -\t', true_neg)
+    print('False -\t', false_neg)

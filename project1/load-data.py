@@ -44,9 +44,9 @@ def split_tuning_training_data(df):
     return {'tuning': tuning, 'train': train, 'test': test}
 
 ############### main ###############
-## class:  2 options (2 = benign, 4 = malignant) - remap to 0 = benign, 1 malignant
-## missing: 16 rows - missing 1 column value for bare_nuclei
 ## each column has domain: 1-10, need to be binned (except sample-code-number, class)
+## missing: 16 rows - missing 1 column value for bare_nuclei
+## class:  2 options (2 = benign, 4 = malignant) - remap to 0 = benign, 1 malignant
 breast_fields = ['sample-code-number','clump-thickness','uniformity-of-cell-size','uniformity-of-cell-shape','marginal-adhesion','single-epithelial-cell-size','bare-nuclei','bland-chromatin','normal-nucleoli','mitoses','class']
 bin_fields = breast_fields[1:-1]
 bdf = read_csv(breast, breast_fields)
@@ -61,10 +61,11 @@ bdf4 = pd.get_dummies(bdf3).drop(columns = 'sample-code-number')
 data_sets = split_tuning_training_data(bdf4)
 
 # for initial testing, let's use a static subset of data
-win.build_table(bdf4)
+wts = win.build_table(data_sets['train'])
+win.test_model(data_sets['tuning'], wts)
 
 ########################################
-## attribute values need values binned into ranges (except id, type)
+## attribute values need values binned into ranges (except id, class)
 ## missing: none
 ## class: 7 options
 glass_fields = ['id','ri','na','mg', 'al','si','k','ca','ba','fe','class']
