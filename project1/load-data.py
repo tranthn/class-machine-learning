@@ -5,6 +5,7 @@ from fractions import Fraction
 import numpy as np
 import pandas as pd
 import winnow2 as win
+import bayes
 
 breast = './data/breast-cancer-wisconsin.data'
 glass = './data/glass.data'
@@ -60,9 +61,14 @@ bin_continuous(bdf3, bin_fields)
 bdf4 = pd.get_dummies(bdf3).drop(columns = 'sample-code-number')
 data_sets = split_tuning_training_data(bdf4)
 
-# for initial testing, let's use a static subset of data
-wts = win.build_table(data_sets['train'])
-win.test_model(data_sets['tuning'], wts)
+# winnow2
+# -----------------
+# wts = win.build_table(data_sets['train'])
+# win.test_model(data_sets['tuning'], wts)
+
+# naive bayes
+# -----------------
+bayes.build_probability_table(data_sets['train'])
 
 ########################################
 ## attribute values need values binned into ranges (except id, class)
