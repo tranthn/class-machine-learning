@@ -34,7 +34,7 @@ def bin_continuous(df, bin_fields):
         m1 = min(values)
         m2 = max(values)
 
-        arr = np.histogram_bin_edges(values, bins='fd')
+        arr = np.histogram_bin_edges(values, bins='auto')
         df.loc[:, f] = pd.cut(x = values, bins = arr, include_lowest=True)
 
 def split_tuning_training_data(df):
