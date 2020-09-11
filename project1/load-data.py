@@ -53,8 +53,7 @@ bin_fields = breast_fields[1:-1]
 bdf = read_csv(breast, breast_fields)
 bdf = bdf.replace({'class': {4: 1, 2: 0}})
 bdf2 = bdf[bdf['bare-nuclei'] != '?']
-bdf2 = bdf2.astype({ 'bare-nuclei': int })
-bdf3 = bdf2.copy()
+bdf3 = bdf2.copy().astype({ 'bare-nuclei': int })
 bin_continuous(bdf3, bin_fields)
 
 # drop sample-code-number since it not needed for learning model
@@ -63,25 +62,28 @@ data_sets = split_tuning_training_data(bdf4)
 
 # winnow2
 # -----------------
-# wts = win.build_table(data_sets['train'])
-# win.test_model(data_sets['tuning'], wts)
+wts = win.build_table(df = data_sets['train'], label = 'class')
+win.test_model(data_sets['tuning'], wts)
 
-# naive bayes
-# -----------------
-bayes.build_probability_table(data_sets['train'])
+# # naive bayes
+# # -----------------
+pt = bayes.build_probability_table(data_sets['train'])
 
 ########################################
 ## attribute values need values binned into ranges (except id, class)
 ## missing: none
-## class: 7 options
+## class: 6 options
 glass_fields = ['id','ri','na','mg', 'al','si','k','ca','ba','fe','class']
 bin_fields = glass_fields[1:-1]
 gdf = read_csv(glass, glass_fields)
-gdf2 = gdf.copy()
+gdf2 = gdf.copy().astype({'class': object})
 bin_continuous(gdf2, bin_fields)
 gdf3 = pd.get_dummies(gdf2).drop(columns = 'id')
 data_sets = split_tuning_training_data(gdf3)
-# print(data_sets['tuning'])
+print(data_sets['tuning'])
+
+multi_tables = win.build_table_multinomial(df = gdf3, label = 'class')
+print(len(multi_tables))
 
 ########################################
 ## attribute values need values binned into ranges (except class)
@@ -92,6 +94,7 @@ bin_fields = iris_fields[:-1]
 irdf = read_csv(iris, iris_fields)
 irdf2 = irdf.copy()
 bin_continuous(irdf2, bin_fields)
+irdf3 = pd.get_dummies(irdf2, columns = ['class'])
 data_sets = split_tuning_training_data(irdf2)
 # print(data_sets['tuning'])
 

@@ -24,8 +24,9 @@ def build_probability_table(df):
     for c in classes.index:
         for f in cols:
             df2 = df.copy()
-            c0 = (df2[f].values == 0).sum()
-            c1 = (df2[f].values == 1).sum()
-            probdf.loc[c,f] = c0 / n
+            # probability that feature = 0
+            # proability that feature = 1 will just be 1 - p0
+            p0 = (df2[f].values == 0).sum()
+            probdf.loc[c,f] = p0 / n
 
     print(probdf)

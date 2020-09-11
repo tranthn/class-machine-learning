@@ -21,55 +21,63 @@ def weighted_sum(row, weights):
     return acc
 
 def promote(row, weights, alpha):
-    row = row.copy().drop('class')
     new_weights = weights.copy()
     for idx, val in enumerate(row.to_numpy()):
         if (val == 1):
-           new_weights[idx] = weights[idx] * alpha
+            new_weights[idx] = weights[idx] * alpha
     
     return new_weights
 
 # divide weights of attr = 1
 def demote(row, weights, alpha):
-    row_nc = row.copy().drop('class')
     new_weights = weights.copy()
-    for idx, val in enumerate(row_nc.to_numpy()):
+    for idx, val in enumerate(row.to_numpy()):
         if (val == 1):
            new_weights[idx] = weights[idx] / alpha
-    
+
     return new_weights
 
-def build_table(df):
-    label = 'class'
+def build_table(df, label):
     n = len(df.columns.tolist()) - 1
     weights = [1.0] * n
 
     for _, row in df.iterrows():
-        row_nc = row.copy().drop('class') # class does not factor into weights
+        row_nc = row.drop(labels = [label])
         ws = weighted_sum(row_nc, weights)
 
         # predicted h(x) = 0
         if (ws <= theta):
             if row[label] == 1:
-                print('false negative, demote')
-                weights = promote(row, weights, alpha)
+                # print('false negative, demote')
+                weights = promote(row_nc, weights, alpha)
         
         # predicted h(x) = 1
         else:
             if row[label] == 0:
-                print('false positive, demote')
-                weights = demote(row, weights, alpha)
+                # print('false positive, demote')
+                weights = demote(row_nc, weights, alpha)
     
     return weights
 
+def build_table_multinomial(df, label):
+    print('build table multinomial')
+    class_cols = [col for col in df if col.startswith(label)]
+    class_cols = np.array(class_cols)
+    classifiers = []
+    for c in class_cols:
+        drop_cols = np.setdiff1d(class_cols, [c])
+        df2 = df.copy().drop(columns = drop_cols)
+        out = build_table(df2, c)
+        classifiers.append(out)
+    
+    return classifiers
+    
 def test_model(df, weights):
     label = 'class'
     true_pos = 0
     false_pos = 0
     true_neg = 0
     false_neg = 0
-    print('---')
-    print(df)
 
     for _, row in df.iterrows():
         row_nc = row.copy().drop('class') # class does not factor into weights
