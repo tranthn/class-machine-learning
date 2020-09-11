@@ -48,6 +48,7 @@ def split_tuning_training_data(df):
 ## each column has domain: 1-10, need to be binned (except sample-code-number, class)
 ## missing: 16 rows - missing 1 column value for bare_nuclei
 ## class:  2 options (2 = benign, 4 = malignant) - remap to 0 = benign, 1 malignant
+print ('\n------------ BREAST DATA ------------ ')
 breast_fields = ['sample-code-number','clump-thickness','uniformity-of-cell-size','uniformity-of-cell-shape','marginal-adhesion','single-epithelial-cell-size','bare-nuclei','bland-chromatin','normal-nucleoli','mitoses','class']
 bin_fields = breast_fields[1:-1]
 bdf = read_csv(breast, breast_fields)
@@ -62,8 +63,8 @@ data_sets = split_tuning_training_data(bdf4)
 
 # winnow2
 # -----------------
-wts = win.build_table(df = data_sets['train'], label = 'class')
-win.test_model(data_sets['tuning'], wts)
+wts = win.build_classifier(df = data_sets['train'], label = 'class')
+win.test_model(data_sets['tuning'], wts, label = 'class')
 
 # naive bayes
 # -----------------
@@ -73,78 +74,90 @@ pt = bayes.build_probability_table(data_sets['train'], label = 'class')
 ## attribute values need values binned into ranges (except id, class)
 ## missing: none
 ## class: 6 options
-print ('-- GLASS DATA -- ')
+print ('\n------------ GLASS DATA ------------ ')
 glass_fields = ['id','ri','na','mg', 'al','si','k','ca','ba','fe','class']
 bin_fields = glass_fields[1:-1]
 gdf = read_csv(glass, glass_fields)
 gdf2 = gdf.copy().astype({'class': object})
 bin_continuous(gdf2, bin_fields)
 gdf3 = pd.get_dummies(gdf2).drop(columns = 'id')
+gdf3_bayes = pd.get_dummies(gdf2, columns = bin_fields).drop(columns = 'id')
 data_sets = split_tuning_training_data(gdf3)
+data_sets_bayes = split_tuning_training_data(gdf3_bayes)
 
 # winnow2
 # -----------------
-multi_tables = win.build_table_multinomial(df = data_sets['train'], label = 'class')
+classifiers = win.build_classifier_multinomial(df = data_sets['train'], label = 'class')
+win.test_model_multinomial(df = data_sets['tuning'], label = 'class', classifiers = classifiers)
 
 # naive bayes
 # -----------------
-pt = bayes.build_probability_table(data_sets['train'], label = 'class', is_multinomial = True)
+pt = bayes.build_probability_table(data_sets_bayes['train'], label = 'class')
 
 ########################################
 ## attribute values need values binned into ranges (except class)
 ## missing: none
 ## class: 3 options
-print ('-- IRIS DATA -- ')
+print ('\n------------ IRIS DATA ------------ ')
 iris_fields = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
 bin_fields = iris_fields[:-1]
 irdf = read_csv(iris, iris_fields)
 irdf2 = irdf.copy()
 bin_continuous(irdf2, bin_fields)
 irdf3 = pd.get_dummies(irdf2)
+irdf3_bayes = pd.get_dummies(irdf2, columns = bin_fields)
 data_sets = split_tuning_training_data(irdf3)
+data_sets_bayes = split_tuning_training_data(irdf3_bayes)
 
 # winnow2
 # -----------------
-multi_tables = win.build_table_multinomial(df = data_sets['train'], label = 'class')
+classifiers = win.build_classifier_multinomial(df = data_sets['train'], label = 'class')
+win.test_model_multinomial(df = data_sets['tuning'], label = 'class', classifiers = classifiers)
 
 # naive bayes
 # -----------------
-pt = bayes.build_probability_table(data_sets['train'], label = 'class', is_multinomial = True)
+pt = bayes.build_probability_table(data_sets_bayes['train'], label = 'class')
 
 ########################################
 ## attribute values are either multi-categorical or binary (assuming no missing)
 ## missing: none
 ## class: 4 options
-print ('-- SOYBEAN DATA -- ')
+print ('\n------------ SOYBEAN DATA ------------ ')
 soybean_fields = ['date','plant-stand','precip','temp','hail','crop-hist','area-damaged','severity','seed-tmt','germination','plant-growth','leaves','leafspots-halo','leafspots-marg','leafspot-size','leaf-shread','leaf-malf','leaf-mild','stem','lodging','stem-cankers','canker-lesion','fruiting-bodies','external decay','mycelium','int-discolor','sclerotia','fruit-pods','fruit spots','seed','mold-growth','seed-discolor','seed-size','shriveling','roots', 'class']
+bin_fields = soybean_fields[:-1]
 soydf = read_csv(soybean, soybean_fields)
 soydf2 = pd.get_dummies(soydf)
+soydf2_bayes = pd.get_dummies(soydf, columns = bin_fields)
 data_sets = split_tuning_training_data(soydf2)
+data_sets_bayes = split_tuning_training_data(soydf2_bayes)
 
 # winnow2
 # -----------------
-multi_tables = win.build_table_multinomial(df = data_sets['train'], label = 'class')
+classifiers = win.build_classifier_multinomial(df = data_sets['train'], label = 'class')
+win.test_model_multinomial(df = data_sets['tuning'], label = 'class', classifiers = classifiers)
 
 # naive bayes
 # -----------------
-pt = bayes.build_probability_table(data_sets['train'], label = 'class', is_multinomial = True)
-
+pt = bayes.build_probability_table(data_sets_bayes['train'], label = 'class')
+"""
 ########################################
 ## attribute values are either multi-categorical or binary (assuming no missing)
 ## ? = abstain, not missing values
 ## missing: none
 ## class: 2 options
-print ('-- HOUSE DATA -- ')
+print ('\n------------ HOUSE DATA ------------ ')
 house_fields = ['class', 'handicapped-infants', 'water-project-cost-sharing', 'adoption-of-the-budget-resolution', 'physician-fee-freeze', 'el-salvador-aid', 'religious-groups-in-schools', 'anti-satellite-test-ban', 'aid-to-nicaraguan-contras', 'mx-missile', 'immigration', 'synfuels-corporation-cutback', 'education-spending', 'superfund-right-to-sue', 'crime', 'duty-free-exports', 'export-administration-act-south-africa']
+bin_fields = house_fields[1:]
 housedf = read_csv(house, house_fields)
-housedf2 = pd.get_dummies(housedf)
-data_sets = split_tuning_training_data(housedf)
+housedf2 = pd.get_dummies(housedf, columns = bin_fields)
+data_sets = split_tuning_training_data(housedf2)
 
 # winnow2
 # -----------------
-wts = win.build_table(df = data_sets['train'], label = 'class')
+wts = win.build_classifier(df = data_sets['train'], label = 'class')
 win.test_model(data_sets['tuning'], wts)
 
 # naive bayes
 # -----------------
 pt = bayes.build_probability_table(data_sets['train'], label = 'class')
+"""

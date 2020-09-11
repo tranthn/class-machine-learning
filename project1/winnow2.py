@@ -17,7 +17,8 @@ alpha = 2
 def weighted_sum(row, weights):
     acc = 0
     for idx, val in enumerate(row.to_numpy()):
-        acc += val * (weights[idx])
+        tmp = val * (weights[idx])
+        acc += tmp
     return acc
 
 def promote(row, weights, alpha):
@@ -25,7 +26,7 @@ def promote(row, weights, alpha):
     for idx, val in enumerate(row.to_numpy()):
         if (val == 1):
             new_weights[idx] = weights[idx] * alpha
-    
+
     return new_weights
 
 # divide weights of attr = 1
@@ -37,7 +38,7 @@ def demote(row, weights, alpha):
 
     return new_weights
 
-def build_table(df, label):
+def build_classifier(df, label):
     n = len(df.columns.tolist()) - 1
     weights = [1.0] * n
 
@@ -59,31 +60,28 @@ def build_table(df, label):
     
     return weights
 
-def build_table_multinomial(df, label):
-    print('build table multinomial')
+def build_classifier_multinomial(df, label):
     class_cols = [col for col in df if col.startswith(label)]
     class_cols = np.array(class_cols)
     classifiers = []
     for c in class_cols:
         drop_cols = np.setdiff1d(class_cols, [c])
         df2 = df.copy().drop(columns = drop_cols)
-        out = build_table(df2, c)
-        classifiers.append(out)
+        out = build_classifier(df2, c)
+        classifiers.append({'label': c, 'weights': out})
     
     return classifiers
     
-def test_model(df, weights):
-    label = 'class'
+def test_model(df, weights, label):
     true_pos = 0
     false_pos = 0
     true_neg = 0
     false_neg = 0
 
     for _, row in df.iterrows():
-        row_nc = row.copy().drop('class') # class does not factor into weights
+        row_nc = row.copy().drop(label) # class does not factor into weights
         ws = weighted_sum(row_nc, weights)
 
-        # predicted h(x) = 0
         if (ws <= theta):
             if row[label] == 1:
                 false_neg += 1
@@ -97,9 +95,18 @@ def test_model(df, weights):
             else:
                 true_pos += 1
 
-    print('Summary statistics')
+    print('\nS U M M A R Y')
+    print('-- prediction for class: ', label)
     print('------------------')
     print('True +\t', true_pos)
     print('False +\t', false_pos)
     print('True -\t', true_neg)
     print('False -\t', false_neg)
+
+def test_model_multinomial(df, label, classifiers):
+    class_cols = [col for col in df if col.startswith(label)]
+    class_cols = np.array(class_cols)
+    for c in classifiers:
+        drop_cols = np.setdiff1d(class_cols, [c['label']])
+        df2 = df.copy().drop(columns = drop_cols)
+        test_model(df2, c['weights'], c['label'])
