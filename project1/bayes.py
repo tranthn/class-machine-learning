@@ -5,14 +5,13 @@ import numpy as np
 import pandas as pd
 
 m = 1
-p = 0.0001
+p = 0.001
 
 def build_probability_table(df, label):
     tot = df.shape[0]
 
     ## create data frame to store probabilities
     ## dimensions = # class_opts x (# features + 2)
-    ## each column = P(f = 0 | c), since the symmetrical f-value (f = 1) will just be [1 - P(f = 0 | c)]
     probdf = pd.DataFrame()
 
     cols = df.copy().drop(columns = label).columns.tolist()
@@ -29,13 +28,12 @@ def build_probability_table(df, label):
         probdf.loc[c,'class%'] = n / tot
 
         for f in cols:
-            # probability that feature = 0
-            # proability that feature = 1 will just be 1 - p0
-            p0 = (df2[f].values == 0).sum()
-            probdf.loc[c,f] = p0 / n
+            # probability that feature = 1
+            # proability that feature = 0 will just be 1 - pf
+            pf = (df2[f].values == 1).sum()
+            probdf.loc[c,f] = (pf + m * p) / (n + m)
 
     return probdf
-
 
 ## todo: factor in m-estimate to handle probability = 0
 def compute_probability(instance, prob_arr):
@@ -43,11 +41,11 @@ def compute_probability(instance, prob_arr):
     prob = 1.0
     if (len(instance) == x):
         for i in range(0, x - 1):
-            # prob_arr[i] stores P(f = 0 | c)
-            if (instance[i] == 0):
+            # prob_arr[i] stores P(f = 1 | c)
+            if (instance[i] == 1):
                 prob = prob  * prob_arr[i]
 
-            # 1 - prob_arr[i] gives us P(f = 1 | c)
+            # 1 - prob_arr[i] gives us P(f = 0 | c)
             else:
                 prob = prob * (1 - prob_arr[i])
     else:
