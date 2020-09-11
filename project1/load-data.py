@@ -63,12 +63,17 @@ data_sets = split_tuning_training_data(bdf4)
 
 # winnow2
 # -----------------
-wts = win.build_classifier(df = data_sets['train'], label = 'class')
-win.test_model(data_sets['tuning'], wts, label = 'class')
+# train = data_sets['train']
+# tune = data_sets['tuning']
+train = bdf4[0:20]
+tune = bdf4[21:30]
+wts = win.build_classifier(df = train , label = 'class')
+win.test_model(tune, wts, label = 'class')
 
 # naive bayes
 # -----------------
-pt = bayes.build_probability_table(data_sets['train'], label = 'class')
+pt = bayes.build_probability_table(df = train, label = 'class')
+# bayes.test_model(tune, pt, label = 'class')
 
 ########################################
 ## attribute values need values binned into ranges (except id, class)
@@ -111,13 +116,19 @@ data_sets_bayes = split_tuning_training_data(irdf3_bayes)
 
 # winnow2
 # -----------------
-classifiers = win.build_classifier_multinomial(df = data_sets['train'], label = 'class')
-win.test_model_multinomial(df = data_sets['tuning'], label = 'class', classifiers = classifiers)
+train = data_sets['train']
+tune = data_sets['tuning']
+classifiers = win.build_classifier_multinomial(df = train, label = 'class')
+win.test_model_multinomial(df = tune, label = 'class', classifiers = classifiers)
 
 # naive bayes
 # -----------------
-pt = bayes.build_probability_table(data_sets_bayes['train'], label = 'class')
+train = data_sets_bayes['train']
+tune = data_sets_bayes['tuning']
+pt = bayes.build_probability_table(df = train, label = 'class')
+bayes.test_model(tune, pt, label = 'class')
 
+"""
 ########################################
 ## attribute values are either multi-categorical or binary (assuming no missing)
 ## missing: none
@@ -139,7 +150,7 @@ win.test_model_multinomial(df = data_sets['tuning'], label = 'class', classifier
 # naive bayes
 # -----------------
 pt = bayes.build_probability_table(data_sets_bayes['train'], label = 'class')
-"""
+
 ########################################
 ## attribute values are either multi-categorical or binary (assuming no missing)
 ## ? = abstain, not missing values

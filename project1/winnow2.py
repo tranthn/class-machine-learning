@@ -95,13 +95,13 @@ def test_model(df, weights, label):
             else:
                 true_pos += 1
 
-    print('\nS U M M A R Y')
-    print('-- prediction for class: ', label)
-    print('------------------')
-    print('True +\t', true_pos)
-    print('False +\t', false_pos)
-    print('True -\t', true_neg)
-    print('False -\t', false_neg)
+    # print('\nS U M M A R Y')
+    # print('-- prediction for class: ', label)
+    # print('------------------')
+    # print('True +\t', true_pos)
+    # print('False +\t', false_pos)
+    # print('True -\t', true_neg)
+    # print('False -\t', false_neg)
 
 def test_model_multinomial(df, label, classifiers):
     class_cols = [col for col in df if col.startswith(label)]
