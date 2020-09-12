@@ -15,11 +15,10 @@ theta = 0.5
 alpha = 2
 
 def weighted_sum(row, weights):
-    acc = 0
+    accum_sum = 0
     for idx, val in enumerate(row.to_numpy()):
-        tmp = val * (weights[idx])
-        acc += tmp
-    return acc
+        accum_sum += val * (weights[idx])
+    return accum_sum
 
 def promote(row, weights, alpha):
     new_weights = weights.copy()
@@ -39,8 +38,8 @@ def demote(row, weights, alpha):
     return new_weights
 
 def build_classifier(df, label):
-    n = len(df.columns.tolist()) - 1
-    weights = [1.0] * n
+    num_cols = len(df.columns.tolist()) - 1
+    weights = [1.0] * num_cols
 
     for _, row in df.iterrows():
         row_nc = row.drop(labels = [label])
@@ -82,6 +81,7 @@ def test_model(df, weights, label):
         row_nc = row.copy().drop(label) # class does not factor into weights
         ws = weighted_sum(row_nc, weights)
 
+        # predicted h(x) = 1
         if (ws <= theta):
             if row[label] == 1:
                 false_neg += 1
@@ -95,13 +95,13 @@ def test_model(df, weights, label):
             else:
                 true_pos += 1
 
-    # print('\nS U M M A R Y')
-    # print('-- prediction for class: ', label)
-    # print('------------------')
-    # print('True +\t', true_pos)
-    # print('False +\t', false_pos)
-    # print('True -\t', true_neg)
-    # print('False -\t', false_neg)
+    print('\nWINNOW SUMMARY')
+    print('-- prediction for class: ', label)
+    print('------------------')
+    print('True +\t', true_pos)
+    print('False +\t', false_pos)
+    print('True -\t', true_neg)
+    print('False -\t', false_neg)
 
 def test_model_multinomial(df, label, classifiers):
     class_cols = [col for col in df if col.startswith(label)]
