@@ -13,82 +13,62 @@ iris = './data/iris.data'
 soybean = './data/soybean-small.data'
 house = './data/house-votes-84.data'
 
+# field name that maps to the class column for data
+# all data sets used here will be "class", but is externalized
+# to make it easier if code needs to handle different class column names
+class_label = 'class'
 
 ############### main ###############
 ## breast data
 data_sets = data_loader.get_breast_data()
 
-# winnow2
-# -----------------
-train = data_sets['train']
-tune = data_sets['tuning']
-wts = win.build_classifier(df = train , label = 'class')
-win.test_model(tune, wts, label = 'class')
+wts = win.build_classifier(df = data_sets['train'] , label = class_label)
+win.test_model(data_sets['tune'], wts, label = class_label)
 
-# naive bayes
-# -----------------
-pt = bayes.build_probability_table(df = train, label = 'class')
-bayes.test_model(tune, pt, label = 'class')
+pt = bayes.build_probability_table(df = data_sets['train'], label = class_label)
+bayes.test_model(data_sets['tune'], pt, label = class_label)
 
 ########################################
-## data - returned as array with 2 sets:
-#   data[0] - winnow2
-#   data[1] - bayes
+## glass data
+## data - returned as array with 2 sets: data[0] - winnow2, data[1] - bayes
 data = data_loader.get_glass_data()
 
-# winnow2
-# -----------------
-classifiers = win.build_classifier_multinomial(df = data[0]['train'], label = 'class')
-win.test_model_multinomial(df = data[0]['tuning'], label = 'class', classifiers = classifiers)
+classifiers = win.build_classifier_multinomial(df = data[0]['train'], label = class_label)
+win.test_model_multinomial(df = data[0]['tune'], label = class_label, classifiers = classifiers)
 
-# naive bayes
-# -----------------
-pt = bayes.build_probability_table(data[1]['train'], label = 'class')
+pt = bayes.build_probability_table(data[1]['train'], label = class_label)
+bayes.test_model(data[1]['tune'], pt, label = class_label)
 
 ########################################
-## data - returned as array with 2 sets:
-#   data[0] - winnow2
-#   data[1] - bayes
+## iris data
+## data - returned as array with 2 sets: data[0] - winnow2, data[1] - bayes
 data = data_loader.get_iris_data()
 
-# winnow2
-# -----------------
-train = data[0]['train']
-tune = data[0]['tuning']
-classifiers = win.build_classifier_multinomial(df = train, label = 'class')
-win.test_model_multinomial(df = tune, label = 'class', classifiers = classifiers)
+classifiers = win.build_classifier_multinomial(df = data[0]['train'], label = class_label)
+win.test_model_multinomial(df = data[0]['tune'], label = class_label, classifiers = classifiers)
 
-# naive bayes
-# -----------------
-train = data[1]['train']
-tune = data[1]['tuning']
-pt = bayes.build_probability_table(df = train, label = 'class')
-bayes.test_model(tune, pt, label = 'class')
+pt = bayes.build_probability_table(df = data[1]['train'], label = class_label)
+bayes.test_model(data[1]['tune'], pt, label = class_label)
 
 ########################################
-## data - returned as array with 2 sets:
-#   data[0] - winnow2
-#   data[1] - bayes
+## soy data
+## data - returned as array with 2 sets: data[0] - winnow2, data[1] - bayes
 data = data_loader.get_soy_data()
 
-# winnow2
-# -----------------
-classifiers = win.build_classifier_multinomial(df = data[0]['train'], label = 'class')
-win.test_model_multinomial(df = data[0]['tuning'], label = 'class', classifiers = classifiers)
+classifiers = win.build_classifier_multinomial(df = data[0]['train'], label = class_label)
+win.test_model_multinomial(df = data[0]['tune'], label = class_label, classifiers = classifiers)
 
-# naive bayes
-# -----------------
-pt = bayes.build_probability_table(data[1]['train'], label = 'class')
+pt = bayes.build_probability_table(data[1]['train'], label = class_label)
+bayes.test_model(data[1]['tune'], pt, label = class_label)
 
 ########################################
 ## house data
 data = data_loader.get_house_data()
 
-# winnow2
-# -----------------
-# wts = win.build_classifier(df = data[0]['train'], label = 'class')
-# win.test_model(data[0]['tuning'], wts)
+wts = win.build_classifier(df = data['train'], label = class_label)
+win.test_model(data['tune'], wts, label = class_label)
 
 # # naive bayes
 # # -----------------
-# pt = bayes.build_probability_table(data[1]['train'], label = 'class')
+pt = bayes.build_probability_table(data['train'], label = class_label)
+bayes.test_model(data['tune'], pt, label = class_label)

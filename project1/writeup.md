@@ -11,8 +11,3 @@
 - data imputation was only needed for breast cancer data
 - decided to delete rows with missing value, there were 16/699 missing values for bare_nuclei column
 - one-hot encoding done using pandas.get_dummies() method
-
-## Section 2
-- In this project, we will be implementing two simple machine learning algorithms
-- We have 5 data sets, with 2 sets being a 2-class problem and 3 sets being multinomial
-- 

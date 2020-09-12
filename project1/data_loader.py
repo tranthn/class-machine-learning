@@ -40,7 +40,7 @@ def split_tuning_training_data(df):
     df = df.drop(tuning.index)
     train = df.sample(frac = 0.6)
     test = df.drop(train.index)
-    return {'tuning': tuning, 'train': train, 'test': test}
+    return {'tune': tuning, 'train': train, 'test': test}
 
 ############### main ###############
 ## each column has domain: 1-10, need to be binned (except sample-code-number, class)
@@ -120,6 +120,13 @@ def get_house_data():
     house_fields = ['class', 'handicapped-infants', 'water-project-cost-sharing', 'adoption-of-the-budget-resolution', 'physician-fee-freeze', 'el-salvador-aid', 'religious-groups-in-schools', 'anti-satellite-test-ban', 'aid-to-nicaraguan-contras', 'mx-missile', 'immigration', 'synfuels-corporation-cutback', 'education-spending', 'superfund-right-to-sue', 'crime', 'duty-free-exports', 'export-administration-act-south-africa']
     bin_fields = house_fields[1:]
     housedf = read_csv(house, house_fields)
+
+    # manually replace democrat and republican for boolean fields
+    # using default pandas replace wasn't working on object type
+    housedf['class'] = housedf['class'].str.strip().replace('democrat', '0')
+    housedf['class'] = housedf['class'].str.strip().replace('republican', '1')
+    housedf['class'] = pd.to_numeric(housedf['class'])
+
     housedf2 = pd.get_dummies(housedf, columns = bin_fields)
     data_sets = split_tuning_training_data(housedf2)
     return data_sets

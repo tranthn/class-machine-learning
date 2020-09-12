@@ -38,7 +38,6 @@ def build_probability_table(df, label):
 
     return probability_df
 
-## todo: factor in m-estimate to handle probability = 0
 def compute_probability(instance, prob_arr):
     prob_len = len(prob_arr)
     prob = 1.0
@@ -71,8 +70,22 @@ def check_instance(row, probability_df, class_opts):
     return {'choice': c, 'probability': prob_max}
 
 def test_model(df, probability_df, label):
+    correct = 0
+    wrong = 0
+
     class_opts = df[label].value_counts()
     for _, row in df.iterrows():
+        expected = row[label]
         row = row.drop(labels = label)
         outcome = check_instance(row, probability_df, class_opts)
-        print(outcome)
+        
+        if (outcome['choice'] == expected):
+            correct += 1
+        else:
+            wrong += 1
+        
+    print('\nBAYES SUMMARY')
+    print('-- prediction for class: ', label)
+    print('------------------')
+    print('Correct\t', correct)
+    print('Wrong\t', wrong)
