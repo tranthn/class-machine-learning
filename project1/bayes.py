@@ -21,6 +21,7 @@ p_default = 0.01
 # returns
 #   - probability_df = dataframe representing class and feature probabilities
 def build_probability_table(df, label, m = m_default, p = p_default):
+    print('Naive Bayes: m = {0}, p = {1}'.format(m, p))
     total = df.shape[0]
 
     ## create data frame to store probabilities
@@ -43,7 +44,7 @@ def build_probability_table(df, label, m = m_default, p = p_default):
             # probability that feature = 1
             # proability that feature = 0 will just be 1 - prob
             prob = (df2[feat].values == 1).sum()
-            probability_df.loc[option, feat] = (prob + m * p) / (class_total + m)
+            probability_df.loc[option, feat] = (prob + (m * p)) / (class_total + m)
 
     return probability_df
 
@@ -86,15 +87,17 @@ def check_instance(row, probability_df, class_opts):
     choice = None
     prob_max = 0.0
     for c in class_opts.index:
+        # get the probabilities for a given class option c
         class_per = probability_df.loc[c, 'class%']
-        probs = probability_df.drop(columns = 'class%').to_numpy()[0]
+        probs = probability_df.loc[c, ].drop(labels = 'class%')
         prob = class_per * compute_probability(row, probs)
-        
+
         if (prob > prob_max):
             prob_max = prob
             choice = c
-
-    return {'choice': c, 'probability': prob_max}
+    
+    outcome = {'choice': choice, 'probability': prob_max}
+    return outcome
 
 # tests a data frame against a pre-built Naive Bayes probability table
 # 
@@ -114,14 +117,13 @@ def test_model(df, probability_df, label):
         expected = row[label]
         row = row.drop(labels = label)
         outcome = check_instance(row, probability_df, class_opts)
-        
+
         if (outcome['choice'] == expected):
             correct += 1
         else:
             wrong += 1
         
     print('\nBAYES SUMMARY')
-    print('-- prediction for class: ', label)
     print('------------------')
     print('Correct\t', correct)
     print('Wrong\t', wrong)
