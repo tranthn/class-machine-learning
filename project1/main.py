@@ -70,6 +70,7 @@ win.test_model_multinomial(df = data[0]['tune'], label = class_label, classifier
 
 pt = bayes.build_probability_table(df = data[1]['train'],
         label = class_label, m = 1, p = 0.1)
+
 bayes.test_model(data[1]['tune'], pt, label = class_label)
 
 ########################################

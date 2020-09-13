@@ -13,7 +13,6 @@ import pandas as pd
 # - one-hot encoding
 # - splitting data into train, tune, test sets
 
-
 breast = './data/breast-cancer-wisconsin.data'
 glass = './data/glass.data'
 iris = './data/iris.data'
@@ -77,6 +76,29 @@ def get_breast_data():
     return data_sets
 
 ########################################
+## attribute values are either multi-categorical or binary (assuming no missing)
+## ? = abstain, not missing values
+## missing: none
+## class: 2 options
+def get_house_data():
+    house_fields = ['class', 'handicapped-infants', 'water-project-cost-sharing', 'adoption-of-the-budget-resolution',
+                    'physician-fee-freeze', 'el-salvador-aid', 'religious-groups-in-schools', 'anti-satellite-test-ban',
+                    'aid-to-nicaraguan-contras', 'mx-missile', 'immigration', 'synfuels-corporation-cutback', 
+                    'education-spending', 'superfund-right-to-sue', 'crime', 'duty-free-exports', 'export-administration-act-south-africa']
+    bin_fields = house_fields[1:]
+    housedf = read_csv(house, house_fields)
+
+    # manually replace democrat and republican for boolean fields
+    # using default pandas replace wasn't working on object type
+    housedf['class'] = housedf['class'].str.strip().replace('democrat', '0')
+    housedf['class'] = housedf['class'].str.strip().replace('republican', '1')
+    housedf['class'] = pd.to_numeric(housedf['class'])
+
+    housedf2 = pd.get_dummies(housedf, columns = bin_fields)
+    data_sets = split_tuning_training_data(housedf2)
+    return data_sets
+
+########################################
 ## attribute values need values binned into ranges (except id, class)
 ## missing: none
 ## class: 6 options
@@ -125,26 +147,3 @@ def get_soy_data():
     data_sets = split_tuning_training_data(soydf2)
     data_sets_bayes = split_tuning_training_data(soydf2_bayes)
     return [data_sets, data_sets_bayes]
-
-########################################
-## attribute values are either multi-categorical or binary (assuming no missing)
-## ? = abstain, not missing values
-## missing: none
-## class: 2 options
-def get_house_data():
-    house_fields = ['class', 'handicapped-infants', 'water-project-cost-sharing', 'adoption-of-the-budget-resolution',
-                    'physician-fee-freeze', 'el-salvador-aid', 'religious-groups-in-schools', 'anti-satellite-test-ban',
-                    'aid-to-nicaraguan-contras', 'mx-missile', 'immigration', 'synfuels-corporation-cutback', 
-                    'education-spending', 'superfund-right-to-sue', 'crime', 'duty-free-exports', 'export-administration-act-south-africa']
-    bin_fields = house_fields[1:]
-    housedf = read_csv(house, house_fields)
-
-    # manually replace democrat and republican for boolean fields
-    # using default pandas replace wasn't working on object type
-    housedf['class'] = housedf['class'].str.strip().replace('democrat', '0')
-    housedf['class'] = housedf['class'].str.strip().replace('republican', '1')
-    housedf['class'] = pd.to_numeric(housedf['class'])
-
-    housedf2 = pd.get_dummies(housedf, columns = bin_fields)
-    data_sets = split_tuning_training_data(housedf2)
-    return data_sets
