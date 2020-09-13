@@ -47,7 +47,6 @@ def split_tuning_training_data(df):
 ## missing: 16 rows - missing 1 column value for bare_nuclei
 ## class:  2 options (2 = benign, 4 = malignant) - remap to 0 = benign, 1 malignant
 def get_breast_data():
-    print ('\n------------ BREAST DATA ------------ ')
     breast_fields = ['sample-code-number','clump-thickness','uniformity-of-cell-size','uniformity-of-cell-shape','marginal-adhesion','single-epithelial-cell-size','bare-nuclei','bland-chromatin','normal-nucleoli','mitoses','class']
     bin_fields = breast_fields[1:-1]
     bdf = read_csv(breast, breast_fields)
@@ -66,7 +65,6 @@ def get_breast_data():
 ## missing: none
 ## class: 6 options
 def get_glass_data():
-    print ('\n------------ GLASS DATA ------------ ')
     glass_fields = ['id','ri','na','mg', 'al','si','k','ca','ba','fe','class']
     bin_fields = glass_fields[1:-1]
     gdf = read_csv(glass, glass_fields)
@@ -83,7 +81,6 @@ def get_glass_data():
 ## missing: none
 ## class: 3 options
 def get_iris_data():
-    print ('\n------------ IRIS DATA ------------ ')
     iris_fields = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
     bin_fields = iris_fields[:-1]
     irdf = read_csv(iris, iris_fields)
@@ -100,7 +97,6 @@ def get_iris_data():
 ## missing: none
 ## class: 4 options
 def get_soy_data():
-    print ('\n------------ SOYBEAN DATA ------------ ')
     soybean_fields = ['date','plant-stand','precip','temp','hail','crop-hist','area-damaged','severity','seed-tmt','germination','plant-growth','leaves','leafspots-halo','leafspots-marg','leafspot-size','leaf-shread','leaf-malf','leaf-mild','stem','lodging','stem-cankers','canker-lesion','fruiting-bodies','external decay','mycelium','int-discolor','sclerotia','fruit-pods','fruit spots','seed','mold-growth','seed-discolor','seed-size','shriveling','roots', 'class']
     bin_fields = soybean_fields[:-1]
     soydf = read_csv(soybean, soybean_fields)
@@ -116,7 +112,6 @@ def get_soy_data():
 ## missing: none
 ## class: 2 options
 def get_house_data():
-    print ('\n------------ HOUSE DATA ------------ ')
     house_fields = ['class', 'handicapped-infants', 'water-project-cost-sharing', 'adoption-of-the-budget-resolution', 'physician-fee-freeze', 'el-salvador-aid', 'religious-groups-in-schools', 'anti-satellite-test-ban', 'aid-to-nicaraguan-contras', 'mx-missile', 'immigration', 'synfuels-corporation-cutback', 'education-spending', 'superfund-right-to-sue', 'crime', 'duty-free-exports', 'export-administration-act-south-africa']
     bin_fields = house_fields[1:]
     housedf = read_csv(house, house_fields)
