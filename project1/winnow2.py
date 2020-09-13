@@ -76,6 +76,7 @@ def test_model(df, weights, label):
     false_pos = 0
     true_neg = 0
     false_neg = 0
+    total = df.shape[0]
 
     for _, row in df.iterrows():
         row_nc = row.copy().drop(label) # class does not factor into weights
@@ -96,12 +97,17 @@ def test_model(df, weights, label):
                 true_pos += 1
 
     print('\nWINNOW SUMMARY')
-    print('-- prediction for class: ', label)
+    print('prediction for class: ', label)
     print('------------------')
-    print('True +\t', true_pos)
-    print('False +\t', false_pos)
-    print('True -\t', true_neg)
-    print('False -\t', false_neg)
+    print('Total #\t\t', total)
+    print('--')
+    print('True +\t\t', true_pos)
+    print('False +\t\t', false_pos)
+    print('True -\t\t', true_neg)
+    print('False -\t\t', false_neg)
+    print('--')
+    print('Correct\t\t', (true_neg + true_pos))
+    print('Wrong\t\t', (false_neg + false_pos))
 
 def test_model_multinomial(df, label, classifiers):
     class_cols = [col for col in df if col.startswith(label)]

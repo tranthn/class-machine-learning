@@ -23,9 +23,9 @@ class_label = 'class'
 data_sets = data_loader.get_breast_data()
 
 wts = win.build_classifier(df = data_sets['train'] , label = class_label)
-win.test_model(data_sets['tune'], wts, label = class_label)
+# win.test_model(data_sets['tune'], wts, label = class_label)
 
-pt = bayes.build_probability_table(df = data_sets['train'], label = class_label)
+pt = bayes.build_probability_table(df = data_sets['train'], label = class_label, m = 1, p = 0.1)
 bayes.test_model(data_sets['tune'], pt, label = class_label)
 
 ########################################
@@ -36,7 +36,7 @@ data = data_loader.get_glass_data()
 classifiers = win.build_classifier_multinomial(df = data[0]['train'], label = class_label)
 win.test_model_multinomial(df = data[0]['tune'], label = class_label, classifiers = classifiers)
 
-pt = bayes.build_probability_table(data[1]['train'], label = class_label)
+pt = bayes.build_probability_table(data[1]['train'], label = class_label, m = 1, p = 0.1)
 bayes.test_model(data[1]['tune'], pt, label = class_label)
 
 ########################################
@@ -47,7 +47,7 @@ data = data_loader.get_iris_data()
 classifiers = win.build_classifier_multinomial(df = data[0]['train'], label = class_label)
 win.test_model_multinomial(df = data[0]['tune'], label = class_label, classifiers = classifiers)
 
-pt = bayes.build_probability_table(df = data[1]['train'], label = class_label)
+pt = bayes.build_probability_table(df = data[1]['train'], label = class_label, m = 1, p = 0.1)
 bayes.test_model(data[1]['tune'], pt, label = class_label)
 
 ########################################
@@ -58,7 +58,7 @@ data = data_loader.get_soy_data()
 classifiers = win.build_classifier_multinomial(df = data[0]['train'], label = class_label)
 win.test_model_multinomial(df = data[0]['tune'], label = class_label, classifiers = classifiers)
 
-pt = bayes.build_probability_table(data[1]['train'], label = class_label)
+pt = bayes.build_probability_table(data[1]['train'], label = class_label, m = 1, p = 0.1)
 bayes.test_model(data[1]['tune'], pt, label = class_label)
 
 ########################################
@@ -70,5 +70,5 @@ win.test_model(data['tune'], wts, label = class_label)
 
 # # naive bayes
 # # -----------------
-pt = bayes.build_probability_table(data['train'], label = class_label)
+pt = bayes.build_probability_table(data['train'], label = class_label, m = 1, p = 0.1)
 bayes.test_model(data['tune'], pt, label = class_label)

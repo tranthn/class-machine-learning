@@ -5,12 +5,12 @@ import numpy as np
 import pandas as pd
 
 # m-estimate for pseudo-examples
-m = 1
+m_default = 1
 
 # probability to use in our smoothing function
-p = 0.01
+p_default = 0.01
 
-def build_probability_table(df, label):
+def build_probability_table(df, label, m = m_default, p = p_default):
     total = df.shape[0]
 
     ## create data frame to store probabilities
