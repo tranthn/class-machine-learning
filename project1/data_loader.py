@@ -40,7 +40,7 @@ def split_tuning_training_data(df):
     df = df.drop(tuning.index)
     train = df.sample(frac = 0.6)
     test = df.drop(train.index)
-    return {'tune': tuning, 'train': train, 'test': test}
+    return {'tune': tuning, 'train': train, 'test': test, 'all': df}
 
 ############### main ###############
 ## each column has domain: 1-10, need to be binned (except sample-code-number, class)
