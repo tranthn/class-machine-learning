@@ -8,7 +8,7 @@ import pandas as pd
 ## with training set, experiment with
 ##  - weight vectors: init to 1, for each feature
 ##  - theta: threshold, usually = 0.5
-##      -- but also n / 2 is good
+##      -- but also # features / 2 is good
 ##  - alpha: modifier (> 1)
 theta_default = 0.5
 alpha_default = 2
@@ -19,10 +19,10 @@ alpha_default = 2
 #
 # arguments
 #   - row = a given instance of data, whose values we will use to modify the weights
-#   - alpha = the modifer we will use to demote the weights
+#   - weights = weights array, holding the mapped weights for our features
 #
 # returns
-#   - new_weights = weight array after demotion process
+#   - accum_sum = accumulated sum given our row against our weights
 def weighted_sum(row, weights):
     accum_sum = 0
     for idx, val in enumerate(row.to_numpy()):
@@ -66,23 +66,25 @@ def demote(row, weights, alpha):
     return new_weights
 
 # creates weight array representing our winnow2 model
+# this model handles 2-class data set only
 #
 # arguments
 #   - df = dataframe we will be using as our training set
 #   - label = name of the column of dataframe that maps to the label/class
 #
 # returns
-#   - classifers: array of dict-objects, mapping each weight array to a classifer choice
-def build_classifier(df, label, theta = theta_default, alpha = alpha_default):
+#   - weights: weights representing our winnow2 model, i.e. weight for each feature
+def build_classifier(df, label, alpha = alpha_default):
     num_cols = len(df.columns.tolist()) - 1
     weights = [1.0] * num_cols
+    derived_theta = (len(df.columns) / 2)
 
     for _, row in df.iterrows():
         row_nc = row.drop(labels = [label])
         ws = weighted_sum(row_nc, weights)
 
         # predicted h(x) = 0
-        if (ws <= theta):
+        if (ws <= derived_theta):
             if row[label] == 1:
                 # print('false negative, demote')
                 weights = promote(row_nc, weights, alpha)
@@ -105,14 +107,18 @@ def build_classifier(df, label, theta = theta_default, alpha = alpha_default):
 #
 # returns
 #   - classifers: array of dict-objects, mapping each weight array to a classifer choice
-def build_classifier_multinomial(df, label, theta = theta_default, alpha = alpha_default):
+def build_classifier_multinomial(df, label, alpha = alpha_default):
     class_cols = [col for col in df if col.startswith(label)]
     class_cols = np.array(class_cols)
     classifiers = []
+    
     for c in class_cols:
+        # drop all class columns, except the one representing the class
+        # we are currently interested in, then call the 2-class function: test_model()
         drop_cols = np.setdiff1d(class_cols, [c])
         df2 = df.copy().drop(columns = drop_cols)
-        out = build_classifier(df2, c, theta, alpha)
+        derived_theta = (len(df.columns) / 2)
+        out = build_classifier(df2, c, alpha)
         classifiers.append({'label': c, 'weights': out})
     
     return classifiers
@@ -123,19 +129,22 @@ def build_classifier_multinomial(df, label, theta = theta_default, alpha = alpha
 #   - df = dataframe we will be using as our training set
 #   - weights = the weights representing our model
 #   - label = name of the column of dataframe that maps to the label/class
-def test_model(df, weights, label, theta):
+# returns
+#   - None
+def test_model(df, weights, label):
     true_pos = 0
     false_pos = 0
     true_neg = 0
     false_neg = 0
     total = df.shape[0]
+    derived_theta = (len(df.columns) / 2)
 
     for _, row in df.iterrows():
         row_nc = row.copy().drop(label) # class does not factor into weights
         ws = weighted_sum(row_nc, weights)
 
         # predicted h(x) = 1
-        if (ws <= theta):
+        if (ws <= derived_theta):
             if row[label] == 1:
                 false_neg += 1
             else:
@@ -151,8 +160,6 @@ def test_model(df, weights, label, theta):
     print('\nWINNOW SUMMARY')
     print('prediction for class: ', label)
     print('------------------')
-    print('Total #\t\t', total)
-    print('--')
     print('True +\t\t', true_pos)
     print('False +\t\t', false_pos)
     print('True -\t\t', true_neg)
@@ -160,6 +167,7 @@ def test_model(df, weights, label, theta):
     print('--')
     print('Correct\t\t', (true_neg + true_pos))
     print('Wrong\t\t', (false_neg + false_pos))
+    print('Total #\t\t', total)
 
 # wrapper function, that tests classifers against a multinomial dataset 
 #
@@ -167,10 +175,15 @@ def test_model(df, weights, label, theta):
 #   - df = dataframe we will be using as our training set
 #   - label = name of the column of dataframe that maps to the label/class
 #   - classifers: array of dict-objects, mapping each weight array to a classifer choice
-def test_model_multinomial(df, classifiers, label, theta):
+#
+# returns
+#   - None
+def test_model_multinomial(df, classifiers, label):
     class_cols = [col for col in df if col.startswith(label)]
     class_cols = np.array(class_cols)
     for c in classifiers:
+        # drop all class columns, except the one representing the class
+        # we are currently interested in, then call the 2-class function: test_model()
         drop_cols = np.setdiff1d(class_cols, [c['label']])
         df2 = df.copy().drop(columns = drop_cols)
-        test_model(df2, c['weights'], c['label'], theta)
+        test_model(df2, c['weights'], c['label'])

@@ -10,11 +10,20 @@ m_default = 1
 # probability to use in our smoothing function
 p_default = 0.01
 
+# builds probability table based on class membership and feature values
+#
+# arguments
+#   - row = a given instance of data, whose values we will use to modify the weights
+#   - label = name of the column of dataframe that maps to the label/class
+#   - m = m-estimate for pseudo-examples
+#   - p = probability to use in our smoothing function
+#
+# returns
+#   - probability_df = dataframe representing class and feature probabilities
 def build_probability_table(df, label, m = m_default, p = p_default):
     total = df.shape[0]
 
     ## create data frame to store probabilities
-    ## dimensions = # class_opts x (# features + 2)
     probability_df = pd.DataFrame()
 
     cols = df.copy().drop(columns = label).columns.tolist()
@@ -32,12 +41,21 @@ def build_probability_table(df, label, m = m_default, p = p_default):
 
         for feat in cols:
             # probability that feature = 1
-            # proability that feature = 0 will just be 1 - pf
+            # proability that feature = 0 will just be 1 - prob
             prob = (df2[feat].values == 1).sum()
             probability_df.loc[option, feat] = (prob + m * p) / (class_total + m)
 
     return probability_df
 
+# helper method
+# find the probability of instance belonging to class represented by prob_arr
+# 
+# arguments
+#   - instance = a given instance of data
+#   - prob_arr = serialized 1-d array that holds probabilities of features for a particular class
+#
+# returns
+#   - prob = probability that instance belongs to class represented by prob_arr
 def compute_probability(instance, prob_arr):
     prob_len = len(prob_arr)
     prob = 1.0
@@ -55,6 +73,15 @@ def compute_probability(instance, prob_arr):
 
     return prob
 
+# given data row, will find the membership class with maximal probability
+# 
+# arguments
+#   - row = a given instance of data
+#   - probability_df = table of probabilities representing our Naive Bayes model
+#
+# returns
+#   - outcome object = a dict-object representing the class choice/label
+#                      and its corresponding probability value
 def check_instance(row, probability_df, class_opts):
     choice = None
     prob_max = 0.0
@@ -69,6 +96,15 @@ def check_instance(row, probability_df, class_opts):
 
     return {'choice': c, 'probability': prob_max}
 
+# tests a data frame against a pre-built Naive Bayes probability table
+# 
+# arguments
+#   - df = a given instance of data
+#   - probability_df = table of probabilities representing our Naive Bayes model
+#   - label = name of the column of dataframe that maps to the label/class
+#
+# returns
+#   - None
 def test_model(df, probability_df, label):
     correct = 0
     wrong = 0

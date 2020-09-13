@@ -5,6 +5,15 @@ from fractions import Fraction
 import numpy as np
 import pandas as pd
 
+### data-loader.py
+# convenience class that handles:
+# - data loading
+# - data parsing
+# - binning continuous data into discrete bins
+# - one-hot encoding
+# - splitting data into train, tune, test sets
+
+
 breast = './data/breast-cancer-wisconsin.data'
 glass = './data/glass.data'
 iris = './data/iris.data'
@@ -35,19 +44,26 @@ def bin_continuous(df, bin_fields):
         arr = np.histogram_bin_edges(values, bins='auto')
         df.loc[:, f] = pd.cut(x = values, bins = arr, include_lowest=True)
 
+## split data into 3 sets:
+##  - tune: 10% of original
+##  - train: 67% of remainder
+##  - test: remainder of remainder
 def split_tuning_training_data(df):
-    tuning = df.sample(frac = 0.1)
-    df = df.drop(tuning.index)
-    train = df.sample(frac = 0.6)
+    orig = df.copy()
+    tune = df.sample(frac = 0.1, random_state=1)
+    df = df.drop(tune.index)
+    train = df.sample(frac = 0.67, random_state=1)
     test = df.drop(train.index)
-    return {'tune': tuning, 'train': train, 'test': test, 'all': df}
+    return {'tune': tune, 'train': train, 'test': test, 'all': orig}
 
 ############### main ###############
 ## each column has domain: 1-10, need to be binned (except sample-code-number, class)
 ## missing: 16 rows - missing 1 column value for bare_nuclei
 ## class:  2 options (2 = benign, 4 = malignant) - remap to 0 = benign, 1 malignant
 def get_breast_data():
-    breast_fields = ['sample-code-number','clump-thickness','uniformity-of-cell-size','uniformity-of-cell-shape','marginal-adhesion','single-epithelial-cell-size','bare-nuclei','bland-chromatin','normal-nucleoli','mitoses','class']
+    breast_fields = ['sample-code-number','clump-thickness','uniformity-of-cell-size',
+                    'uniformity-of-cell-shape','marginal-adhesion','single-epithelial-cell-size',
+                    'bare-nuclei','bland-chromatin','normal-nucleoli','mitoses','class']
     bin_fields = breast_fields[1:-1]
     bdf = read_csv(breast, breast_fields)
     bdf = bdf.replace({'class': {4: 1, 2: 0}})
@@ -97,7 +113,11 @@ def get_iris_data():
 ## missing: none
 ## class: 4 options
 def get_soy_data():
-    soybean_fields = ['date','plant-stand','precip','temp','hail','crop-hist','area-damaged','severity','seed-tmt','germination','plant-growth','leaves','leafspots-halo','leafspots-marg','leafspot-size','leaf-shread','leaf-malf','leaf-mild','stem','lodging','stem-cankers','canker-lesion','fruiting-bodies','external decay','mycelium','int-discolor','sclerotia','fruit-pods','fruit spots','seed','mold-growth','seed-discolor','seed-size','shriveling','roots', 'class']
+    soybean_fields = ['date','plant-stand','precip','temp','hail','crop-hist','area-damaged','severity',
+                    'seed-tmt','germination','plant-growth','leaves','leafspots-halo','leafspots-marg',
+                    'leafspot-size','leaf-shread','leaf-malf','leaf-mild','stem','lodging','stem-cankers',
+                    'canker-lesion','fruiting-bodies','external decay','mycelium','int-discolor','sclerotia',
+                    'fruit-pods','fruit spots','seed','mold-growth','seed-discolor','seed-size','shriveling','roots', 'class']
     bin_fields = soybean_fields[:-1]
     soydf = read_csv(soybean, soybean_fields)
     soydf2 = pd.get_dummies(soydf)
@@ -112,7 +132,10 @@ def get_soy_data():
 ## missing: none
 ## class: 2 options
 def get_house_data():
-    house_fields = ['class', 'handicapped-infants', 'water-project-cost-sharing', 'adoption-of-the-budget-resolution', 'physician-fee-freeze', 'el-salvador-aid', 'religious-groups-in-schools', 'anti-satellite-test-ban', 'aid-to-nicaraguan-contras', 'mx-missile', 'immigration', 'synfuels-corporation-cutback', 'education-spending', 'superfund-right-to-sue', 'crime', 'duty-free-exports', 'export-administration-act-south-africa']
+    house_fields = ['class', 'handicapped-infants', 'water-project-cost-sharing', 'adoption-of-the-budget-resolution',
+                    'physician-fee-freeze', 'el-salvador-aid', 'religious-groups-in-schools', 'anti-satellite-test-ban',
+                    'aid-to-nicaraguan-contras', 'mx-missile', 'immigration', 'synfuels-corporation-cutback', 
+                    'education-spending', 'superfund-right-to-sue', 'crime', 'duty-free-exports', 'export-administration-act-south-africa']
     bin_fields = house_fields[1:]
     housedf = read_csv(house, house_fields)
 
