@@ -77,7 +77,7 @@ def demote(row, weights, alpha):
 def build_classifier(df, label, alpha = alpha_default):
     num_cols = len(df.columns.tolist()) - 1
     weights = [1.0] * num_cols
-    derived_theta = (len(df.columns) / 2)
+    derived_theta = num_cols / 2
 
     for _, row in df.iterrows():
         row_nc = row.drop(labels = [label])
@@ -117,7 +117,7 @@ def build_classifier_multinomial(df, label, alpha = alpha_default):
         # we are currently interested in, then call the 2-class function: test_model()
         drop_cols = np.setdiff1d(class_cols, [c])
         df2 = df.copy().drop(columns = drop_cols)
-        derived_theta = (len(df.columns) / 2)
+        derived_theta = (len(df.columns) - 1) / 2
         out = build_classifier(df2, c, alpha)
         classifiers.append({'label': c, 'weights': out})
     
@@ -137,7 +137,7 @@ def test_model(df, weights, label):
     true_neg = 0
     false_neg = 0
     total = df.shape[0]
-    derived_theta = (len(df.columns) / 2)
+    derived_theta = (len(df.columns) - 1) / 2
 
     for _, row in df.iterrows():
         row_nc = row.copy().drop(label) # class does not factor into weights
