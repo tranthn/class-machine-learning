@@ -13,16 +13,27 @@ import pandas as pd
 # - one-hot encoding
 # - splitting data into train, tune, test sets
 
-breast = './data/breast-cancer-wisconsin.data'
 glass = '../data/glass.data'
-iris = './data/iris.data'
-soybean = './data/soybean-small.data'
 house = '../data/house-votes-84.data'
+abalone = './data/abalone.data'
+forestfires = './data/forestfires.data'
+machine = './data/machine.data'
+segmentation = './data/segmentation.data'
 
 ## generic csv reader wrapper function
 def read_csv(file_path, fieldnames):
     try:
         df = pd.read_csv(file_path, names = fieldnames)
+
+    except csv.Error as e:
+        print("There was an error reading the file, exiting...")
+        sys.exit('file read error: { }'.format(e))
+
+    return df
+
+def read_csv_with_header(file_path):
+    try:
+        df = pd.read_csv(file_path, header = 0)
 
     except csv.Error as e:
         print("There was an error reading the file, exiting...")
@@ -55,26 +66,6 @@ def split_tuning_training_data(df):
     test = df.drop(train.index)
     return {'tune': tune, 'train': train, 'test': test, 'all': orig}
 
-############### main ###############
-## each column has domain: 1-10, need to be binned (except sample-code-number, class)
-## missing: 16 rows - missing 1 column value for bare_nuclei
-## class:  2 options (2 = benign, 4 = malignant) - remap to 0 = benign, 1 malignant
-def get_breast_data():
-    breast_fields = ['sample-code-number','clump-thickness','uniformity-of-cell-size',
-                    'uniformity-of-cell-shape','marginal-adhesion','single-epithelial-cell-size',
-                    'bare-nuclei','bland-chromatin','normal-nucleoli','mitoses','class']
-    bin_fields = breast_fields[1:-1]
-    bdf = read_csv(breast, breast_fields)
-    bdf = bdf.replace({'class': {4: 1, 2: 0}})
-    bdf2 = bdf[bdf['bare-nuclei'] != '?']
-    bdf3 = bdf2.copy().astype({ 'bare-nuclei': int })
-    bin_continuous(bdf3, bin_fields)
-
-    # drop sample-code-number since it not needed for learning model
-    bdf4 = pd.get_dummies(bdf3).drop(columns = 'sample-code-number')
-    data_sets = split_tuning_training_data(bdf4)
-    return data_sets
-
 ########################################
 ## attribute values are either multi-categorical or binary (assuming no missing)
 ## ? = abstain, not missing values
@@ -99,9 +90,6 @@ def get_house_data():
     return data_sets
 
 ########################################
-## attribute values need values binned into ranges (except id, class)
-## missing: none
-## class: 6 options
 def get_glass_data():
     glass_fields = ['id','ri','na','mg', 'al','si','k','ca','ba','fe','class']
     bin_fields = glass_fields[1:-1]
@@ -111,39 +99,36 @@ def get_glass_data():
     gdf3 = pd.get_dummies(gdf2).drop(columns = 'id')
     gdf3_bayes = pd.get_dummies(gdf2, columns = bin_fields).drop(columns = 'id')
     data_sets = split_tuning_training_data(gdf3)
-    data_sets_bayes = split_tuning_training_data(gdf3_bayes)
-    return [data_sets, data_sets_bayes]
+    return data_sets
+
+############### main ###############
+def get_abalone_data():
+    abalone_fields = ['sex', 'length', 'diameter', 'height', 'whole_weight', 'shucked_weight', 'viscera_weight', 'shell_weight', 'rings']
+    abalone_df = read_csv(abalone, abalone_fields)
+    data_sets = split_tuning_training_data(abalone_df)
+    return data_sets
 
 ########################################
-## attribute values need values binned into ranges (except class)
-## missing: none
-## class: 3 options
-def get_iris_data():
-    iris_fields = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
-    bin_fields = iris_fields[:-1]
-    irdf = read_csv(iris, iris_fields)
-    irdf2 = irdf.copy()
-    bin_continuous(irdf2, bin_fields)
-    irdf3 = pd.get_dummies(irdf2)
-    irdf3_bayes = pd.get_dummies(irdf2, columns = bin_fields)
-    data_sets = split_tuning_training_data(irdf3)
-    data_sets_bayes = split_tuning_training_data(irdf3_bayes)
-    return [data_sets, data_sets_bayes]
+## HAS HEADER DATA BUILT IN ALREADY
+def get_forest_fires_data():
+    forestfires_fields = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
+    bin_fields = forestfires_fields[:-1]
+    fire_df = read_csv(forestfires, forestfires_fields)
+    data_sets = split_tuning_training_data(fire_df)
+    return data_sets
 
 ########################################
-## attribute values are either multi-categorical or binary (assuming no missing)
-## missing: none
-## class: 4 options
-def get_soy_data():
-    soybean_fields = ['date','plant-stand','precip','temp','hail','crop-hist','area-damaged','severity',
-                    'seed-tmt','germination','plant-growth','leaves','leafspots-halo','leafspots-marg',
-                    'leafspot-size','leaf-shread','leaf-malf','leaf-mild','stem','lodging','stem-cankers',
-                    'canker-lesion','fruiting-bodies','external decay','mycelium','int-discolor','sclerotia',
-                    'fruit-pods','fruit spots','seed','mold-growth','seed-discolor','seed-size','shriveling','roots', 'class']
-    bin_fields = soybean_fields[:-1]
-    soydf = read_csv(soybean, soybean_fields)
-    soydf2 = pd.get_dummies(soydf)
-    soydf2_bayes = pd.get_dummies(soydf, columns = bin_fields)
-    data_sets = split_tuning_training_data(soydf2)
-    data_sets_bayes = split_tuning_training_data(soydf2_bayes)
-    return [data_sets, data_sets_bayes]
+def get_machine_data():
+    machine_fields = ['vendor_name', 'model_name', 'myct', 'mmin', 'mmax', 'cach', 'chmin', 'chmax', 'prp', 'erp']
+    bin_fields = machine_fields[:-1]
+    machine_df = read_csv(machine, machine_fields)
+    machine_df2 = pd.get_dummies(machine_df)
+    data_sets = split_tuning_training_data(machine_df2)
+    return data_sets
+
+########################################
+## HAS HEADER DATA BUILT IN ALREADY
+def get_segmentation_data():
+    segmentation_df = read_csv_with_header(segmentation)
+    data_sets = split_tuning_training_data(segmentation_df)
+    return data_sets
