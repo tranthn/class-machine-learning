@@ -64,9 +64,25 @@ def split_tuning_data(df):
     df = df.drop(tune.index)
     return {'tune': tune, 'test': df, 'all': orig}
 
+
 # will need to do stratification for the classfication data sets
-# fold = int, representing which fold we're on
-def stratify_data(df, fold):
+# this will stratify based on indices
+def stratify_data(df, label):
+    n = df.shape[0]
+    fold = 5
+
+    # for any N that isn't by 5,
+    # one fold will not be equal to others
+    last_fold = n % fold
+    fold_size = (n - last_fold) / 4
+
+    print('stratify - length of data', n)
+    class_probabilities = []
+    class_opts = df[label].value_counts()
+    print(class_opts)
+    class_probabilities = class_opts.apply(lambda x: x / n)
+    print(class_probabilities)
+
     return df
 
 # folds for cross validation for regression data
@@ -75,9 +91,8 @@ def sample_regression_data(df, sort_by, fold):
     df = df.sort_values(by = [sort_by])
     return df.iloc[fold::5]
 
-########################################
+####################### classification (stratify) data sets #######################
 ## attribute values need values binned into ranges (except id, class)
-## missing: none
 ## class: 6 options
 def get_glass_data():
     glass_fields = ['id','ri','na','mg', 'al','si','k','ca','ba','fe','class']
@@ -85,15 +100,17 @@ def get_glass_data():
     gdf = read_csv(glass, glass_fields)
     gdf2 = gdf.copy().astype({'class': object})
     bin_continuous(gdf2, bin_fields)
+
+    print(gdf2)
+    stratify_data(gdf, 'class')
+
     gdf3 = pd.get_dummies(gdf2).drop(columns = 'id')
-    gdf3_bayes = pd.get_dummies(gdf2, columns = bin_fields).drop(columns = 'id')
     data_sets = split_tuning_data(gdf3)
     return data_sets
 
 ########################################
 ## attribute values are either multi-categorical or binary (assuming no missing)
 ## ? = abstain, not missing values
-## missing: none
 ## class: 2 options
 def get_house_data():
     house_fields = ['class', 'handicapped-infants', 'water-project-cost-sharing', 'adoption-of-the-budget-resolution',
@@ -114,7 +131,10 @@ def get_house_data():
     return data_sets
 
 ########################################
-## classifier: region-centroid-col [first column]
+## class: 7 options - region-centroid-col [first column]
+## bin fields: REGION-CENTROID-COL,REGION-CENTROID-ROW,REGION-PIXEL-COUNT,SHORT-LINE-DENSITY-5,
+# ## SHORT-LINE-DENSITY-2,VEDGE-MEAN,VEDGE-SD,HEDGE-MEAN,HEDGE-SD,INTENSITY-MEAN,RAWRED-MEAN,
+# ## RAWBLUE-MEAN,RAWGREEN-MEAN,EXRED-MEAN,EXBLUE-MEAN,EXGREEN-MEAN,VALUE-MEAN,SATURATION-MEAN,HUE-MEAN
 def get_segmentation_data():
     segmentation_df = read_csv_with_header(segmentation)
     data_sets = split_tuning_data(segmentation_df)
