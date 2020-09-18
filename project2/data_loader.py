@@ -73,15 +73,22 @@ def stratify_data(df, label):
 
     # for any N that isn't by 5,
     # one fold will not be equal to others
-    last_fold = n % fold
-    fold_size = (n - last_fold) / 4
+    f = n // fold
+    last_fold = n // fold
+    fold_size = (n - last_fold) // 4
 
-    print('stratify - length of data', n)
     class_probabilities = []
     class_opts = df[label].value_counts()
-    print(class_opts)
     class_probabilities = class_opts.apply(lambda x: x / n)
-    print(class_probabilities)
+
+    strats = []
+
+    for opt in class_opts.index:
+        print('option:', opt)
+        print(class_probabilities[opt])
+        opt_n = class_probabilities[opt] * fold_size
+        print(round(opt_n))
+        print('---')
 
     return df
 
