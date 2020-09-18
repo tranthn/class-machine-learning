@@ -31,6 +31,7 @@ def read_csv(file_path, fieldnames):
 
     return df
 
+## read csv data that contains header row already
 def read_csv_with_header(file_path):
     try:
         df = pd.read_csv(file_path, header = 0)
@@ -56,15 +57,38 @@ def bin_continuous(df, bin_fields):
 
 ## split data into 3 sets:
 ##  - tune: 10% of original
-##  - train: 67% of remainder
-##  - test: remainder of remainder
-def split_tuning_training_data(df):
+##  - remainder: to be used for cross validation
+def split_tuning_data(df):
     orig = df.copy()
     tune = df.sample(frac = 0.1, random_state=1)
     df = df.drop(tune.index)
-    train = df.sample(frac = 0.67, random_state=1)
-    test = df.drop(train.index)
-    return {'tune': tune, 'train': train, 'test': test, 'all': orig}
+    return {'tune': tune, 'test': df, 'all': orig}
+
+# will need to do stratification for the classfication data sets
+# fold = int, representing which fold we're on
+def stratify_data(df, fold):
+    return df
+
+# folds for cross validation for regression data
+# fold = int, representing which fold we're on
+def sample_regression_data(df, sort_by, fold):
+    df = df.sort_values(by = [sort_by])
+    return df.iloc[fold::5]
+
+########################################
+## attribute values need values binned into ranges (except id, class)
+## missing: none
+## class: 6 options
+def get_glass_data():
+    glass_fields = ['id','ri','na','mg', 'al','si','k','ca','ba','fe','class']
+    bin_fields = glass_fields[1:-1]
+    gdf = read_csv(glass, glass_fields)
+    gdf2 = gdf.copy().astype({'class': object})
+    bin_continuous(gdf2, bin_fields)
+    gdf3 = pd.get_dummies(gdf2).drop(columns = 'id')
+    gdf3_bayes = pd.get_dummies(gdf2, columns = bin_fields).drop(columns = 'id')
+    data_sets = split_tuning_data(gdf3)
+    return data_sets
 
 ########################################
 ## attribute values are either multi-categorical or binary (assuming no missing)
@@ -86,49 +110,38 @@ def get_house_data():
     housedf['class'] = pd.to_numeric(housedf['class'])
 
     housedf2 = pd.get_dummies(housedf, columns = bin_fields)
-    data_sets = split_tuning_training_data(housedf2)
+    data_sets = split_tuning_data(housedf2)
     return data_sets
 
 ########################################
-def get_glass_data():
-    glass_fields = ['id','ri','na','mg', 'al','si','k','ca','ba','fe','class']
-    bin_fields = glass_fields[1:-1]
-    gdf = read_csv(glass, glass_fields)
-    gdf2 = gdf.copy().astype({'class': object})
-    bin_continuous(gdf2, bin_fields)
-    gdf3 = pd.get_dummies(gdf2).drop(columns = 'id')
-    gdf3_bayes = pd.get_dummies(gdf2, columns = bin_fields).drop(columns = 'id')
-    data_sets = split_tuning_training_data(gdf3)
+## classifier: region-centroid-col [first column]
+def get_segmentation_data():
+    segmentation_df = read_csv_with_header(segmentation)
+    data_sets = split_tuning_data(segmentation_df)
     return data_sets
 
-############### main ###############
+####################### regression data sets #######################
+## regression predictor: rings
 def get_abalone_data():
     abalone_fields = ['sex', 'length', 'diameter', 'height', 'whole_weight', 'shucked_weight', 'viscera_weight', 'shell_weight', 'rings']
     abalone_df = read_csv(abalone, abalone_fields)
-    data_sets = split_tuning_training_data(abalone_df)
+    data_sets = split_tuning_data(abalone_df)
     return data_sets
 
 ########################################
-## HAS HEADER DATA BUILT IN ALREADY
-def get_forest_fires_data():
-    forestfires_fields = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
-    bin_fields = forestfires_fields[:-1]
-    fire_df = read_csv(forestfires, forestfires_fields)
-    data_sets = split_tuning_training_data(fire_df)
-    return data_sets
-
-########################################
+## regression predictor: prp
+## result indicator field [DO NOT USE IN MODEL]: erp
 def get_machine_data():
     machine_fields = ['vendor_name', 'model_name', 'myct', 'mmin', 'mmax', 'cach', 'chmin', 'chmax', 'prp', 'erp']
     bin_fields = machine_fields[:-1]
     machine_df = read_csv(machine, machine_fields)
     machine_df2 = pd.get_dummies(machine_df)
-    data_sets = split_tuning_training_data(machine_df2)
+    data_sets = split_tuning_data(machine_df2)
     return data_sets
 
 ########################################
-## HAS HEADER DATA BUILT IN ALREADY
-def get_segmentation_data():
-    segmentation_df = read_csv_with_header(segmentation)
-    data_sets = split_tuning_training_data(segmentation_df)
+## regression predictor: area [of fire]
+def get_forest_fires_data():
+    fire_df = read_csv_with_header(forestfires)
+    data_sets = split_tuning_data(fire_df)
     return data_sets
