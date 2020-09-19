@@ -82,13 +82,16 @@ def stratify_data(df, label):
     class_probabilities = class_opts.apply(lambda x: x / n)
 
     strats = []
+    print(class_opts)
+    sample_df = df.copy()
 
-    for opt in class_opts.index:
-        print('option:', opt)
-        print(class_probabilities[opt])
-        opt_n = class_probabilities[opt] * fold_size
-        print(round(opt_n))
-        print('---')
+    for i in range(fold, 0, -1):
+        print('fold', i)
+        sample_df = df.groupby(label).apply(lambda x: x.sample(frac = 1 / i))
+        print(sample_df)
+        strats.append(sample_df)
+        drop_idx = sample_df.index.get_level_values(1)
+        df = df.drop(drop_idx)
 
     return df
 
