@@ -64,7 +64,6 @@ def split_tuning_data(df):
     df = df.drop(tune.index)
     return {'tune': tune, 'test': df, 'all': orig}
 
-
 # will need to do stratification for the classfication data sets
 # this will stratify based on indices
 def stratify_data(df, label):
@@ -72,7 +71,7 @@ def stratify_data(df, label):
     fold = 5
 
     # for any N that isn't by 5,
-    # one fold will not be equal to others
+    # one fold must be smaller to hold the remainder
     f = n // fold
     last_fold = n // fold
     fold_size = (n - last_fold) // 4
@@ -80,20 +79,24 @@ def stratify_data(df, label):
     class_probabilities = []
     class_opts = df[label].value_counts()
     class_probabilities = class_opts.apply(lambda x: x / n)
-
     strats = []
-    print(class_opts)
     sample_df = df.copy()
 
+    ## split off tuning set first
+    tune = df.groupby(label).apply(lambda x: x.sample(frac = 0.1, random_state = 1))
+    drop_idx = tune.index.get_level_values(1)
+    df = df.drop(drop_idx)
+
+    # remaining folds will be ~18% of original N of set
     for i in range(fold, 0, -1):
-        print('fold', i)
-        sample_df = df.groupby(label).apply(lambda x: x.sample(frac = 1 / i))
-        print(sample_df)
+        sample_df = df.groupby(label).apply(lambda x: x.sample(frac = 1 / i, random_state = 1))
         strats.append(sample_df)
         drop_idx = sample_df.index.get_level_values(1)
         df = df.drop(drop_idx)
+    
+    sets = { 'tune': tune, 'folds': strats }
 
-    return df
+    return sets
 
 # folds for cross validation for regression data
 # fold = int, representing which fold we're on
@@ -108,14 +111,11 @@ def get_glass_data():
     glass_fields = ['id','ri','na','mg', 'al','si','k','ca','ba','fe','class']
     bin_fields = glass_fields[1:-1]
     gdf = read_csv(glass, glass_fields)
-    gdf2 = gdf.copy().astype({'class': object})
+    gdf2 = gdf.copy().astype({'class': object}).drop(columns = 'id')
     bin_continuous(gdf2, bin_fields)
 
-    print(gdf2)
-    stratify_data(gdf, 'class')
+    data_sets = stratify_data(gdf, 'class')
 
-    gdf3 = pd.get_dummies(gdf2).drop(columns = 'id')
-    data_sets = split_tuning_data(gdf3)
     return data_sets
 
 ########################################
@@ -136,18 +136,18 @@ def get_house_data():
     housedf['class'] = housedf['class'].str.strip().replace('republican', '1')
     housedf['class'] = pd.to_numeric(housedf['class'])
 
-    housedf2 = pd.get_dummies(housedf, columns = bin_fields)
-    data_sets = split_tuning_data(housedf2)
+    data_sets = stratify_data(housedf, 'class')
     return data_sets
 
 ########################################
-## class: 7 options - region-centroid-col [first column]
-## bin fields: REGION-CENTROID-COL,REGION-CENTROID-ROW,REGION-PIXEL-COUNT,SHORT-LINE-DENSITY-5,
+## class: 7 options
+## bin fields: CLASS,REGION-CENTROID-COL,REGION-CENTROID-ROW,REGION-PIXEL-COUNT,SHORT-LINE-DENSITY-5,
 # ## SHORT-LINE-DENSITY-2,VEDGE-MEAN,VEDGE-SD,HEDGE-MEAN,HEDGE-SD,INTENSITY-MEAN,RAWRED-MEAN,
 # ## RAWBLUE-MEAN,RAWGREEN-MEAN,EXRED-MEAN,EXBLUE-MEAN,EXGREEN-MEAN,VALUE-MEAN,SATURATION-MEAN,HUE-MEAN
 def get_segmentation_data():
     segmentation_df = read_csv_with_header(segmentation)
-    data_sets = split_tuning_data(segmentation_df)
+    print(segmentation_df)
+    data_sets = stratify_data(segmentation_df, 'CLASS')
     return data_sets
 
 ####################### regression data sets #######################
