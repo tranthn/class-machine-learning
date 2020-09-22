@@ -27,7 +27,7 @@ train = data['folds'][1:]
 print('\n-- tuning data --')
 knn_model = knn.find_knn(train, tune, class_label, k = 9)
 print('\n-- testing data --')
-knn_model = knn.find_knn(train, test, class_label, k = 9)
+# knn_model = knn.find_knn(train, test, class_label, k = 9)
 
 print('\n============== SEGMENTATION DATA ============== ')
 data = dl.get_segmentation_data()
