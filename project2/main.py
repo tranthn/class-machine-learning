@@ -3,6 +3,7 @@ import sys
 import numpy as np
 import pandas as pd
 import data_loader as dl
+import knn
 
 # field name that maps to the class column for data
 # all data sets used here will be "class", but is externalized
@@ -19,7 +20,14 @@ data = dl.get_house_data()
 ## glass data
 print('\n============== GLASS DATA ============== ')
 data = dl.get_glass_data()
-# print(data)
+folds = data['folds']
+tune = data['tune']
+test = data['folds'][0]
+train = data['folds'][1:]
+print('\n-- tuning data --')
+knn_model = knn.find_knn(train, tune, class_label, k = 9)
+print('\n-- testing data --')
+knn_model = knn.find_knn(train, test, class_label, k = 9)
 
 print('\n============== SEGMENTATION DATA ============== ')
 data = dl.get_segmentation_data()

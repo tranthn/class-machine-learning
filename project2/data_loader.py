@@ -83,16 +83,20 @@ def stratify_data(df, label):
     sample_df = df.copy()
 
     ## split off tuning set first
-    tune = df.groupby(label).apply(lambda x: x.sample(frac = 0.1, random_state = 1))
-    drop_idx = tune.index.get_level_values(1)
-    df = df.drop(drop_idx)
+    ## we won't keep groupby frame since its multi-leveled
+    ## we will grab its indices to reindex the original dataframe   
+    tune_df = df.groupby(label).apply(lambda x: x.sample(frac = 0.1, random_state = 1))
+    part_idx = tune_df.index.get_level_values(1)
+    tune = df.loc[part_idx, :]
+    df = df.drop(part_idx)
 
     # remaining folds will be ~18% of original N of set
     for i in range(fold, 0, -1):
         sample_df = df.groupby(label).apply(lambda x: x.sample(frac = 1 / i, random_state = 1))
-        strats.append(sample_df)
-        drop_idx = sample_df.index.get_level_values(1)
-        df = df.drop(drop_idx)
+        part_idx = sample_df.index.get_level_values(1)
+        part = df.loc[part_idx, :]
+        strats.append(part)
+        df = df.drop(part_idx)
     
     sets = { 'tune': tune, 'folds': strats }
 
@@ -112,9 +116,9 @@ def get_glass_data():
     bin_fields = glass_fields[1:-1]
     gdf = read_csv(glass, glass_fields)
     gdf2 = gdf.copy().astype({'class': object}).drop(columns = 'id')
-    bin_continuous(gdf2, bin_fields)
+    # bin_continuous(gdf2, bin_fields)
 
-    data_sets = stratify_data(gdf, 'class')
+    data_sets = stratify_data(gdf2, 'class')
 
     return data_sets
 
@@ -122,6 +126,7 @@ def get_glass_data():
 ## attribute values are either multi-categorical or binary (assuming no missing)
 ## ? = abstain, not missing values
 ## class: 2 options
+## [TODO] NEEDS TO BE DUMMIED
 def get_house_data():
     house_fields = ['class', 'handicapped-infants', 'water-project-cost-sharing', 'adoption-of-the-budget-resolution',
                     'physician-fee-freeze', 'el-salvador-aid', 'religious-groups-in-schools', 'anti-satellite-test-ban',
@@ -146,7 +151,6 @@ def get_house_data():
 # ## RAWBLUE-MEAN,RAWGREEN-MEAN,EXRED-MEAN,EXBLUE-MEAN,EXGREEN-MEAN,VALUE-MEAN,SATURATION-MEAN,HUE-MEAN
 def get_segmentation_data():
     segmentation_df = read_csv_with_header(segmentation)
-    print(segmentation_df)
     data_sets = stratify_data(segmentation_df, 'CLASS')
     return data_sets
 
