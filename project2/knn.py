@@ -46,6 +46,7 @@ def build_distance_table(training, point):
     return trains_dist
 
 #  determines which class is the majority among the picked neighbors
+#  returns None is there is a tie between top 2 class predictions
 #
 # arguments
 #   - neighbors: k-neighbors, # passed in determined by caller
@@ -53,12 +54,11 @@ def build_distance_table(training, point):
 #
 # returns
 #   - predicted class
-def majority_vote(neighbors, label):
+def majority_vote_with_ties(neighbors, label):
     # value_counts() will return in descending count by default
     nn = neighbors[label].value_counts()
     best_neighbor = nn.index[0]
     second_neighbor = None
-    k = len(neighbors)
 
     # assign second neighbor's class, if it exists
     if (len(nn.index) > 1):
@@ -74,6 +74,22 @@ def majority_vote(neighbors, label):
     else:
         return best_neighbor
 
+#  determines which class is the majority among the picked neighbors
+#  allows ties and just picks first option
+#
+# arguments
+#   - neighbors: k-neighbors, # passed in determined by caller
+#   - label: class label
+#
+# returns
+#   - predicted class
+def majority_vote(neighbors, label):
+    # value_counts() will return in descending count by default
+    nn = neighbors[label].value_counts()
+    best_neighbor = nn.index[0]
+
+    return best_neighbor
+
 # main entry point for calculating k-nearest neighbor
 #
 # arguments
@@ -83,7 +99,7 @@ def majority_vote(neighbors, label):
 #   - k: number of neighbors we will select
 #
 # returns
-#   - modified dataframe
+#   - none
 def find_knn(train, test, label, k):
     trains = pd.concat(train)
     incorrect = 0
@@ -92,12 +108,13 @@ def find_knn(train, test, label, k):
 
     for _, row in test.iterrows():
         table = build_distance_table(trains.drop(columns = label), row.drop(labels = label))
+
+        # merge back to ensure the table has both the class labels and dist column together
         table_sorted = table.merge(trains).sort_values(by = 'dist') 
         prediction = majority_vote(table_sorted[0:k], label)
+        print(type(table_sorted))
 
-        if prediction == None:
-            tied += 1
-        elif prediction == row[label]:
+        if prediction == row[label]:
             correct += 1
         else:
             incorrect += 1
@@ -110,3 +127,74 @@ def find_knn(train, test, label, k):
     print('# correct:\t', correct)
     print('# incorrect:\t', incorrect)
     print('# tied:\t\t', tied)
+
+# condensed k-nearest neighbor
+# example set begins as empty and is added to iteratively
+#       initialize set Z = { empty }, is subset of X
+#           for every point random px in X:
+#               find point in Z that is minimal distance to px
+#               if classes do not agree, add px to Z
+#
+#   when Z is empty, add first point to Z and let it be misclassified
+#   repeat over X several times until Z does not change
+#
+# arguments
+#   - training: array of dataframes representing our current 4-set of folds
+#   - test: whichever fold or tuning set we're going to predict
+#   - label: class label
+#   - k: number of neighbors we will select
+#
+# returns
+#   - condensed training set
+def condensed_knn(train, test, label, k):
+    trains = pd.concat(train)
+    z = pd.DataFrame()
+    rounds = 5
+
+    for i in range(rounds):
+        l = len(z)
+        z = condense_helper(trains, z, label)
+        
+        # z is still changing, continue
+        if(len(z) > l):
+            continue
+    
+    print(z)
+
+# wrapper for inner loop to create Z in cnn
+# arguments
+#   - training
+#   - z
+def condense_helper(trains, z, label):
+    for _, row in trains.sample(frac = 1).iterrows():
+        if (len(z) == 0):
+            z = z.append(row)
+        else:
+            table = build_distance_table(z.drop(columns = label), row.drop(labels = label))
+            trainss = trains.loc[table.index]
+            table_sorted = table.merge(trainss).sort_values(by = 'dist')
+            prediction = majority_vote(table_sorted.head(1), label)
+
+            if (prediction == row[label]):
+                pass
+            else:
+                z = z.append(row)
+    return z
+
+# edited k-nearest neighbor, begins with complete set of X examples
+# removing examples can improve accuracy
+#
+# arguments
+#   - training: array of dataframes representing our current 4-set of folds
+#   - test: whichever fold or tuning set we're going to predict
+#   - label: class label
+#   - k: number of neighbors we will select
+#
+# returns
+#   - modified dataframe
+def edited_knn(train, test, label, k):
+    trains = pd.concat(train)
+
+    for _, row in trains.iterrows():
+        # do stuff
+        pass
