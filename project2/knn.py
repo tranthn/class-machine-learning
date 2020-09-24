@@ -112,7 +112,6 @@ def find_knn(train, test, label, k):
         # merge back to ensure the table has both the class labels and dist column together
         table_sorted = table.merge(trains).sort_values(by = 'dist') 
         prediction = majority_vote(table_sorted[0:k], label)
-        print(type(table_sorted))
 
         if prediction == row[label]:
             correct += 1
@@ -159,7 +158,7 @@ def condensed_knn(train, test, label, k):
         if(len(z) > l):
             continue
     
-    print(z)
+    return z
 
 # wrapper for inner loop to create Z in cnn
 # arguments
@@ -171,8 +170,8 @@ def condense_helper(trains, z, label):
             z = z.append(row)
         else:
             table = build_distance_table(z.drop(columns = label), row.drop(labels = label))
-            trainss = trains.loc[table.index]
-            table_sorted = table.merge(trainss).sort_values(by = 'dist')
+            train_subset = trains.loc[table.index]
+            table_sorted = table.merge(train_subset).sort_values(by = 'dist')
             prediction = majority_vote(table_sorted.head(1), label)
 
             if (prediction == row[label]):
@@ -181,8 +180,35 @@ def condense_helper(trains, z, label):
                 z = z.append(row)
     return z
 
+# wrapper for inner loop to create Z in edited nearest neighbor
+# arguments
+#   - training
+#   - z
+def edit_helper(trains, z, label):
+    print('edit helper\n', z)
+    for _, row in trains.sample(frac = 1).iterrows():
+        z_x = z.drop(_)
+        table = build_distance_table(z_x.drop(columns = label), row.drop(labels = label))
+        train_subset = trains.loc[table.index]
+        table_sorted = table.merge(train_subset).sort_values(by = 'dist')
+        prediction = majority_vote(table_sorted.head(1), label)
+
+        if (prediction != row[label]):
+            pass
+        else:
+            z = z.drop(_)
+
+    return z
+
 # edited k-nearest neighbor, begins with complete set of X examples
 # removing examples can improve accuracy
+#
+# start with full training set X
+# randomly pick 1 point from X
+# classify it against the remainder of X
+#   - incorrect: remove from training set
+#   - correct: keep in set
+# at the end, we'll have a modified X' that is a subset of X, which we'll use for training
 #
 # arguments
 #   - training: array of dataframes representing our current 4-set of folds
@@ -194,7 +220,6 @@ def condense_helper(trains, z, label):
 #   - modified dataframe
 def edited_knn(train, test, label, k):
     trains = pd.concat(train)
-
-    for _, row in trains.iterrows():
-        # do stuff
-        pass
+    z = trains.copy()
+    z = edit_helper(trains, z, label)
+    return z
