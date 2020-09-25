@@ -41,9 +41,9 @@ def euclidean_dist(v1, v2):
 # returns
 #   - modified dataframe
 def build_distance_table(training, point):
-    trains_dist = training.copy()
-    trains_dist['dist'] = training.apply(lambda x : euclidean_dist(point, x), axis = 1)
-    return trains_dist
+    train_dist = training.copy()
+    train_dist['dist'] = training.apply(lambda x : euclidean_dist(point, x), axis = 1)
+    return train_dist
 
 #  determines which class is the majority among the picked neighbors
 #  returns None is there is a tie between top 2 class predictions
@@ -100,17 +100,16 @@ def majority_vote(neighbors, label):
 #
 # returns
 #   - none
-def find_knn(train, test, label, k):
-    trains = pd.concat(train)
+def knn_classifier(train, test, label, k):
     incorrect = 0
     correct = 0
     tied = 0
 
     for _, row in test.iterrows():
-        table = build_distance_table(trains.drop(columns = label), row.drop(labels = label))
+        table = build_distance_table(train.drop(columns = label), row.drop(labels = label))
 
         # merge back to ensure the table has both the class labels and dist column together
-        table_sorted = table.merge(trains).sort_values(by = 'dist') 
+        table_sorted = table.merge(train).sort_values(by = 'dist') 
         prediction = majority_vote(table_sorted[0:k], label)
 
         if prediction == row[label]:
@@ -145,14 +144,13 @@ def find_knn(train, test, label, k):
 #
 # returns
 #   - condensed training set
-def condensed_knn(train, test, label, k):
-    trains = pd.concat(train)
+def condensed_knn(train, test, label):
     z = pd.DataFrame()
     rounds = 5
 
     for i in range(rounds):
         l = len(z)
-        z = condense_helper(trains, z, label)
+        z = condense_helper(train, z, label)
         
         # z is still changing, continue
         if(len(z) > l):
@@ -164,13 +162,13 @@ def condensed_knn(train, test, label, k):
 # arguments
 #   - training
 #   - z
-def condense_helper(trains, z, label):
-    for _, row in trains.sample(frac = 1).iterrows():
+def condense_helper(train, z, label):
+    for _, row in train.sample(frac = 1).iterrows():
         if (len(z) == 0):
             z = z.append(row)
         else:
             table = build_distance_table(z.drop(columns = label), row.drop(labels = label))
-            train_subset = trains.loc[table.index]
+            train_subset = train.loc[table.index]
             table_sorted = table.merge(train_subset).sort_values(by = 'dist')
             prediction = majority_vote(table_sorted.head(1), label)
 
@@ -184,12 +182,11 @@ def condense_helper(trains, z, label):
 # arguments
 #   - training
 #   - z
-def edit_helper(trains, z, label):
-    print('edit helper\n', z)
-    for _, row in trains.sample(frac = 1).iterrows():
+def edit_helper(train, z, label):
+    for _, row in train.sample(frac = 1).iterrows():
         z_x = z.drop(_)
         table = build_distance_table(z_x.drop(columns = label), row.drop(labels = label))
-        train_subset = trains.loc[table.index]
+        train_subset = train.loc[table.index]
         table_sorted = table.merge(train_subset).sort_values(by = 'dist')
         prediction = majority_vote(table_sorted.head(1), label)
 
@@ -218,8 +215,7 @@ def edit_helper(trains, z, label):
 #
 # returns
 #   - modified dataframe
-def edited_knn(train, test, label, k):
-    trains = pd.concat(train)
-    z = trains.copy()
-    z = edit_helper(trains, z, label)
+def edited_knn(train, test, label):
+    z = train.copy()
+    z = edit_helper(train, z, label)
     return z

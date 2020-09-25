@@ -14,7 +14,21 @@ class_label = 'class'
 ## house data
 print('\n============== HOUSE DATA ============== ')
 data = dl.get_house_data()
-# print(data)
+folds = data['folds']
+tune = data['tune']
+test = data['folds'][0]
+train = data['folds'][1:]
+
+print('\n---- tuning data ----')
+trains = pd.concat(train)
+
+knn_model = knn.knn_classifier(trains, tune, class_label, k = 5)
+cnn = knn.condensed_knn(trains, tune, class_label)
+enn = knn.edited_knn(trains, tune, class_label)
+
+cnn_model = knn.knn_classifier(cnn, tune, class_label, k = 5)
+enn_model = knn.knn_classifier(enn, tune, class_label, k = 5)
+# knn_model = knn.knn_classifier(trains, test, class_label, k = 9)
 
 ########################################
 ## glass data
@@ -25,19 +39,40 @@ tune = data['tune']
 test = data['folds'][0]
 train = data['folds'][1:]
 
-print('\n-- tuning data --')
-knn_model = knn.find_knn(train, tune, class_label, k = 9)
-cnn = knn.condensed_knn(train, tune, class_label, k = 9)
-print('cnn', len(cnn))
-enn = knn.edited_knn(train, tune, class_label, k = 9)
-print('enn', len(enn))
+print('\n---- tuning data ----')
+trains = pd.concat(train)
 
-# print('\n-- testing data --')
-# knn_model = knn.find_knn(train, test, class_label, k = 9)
+knn_model = knn.knn_classifier(trains, tune, class_label, k = 9)
+cnn = knn.condensed_knn(trains, tune, class_label)
+enn = knn.edited_knn(trains, tune, class_label)
+
+cnn_model = knn.knn_classifier(cnn, tune, class_label, k = 7)
+enn_model = knn.knn_classifier(enn, tune, class_label, k = 7)
+
+# print('\n---- testing data ----')
+# knn_model = knn.knn_classifier(trains, test, class_label, k = 9)
 
 print('\n============== SEGMENTATION DATA ============== ')
 data = dl.get_segmentation_data()
-# print(data)
+class_label = 'CLASS'
+
+folds = data['folds']
+tune = data['tune']
+test = data['folds'][0]
+train = data['folds'][1:]
+
+print('\n---- tuning data ----')
+trains = pd.concat(train)
+
+knn_model = knn.knn_classifier(trains, tune, class_label, k = 11)
+cnn = knn.condensed_knn(trains, tune, class_label)
+enn = knn.edited_knn(trains, tune, class_label)
+
+cnn_model = knn.knn_classifier(cnn, tune, class_label, k = 11)
+enn_model = knn.knn_classifier(enn, tune, class_label, k = 11)
+
+# print('\n---- testing data ----')
+# knn_model = knn.knn_classifier(trains, test, class_label, k = 9)
 
 ################# regression data sets #################
 print('\n============== ABALONE DATA ============== ')
@@ -54,4 +89,3 @@ print('\n============== FOREST FIRES DATA ============== ')
 print('\n============== MACHINE DATA ============== ')
 # data = dl.get_machine_data()
 # print(data)
-

@@ -141,6 +141,7 @@ def get_house_data():
     housedf['class'] = housedf['class'].str.strip().replace('republican', '1')
     housedf['class'] = pd.to_numeric(housedf['class'])
 
+    housedf = pd.get_dummies(housedf, columns = bin_fields)
     data_sets = stratify_data(housedf, 'class')
     return data_sets
 
