@@ -11,16 +11,17 @@ import pandas as pd
 ### picking k
 # k = odd, for 2-class problem
 # k = not multiple of # classes
+#################################
 
 # calculates euclidean distance given 2 pandas dataframe rows
 #
 # arguments
-#   - v1: row vector representing a point
-#   - v2: row vector representing a point
+#   - v1: row vector representing an instance
+#   - v2: row vector representing an instance
 #
 # returns
 #   - unrounded euclidean distance
-def euclidean_dist(v1, v2):
+def euclidean_dist(v1, v2, squared = False):
     square = lambda x : x ** 2
 
     # get array representing pairwise subtraction of vector elements
@@ -28,9 +29,27 @@ def euclidean_dist(v1, v2):
 
     # apply our lambda fn to square all values
     arr = np.array([square(vi) for vi in v])
-    dist = math.sqrt(np.sum(arr))
+    dist = np.sum(arr)
+
+    if not squared:
+        dist = math.sqrt(np.sum(arr))
 
     return dist
+
+# calculate gaussian radial basis function
+#
+# K(x, x') = exp( - [ |x - x'|^2] /[2sigma^2] ) 
+#
+# arguments
+#   - v1: row vector representing an instance
+#   - v2: row vector representing an instance
+#
+# returns
+#   - XYZ
+def rbf(v1, v2, sigma):
+    dist = euclidean_dist(v1, v2, squared = True)
+    gamma = 1 / (2 * (sigma ** sigma))
+    k = dist * gamma
 
 #  modifies dataframe to add calculated distance column w.r.t target point
 #
@@ -40,9 +59,9 @@ def euclidean_dist(v1, v2):
 #
 # returns
 #   - modified dataframe
-def build_distance_table(training, point):
-    train_dist = training.copy()
-    train_dist['dist'] = training.apply(lambda x : euclidean_dist(point, x), axis = 1)
+def build_distance_table(train, point):
+    train_dist = train.copy()
+    train_dist['dist'] = train.apply(lambda x : euclidean_dist(point, x), axis = 1)
     return train_dist
 
 #  determines which class is the majority among the picked neighbors
@@ -110,7 +129,7 @@ def knn_classifier(train, test, label, k):
 
         # merge back to ensure the table has both the class labels and dist column together
         table_sorted = table.merge(train).sort_values(by = 'dist') 
-        prediction = majority_vote(table_sorted[0:k], label)
+        prediction = majority_vote(table_sorted.head(k), label)
 
         if prediction == row[label]:
             correct += 1
@@ -199,23 +218,32 @@ def edit_helper(train, z, label):
 
 # edited k-nearest neighbor, begins with complete set of X examples
 # removing examples can improve accuracy
-#
+
 # start with full training set X
 # randomly pick 1 point from X
 # classify it against the remainder of X
 #   - incorrect: remove from training set
 #   - correct: keep in set
 # at the end, we'll have a modified X' that is a subset of X, which we'll use for training
-#
+
 # arguments
 #   - training: array of dataframes representing our current 4-set of folds
 #   - test: whichever fold or tuning set we're going to predict
 #   - label: class label
 #   - k: number of neighbors we will select
-#
+
 # returns
 #   - modified dataframe
 def edited_knn(train, test, label):
     z = train.copy()
     z = edit_helper(train, z, label)
     return z
+
+def knn_regressor(train, test, label, sigma):
+    train_dist = train.copy()
+    point = test.head(1).drop(columns = label)
+    x = train_dist.head(1).drop(columns = label)
+
+    print(point)
+    print(x)
+    rbf(point, x, sigma)

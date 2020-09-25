@@ -126,7 +126,6 @@ def get_glass_data():
 ## attribute values are either multi-categorical or binary (assuming no missing)
 ## ? = abstain, not missing values
 ## class: 2 options
-## [TODO] NEEDS TO BE DUMMIED
 def get_house_data():
     house_fields = ['class', 'handicapped-infants', 'water-project-cost-sharing', 'adoption-of-the-budget-resolution',
                     'physician-fee-freeze', 'el-salvador-aid', 'religious-groups-in-schools', 'anti-satellite-test-ban',
@@ -160,6 +159,8 @@ def get_segmentation_data():
 def get_abalone_data():
     abalone_fields = ['sex', 'length', 'diameter', 'height', 'whole_weight', 'shucked_weight', 'viscera_weight', 'shell_weight', 'rings']
     abalone_df = read_csv(abalone, abalone_fields)
+    
+    abalone_df = pd.get_dummies(abalone_df, columns = ['sex'])
     data_sets = split_tuning_data(abalone_df)
     return data_sets
 

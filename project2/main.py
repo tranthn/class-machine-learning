@@ -10,6 +10,7 @@ import knn
 # to make it easier if code needs to handle different class column names
 class_label = 'class'
 
+"""
 ########################################
 ## house data
 print('\n============== HOUSE DATA ============== ')
@@ -73,14 +74,16 @@ enn_model = knn.knn_classifier(enn, tune, class_label, k = 11)
 
 # print('\n---- testing data ----')
 # knn_model = knn.knn_classifier(trains, test, class_label, k = 9)
-
+"""
 ################# regression data sets #################
 print('\n============== ABALONE DATA ============== ')
 data = dl.get_abalone_data()
+print(data['test'].dtypes)
 test = data['test']
 
 fold = dl.sample_regression_data(test, 'rings', 0)
 fold = dl.sample_regression_data(test, 'rings', 1)
+knn.knn_regressor(fold, test, label = 'rings', sigma = 1)
 
 print('\n============== FOREST FIRES DATA ============== ')
 # data = dl.get_forest_fires_data()
