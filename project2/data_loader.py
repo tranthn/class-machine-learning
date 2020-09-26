@@ -171,7 +171,8 @@ def get_machine_data():
     machine_fields = ['vendor_name', 'model_name', 'myct', 'mmin', 'mmax', 'cach', 'chmin', 'chmax', 'prp', 'erp']
     bin_fields = machine_fields[:-1]
     machine_df = read_csv(machine, machine_fields)
-    machine_df2 = pd.get_dummies(machine_df)
+    machine_df = machine_df.drop(columns = ['erp', 'model_name'])
+    machine_df2 = pd.get_dummies(machine_df, columns = ['vendor_name'])
     data_sets = split_tuning_data(machine_df2)
     return data_sets
 

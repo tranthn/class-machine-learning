@@ -36,7 +36,7 @@ def euclidean_dist(v1, v2, squared = False):
 
     return dist
 
-# calculate gaussian radial basis function
+# calculate radial basis function kernel
 #
 # K(x, x') = exp( - [ |x - x'|^2] /[2sigma^2] ) 
 #
@@ -49,7 +49,9 @@ def euclidean_dist(v1, v2, squared = False):
 def rbf(v1, v2, sigma):
     dist = euclidean_dist(v1, v2, squared = True)
     gamma = 1 / (2 * (sigma ** sigma))
-    k = dist * gamma
+    k = -dist * gamma
+    k2 = np.exp(k)
+    return k2
 
 #  modifies dataframe to add calculated distance column w.r.t target point
 #
@@ -63,35 +65,6 @@ def build_distance_table(train, point):
     train_dist = train.copy()
     train_dist['dist'] = train.apply(lambda x : euclidean_dist(point, x), axis = 1)
     return train_dist
-
-#  determines which class is the majority among the picked neighbors
-#  returns None is there is a tie between top 2 class predictions
-#
-# arguments
-#   - neighbors: k-neighbors, # passed in determined by caller
-#   - label: class label
-#
-# returns
-#   - predicted class
-def majority_vote_with_ties(neighbors, label):
-    # value_counts() will return in descending count by default
-    nn = neighbors[label].value_counts()
-    best_neighbor = nn.index[0]
-    second_neighbor = None
-
-    # assign second neighbor's class, if it exists
-    if (len(nn.index) > 1):
-        second_neighbor = nn.index[1]
-
-    if second_neighbor != None:
-        # second neighbor exists, but they don't have same count
-        if nn.values[0] != nn.values[1]:
-            return best_neighbor
-        # second neighbor exists, tie condition
-        else:
-            return None
-    else:
-        return best_neighbor
 
 #  determines which class is the majority among the picked neighbors
 #  allows ties and just picks first option
@@ -109,10 +82,28 @@ def majority_vote(neighbors, label):
 
     return best_neighbor
 
+# helper that builds table and finds neighbors for given training set x query point
+#
+# arguments
+#   - training: dataframe of training data (4-folds in our case)
+#   - query: whichever fold or tuning set we're going to predict
+#   - label: class label
+#   - k: number of neighbors we will select
+#
+# returns
+#   - k nearest neighbors
+def _find_knn(train, query, label, k):
+    table = build_distance_table(train.drop(columns = label), query.drop(labels = label))
+
+    # merge back to ensure the table has both the class labels and dist column together
+    table_sorted = table.merge(train).sort_values(by = 'dist')
+    neighbors = table_sorted.head(k)
+    return neighbors
+
 # main entry point for calculating k-nearest neighbor
 #
 # arguments
-#   - training: array of dataframes representing our current 4-set of folds
+#   - training: dataframe of training data (4-folds in our case)
 #   - test: whichever fold or tuning set we're going to predict
 #   - label: class label
 #   - k: number of neighbors we will select
@@ -125,11 +116,8 @@ def knn_classifier(train, test, label, k):
     tied = 0
 
     for _, row in test.iterrows():
-        table = build_distance_table(train.drop(columns = label), row.drop(labels = label))
-
-        # merge back to ensure the table has both the class labels and dist column together
-        table_sorted = table.merge(train).sort_values(by = 'dist') 
-        prediction = majority_vote(table_sorted.head(k), label)
+        neighbors = _find_knn(train, row, label, k)
+        prediction = majority_vote(neighbors, label)
 
         if prediction == row[label]:
             correct += 1
@@ -156,7 +144,7 @@ def knn_classifier(train, test, label, k):
 #   repeat over X several times until Z does not change
 #
 # arguments
-#   - training: array of dataframes representing our current 4-set of folds
+#   - training: dataframe of training data (4-folds in our case)
 #   - test: whichever fold or tuning set we're going to predict
 #   - label: class label
 #   - k: number of neighbors we will select
@@ -165,11 +153,11 @@ def knn_classifier(train, test, label, k):
 #   - condensed training set
 def condensed_knn(train, test, label):
     z = pd.DataFrame()
-    rounds = 5
+    rounds = 1
 
     for i in range(rounds):
         l = len(z)
-        z = condense_helper(train, z, label)
+        z = _condense_helper(train, z, label)
         
         # z is still changing, continue
         if(len(z) > l):
@@ -181,7 +169,7 @@ def condensed_knn(train, test, label):
 # arguments
 #   - training
 #   - z
-def condense_helper(train, z, label):
+def _condense_helper(train, z, label):
     for _, row in train.sample(frac = 1).iterrows():
         if (len(z) == 0):
             z = z.append(row)
@@ -201,7 +189,7 @@ def condense_helper(train, z, label):
 # arguments
 #   - training
 #   - z
-def edit_helper(train, z, label):
+def _edit_helper(train, z, label):
     for _, row in train.sample(frac = 1).iterrows():
         z_x = z.drop(_)
         table = build_distance_table(z_x.drop(columns = label), row.drop(labels = label))
@@ -227,7 +215,7 @@ def edit_helper(train, z, label):
 # at the end, we'll have a modified X' that is a subset of X, which we'll use for training
 
 # arguments
-#   - training: array of dataframes representing our current 4-set of folds
+#   - training: dataframe of training data (4-folds in our case)
 #   - test: whichever fold or tuning set we're going to predict
 #   - label: class label
 #   - k: number of neighbors we will select
@@ -236,14 +224,10 @@ def edit_helper(train, z, label):
 #   - modified dataframe
 def edited_knn(train, test, label):
     z = train.copy()
-    z = edit_helper(train, z, label)
+    z = _edit_helper(train, z, label)
     return z
 
-def knn_regressor(train, test, label, sigma):
+def knn_regressor(train, test, label, k, sigma):
     train_dist = train.copy()
-    point = test.head(1).drop(columns = label)
-    x = train_dist.head(1).drop(columns = label)
-
-    print(point)
-    print(x)
-    rbf(point, x, sigma)
+    point = test.head(1)
+    neighbors = _find_knn(train, point, label, k)
