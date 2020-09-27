@@ -85,8 +85,8 @@ def majority_vote(neighbors, label):
 # helper that builds table and finds neighbors for given training set x query point
 #
 # arguments
-#   - training: dataframe of training data (4-folds in our case)
-#   - query: whichever fold or tuning set we're going to predict
+#   - training: dataframe of training data (4 folds for our 5-fold case)
+#   - query: holdout fold or tuning set we're going to predict
 #   - label: class label
 #   - k: number of neighbors we will select
 #
@@ -100,11 +100,11 @@ def _find_knn(train, query, label, k):
     neighbors = table_sorted.head(k)
     return neighbors
 
-# main entry point for calculating k-nearest neighbor
+# k-nearest neighbor classifier, prints summary of prediction accuracy
 #
 # arguments
-#   - training: dataframe of training data (4-folds in our case)
-#   - test: whichever fold or tuning set we're going to predict
+#   - training: dataframe of training data (4 folds for our 5-fold case)
+#   - test: holdout fold or tuning set we're going to predict
 #   - label: class label
 #   - k: number of neighbors we will select
 #
@@ -144,10 +144,9 @@ def knn_classifier(train, test, label, k):
 #   repeat over X several times until Z does not change
 #
 # arguments
-#   - training: dataframe of training data (4-folds in our case)
+#   - training: dataframe of training data (4 folds for our 5-fold case)
 #   - test: whichever fold or tuning set we're going to predict
 #   - label: class label
-#   - k: number of neighbors we will select
 #
 # returns
 #   - condensed training set
@@ -169,6 +168,9 @@ def condensed_knn(train, test, label):
 # arguments
 #   - training
 #   - z
+#
+# returns
+#   - z: modified (growing) training set
 def _condense_helper(train, z, label):
     for _, row in train.sample(frac = 1).iterrows():
         if (len(z) == 0):
@@ -189,6 +191,9 @@ def _condense_helper(train, z, label):
 # arguments
 #   - training
 #   - z
+#
+# returns
+#   - z: modified (reduced) training set
 def _edit_helper(train, z, label):
     for _, row in train.sample(frac = 1).iterrows():
         z_x = z.drop(_)
@@ -205,21 +210,20 @@ def _edit_helper(train, z, label):
     return z
 
 # edited k-nearest neighbor, begins with complete set of X examples
-# removing examples can improve accuracy
-
+#
 # start with full training set X
 # randomly pick 1 point from X
 # classify it against the remainder of X
 #   - incorrect: remove from training set
 #   - correct: keep in set
 # at the end, we'll have a modified X' that is a subset of X, which we'll use for training
-
+#
 # arguments
-#   - training: dataframe of training data (4-folds in our case)
+#   - training: dataframe of training data (4 folds for our 5-fold case)
 #   - test: whichever fold or tuning set we're going to predict
 #   - label: class label
 #   - k: number of neighbors we will select
-
+#
 # returns
 #   - modified dataframe
 def edited_knn(train, test, label):
@@ -227,7 +231,34 @@ def edited_knn(train, test, label):
     z = _edit_helper(train, z, label)
     return z
 
+# k-nearest neighbor regressor, prints parameters and mean-squared error (MSE)
+#
+# arguments
+#   - training: dataframe of training data (4 folds for our 5-fold case)
+#   - test: holdout fold or tuning set we're going to predict
+#   - label: class label
+#   - k: number of neighbors we will select
+#
+# returns
+#   - None
 def knn_regressor(train, test, label, k, sigma):
     train_dist = train.copy()
-    point = test.head(1)
-    neighbors = _find_knn(train, point, label, k)
+
+    acc = 0
+    actual = []
+    predicted = []
+
+    for _, query in test.iterrows():
+        acc = 0
+        neighbors = _find_knn(train, query, label, k)
+        for _, n in neighbors.iterrows():
+            ki = rbf(n.drop(labels = ['dist']), query, sigma)
+            acc += ki * n[label]
+
+        actual.append(query[label])
+        predicted.append(acc)
+
+    mse = np.mean((np.subtract(actual, predicted)) ** 2)
+    print('k\t', k)
+    print('sigma\t', sigma)
+    print('MSE\t', mse)

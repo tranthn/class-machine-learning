@@ -91,8 +91,8 @@ print('\n============== FOREST FIRES DATA ============== ')
 print('\n============== MACHINE DATA ============== ')
 data = dl.get_machine_data()
 test = data['test']
-# print(test.dtypes)
 # print(data)
 
 fold = dl.sample_regression_data(test, 'prp', 1)
-# knn.knn_regressor(fold, test, label = 'prp', k = 10, sigma = 0.5)
+print('---')
+knn.knn_regressor(fold, test[0:5], label = 'prp', k = 20, sigma = 5.3)
