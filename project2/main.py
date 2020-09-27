@@ -9,71 +9,57 @@ import knn
 # all data sets used here will be "class", but is externalized
 # to make it easier if code needs to handle different class column names
 class_label = 'class'
-"""
+
+# helper to reduce code duplication for running knn
+# optional exeuction of condensed or edit methods
+def classification_helper(data, k, label = None, tuning = True, 
+                            enn = False, cnn = False):
+
+    if label == None:
+        label = class_label
+
+    f = 5 # fold-value
+    tune = data['tune']
+
+    for i in range(f):
+        all_folds = data['folds'].copy()
+        holdout = all_folds[i]
+        folds = all_folds
+        folds.pop(i)
+        training = pd.concat(folds)
+
+        # allow parameterized run with tuning or testing sets
+        if (tuning):
+            test = tune
+        else:
+            test = holdout
+
+        # running classifer knn algorithms, edited and condensed methods are optional
+        knn_model = knn.knn_classifier(training, test, label, k)
+
+        if (enn):            
+            enn = knn.edited_knn(training, test, label)
+            enn_model = knn.knn_classifier(enn, test, label, k)
+
+        if (cnn):
+            cnn_model = knn.knn_classifier(cnn, test, label, k)
+            cnn = knn.condensed_knn(training, test, label)
+
 ########################################
-## house data
 print('\n============== HOUSE DATA ============== ')
 data = dl.get_house_data()
-folds = data['folds']
-tune = data['tune']
-test = data['folds'][0]
-train = data['folds'][1:]
-
-print('\n---- tuning data ----')
-trains = pd.concat(train)
-
-knn_model = knn.knn_classifier(trains, tune, class_label, k = 5)
-cnn = knn.condensed_knn(trains, tune, class_label)
-enn = knn.edited_knn(trains, tune, class_label)
-
-cnn_model = knn.knn_classifier(cnn, tune, class_label, k = 5)
-enn_model = knn.knn_classifier(enn, tune, class_label, k = 5)
-# knn_model = knn.knn_classifier(trains, test, class_label, k = 9)
+classification_helper(data = data, k = 5, tuning = True)
 
 ########################################
-## glass data
 print('\n============== GLASS DATA ============== ')
 data = dl.get_glass_data()
-folds = data['folds']
-tune = data['tune']
-test = data['folds'][0]
-train = data['folds'][1:]
+classification_helper(data = data, k = 5)
 
-print('\n---- tuning data ----')
-trains = pd.concat(train)
-
-knn_model = knn.knn_classifier(trains, tune, class_label, k = 9)
-cnn = knn.condensed_knn(trains, tune, class_label)
-enn = knn.edited_knn(trains, tune, class_label)
-
-cnn_model = knn.knn_classifier(cnn, tune, class_label, k = 7)
-enn_model = knn.knn_classifier(enn, tune, class_label, k = 7)
-
-# print('\n---- testing data ----')
-# knn_model = knn.knn_classifier(trains, test, class_label, k = 9)
-
+########################################
 print('\n============== SEGMENTATION DATA ============== ')
 data = dl.get_segmentation_data()
 class_label = 'CLASS'
-
-folds = data['folds']
-tune = data['tune']
-test = data['folds'][0]
-train = data['folds'][1:]
-
-print('\n---- tuning data ----')
-trains = pd.concat(train)
-
-knn_model = knn.knn_classifier(trains, tune, class_label, k = 11)
-cnn = knn.condensed_knn(trains, tune, class_label)
-enn = knn.edited_knn(trains, tune, class_label)
-
-cnn_model = knn.knn_classifier(cnn, tune, class_label, k = 11)
-enn_model = knn.knn_classifier(enn, tune, class_label, k = 11)
-
-# print('\n---- testing data ----')
-# knn_model = knn.knn_classifier(trains, test, class_label, k = 9)
-"""
+classification_helper(data = data, k = 5, label = class_label)
 
 ################# regression data sets #################
 print('\n============== ABALONE DATA ============== ')

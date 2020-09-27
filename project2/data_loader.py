@@ -116,7 +116,6 @@ def get_glass_data():
     bin_fields = glass_fields[1:-1]
     gdf = read_csv(glass, glass_fields)
     gdf2 = gdf.copy().astype({'class': object}).drop(columns = 'id')
-    # bin_continuous(gdf2, bin_fields)
 
     data_sets = stratify_data(gdf2, 'class')
 
