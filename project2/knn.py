@@ -71,7 +71,7 @@ def build_distance_table(train, point):
 #
 # arguments
 #   - neighbors: k-neighbors, # passed in determined by caller
-#   - label: class label
+#   - label: class or predicted column name
 #
 # returns
 #   - predicted class
@@ -87,7 +87,7 @@ def majority_vote(neighbors, label):
 # arguments
 #   - training: dataframe of training data (4 folds for our 5-fold case)
 #   - query: holdout fold or tuning set we're going to predict
-#   - label: class label
+#   - label: class or predicted column name
 #   - k: number of neighbors we will select
 #
 # returns
@@ -95,7 +95,7 @@ def majority_vote(neighbors, label):
 def _find_knn(train, query, label, k):
     table = build_distance_table(train.drop(columns = label), query.drop(labels = label))
 
-    # merge back to ensure the table has both the class labels and dist column together
+    # merge back to ensure the table has both the class or predicted column names and dist column together
     table_sorted = table.merge(train).sort_values(by = 'dist')
     neighbors = table_sorted.head(k)
     return neighbors
@@ -105,7 +105,7 @@ def _find_knn(train, query, label, k):
 # arguments
 #   - training: dataframe of training data (4 folds for our 5-fold case)
 #   - test: holdout fold or tuning set we're going to predict
-#   - label: class label
+#   - label: class or predicted column name
 #   - k: number of neighbors we will select
 #
 # returns
@@ -146,13 +146,13 @@ def knn_classifier(train, test, label, k):
 # arguments
 #   - training: dataframe of training data (4 folds for our 5-fold case)
 #   - test: whichever fold or tuning set we're going to predict
-#   - label: class label
-#
+#   - label: class or predicted column name
+#   - threshold: optional threshold for regression data
 # returns
 #   - condensed training set
-def condensed_knn(train, test, label):
+def condensed_knn(train, test, label, threshold = None):
     z = pd.DataFrame()
-    rounds = 1
+    rounds = 2
 
     for i in range(rounds):
         l = len(z)
@@ -168,10 +168,12 @@ def condensed_knn(train, test, label):
 # arguments
 #   - training
 #   - z
+#   - label: class or predicted column name
+#   - threshold: optional threshold for regression data
 #
 # returns
 #   - z: modified (growing) training set
-def _condense_helper(train, z, label):
+def _condense_helper(train, z, label, threshold = None):
     for _, row in train.sample(frac = 1).iterrows():
         if (len(z) == 0):
             z = z.append(row)
@@ -179,33 +181,51 @@ def _condense_helper(train, z, label):
             table = build_distance_table(z.drop(columns = label), row.drop(labels = label))
             train_subset = train.loc[table.index]
             table_sorted = table.merge(train_subset).sort_values(by = 'dist')
-            prediction = majority_vote(table_sorted.head(1), label)
+            prediction = table_sorted.head(1)[label].values
 
-            if (prediction == row[label]):
-                pass
-            else:
+            # classifier: add points that do not match target
+            if (prediction != row[label]):
                 z = z.append(row)
+            else:
+                pass
+            
+            # regressor: add points outside threshold for target
+            if (abs(prediction - row[label]) >= threshold):
+                z = z.append(row)
+            else:
+                pass
     return z
 
 # wrapper for inner loop to create Z in edited nearest neighbor
 # arguments
 #   - training
 #   - z
+#   - label: class or predicted column name
+#   - threshold: optional threshold for regression data
 #
 # returns
 #   - z: modified (reduced) training set
-def _edit_helper(train, z, label):
+def _edit_helper(train, z, label, threshold = None):
     for _, row in train.sample(frac = 1).iterrows():
         z_x = z.drop(_)
         table = build_distance_table(z_x.drop(columns = label), row.drop(labels = label))
         train_subset = train.loc[table.index]
         table_sorted = table.merge(train_subset).sort_values(by = 'dist')
-        prediction = majority_vote(table_sorted.head(1), label)
+        prediction = table_sorted.head(1)[label].values
 
-        if (prediction != row[label]):
-            pass
+        # classifier: drop points that match our target
+        if threshold == None:
+            if (prediction == row[label]):
+                z = z.drop(_)
+            else:
+                pass # keep
+        
+        # regressor: drop points outside threshold of target
         else:
-            z = z.drop(_)
+            if (abs(prediction - row[label] >= threshold)):
+                z = z.drop(_)
+            else:
+                pass # keep     
 
     return z
 
@@ -221,14 +241,14 @@ def _edit_helper(train, z, label):
 # arguments
 #   - training: dataframe of training data (4 folds for our 5-fold case)
 #   - test: whichever fold or tuning set we're going to predict
-#   - label: class label
-#   - k: number of neighbors we will select
+#   - label: class or predicted column name
+#   - threshold: threshold, only used for regression data
 #
 # returns
 #   - modified dataframe
-def edited_knn(train, test, label):
+def edited_knn(train, test, label, threshold = None):
     z = train.copy()
-    z = _edit_helper(train, z, label)
+    z = _edit_helper(train, z, label, threshold)
     return z
 
 # k-nearest neighbor regressor, prints parameters and mean-squared error (MSE)
@@ -236,8 +256,9 @@ def edited_knn(train, test, label):
 # arguments
 #   - training: dataframe of training data (4 folds for our 5-fold case)
 #   - test: holdout fold or tuning set we're going to predict
-#   - label: class label
+#   - label: class or predicted column name
 #   - k: number of neighbors we will select
+#   - sigma: binning size
 #
 # returns
 #   - None

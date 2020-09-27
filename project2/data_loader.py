@@ -62,7 +62,7 @@ def split_tuning_data(df):
     orig = df.copy()
     tune = df.sample(frac = 0.1, random_state=1)
     df = df.drop(tune.index)
-    return {'tune': tune, 'test': df, 'all': orig}
+    return {'tune': tune, 'training': df, 'all': orig}
 
 # will need to do stratification for the classfication data sets
 # this will stratify based on indices
@@ -97,7 +97,7 @@ def stratify_data(df, label):
         part = df.loc[part_idx, :]
         strats.append(part)
         df = df.drop(part_idx)
-    
+
     sets = { 'tune': tune, 'folds': strats }
 
     return sets
