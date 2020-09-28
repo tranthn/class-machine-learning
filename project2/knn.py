@@ -113,7 +113,6 @@ def _find_knn(train, query, label, k):
 def knn_classifier(train, test, label, k):
     incorrect = 0
     correct = 0
-    tied = 0
 
     for _, row in test.iterrows():
         neighbors = _find_knn(train, row, label, k)
@@ -124,14 +123,14 @@ def knn_classifier(train, test, label, k):
         else:
             incorrect += 1
         
-    total = incorrect + correct + tied
-
-    print('-------- KNN SUMMARY --------')
+    total = incorrect + correct
+    print('-- KNN CLASSIFIER SUMMARY --')
     print('k =', k)
     print('# total\t\t', total)
     print('# correct:\t', correct)
     print('# incorrect:\t', incorrect)
-    print('# tied:\t\t', tied)
+    return {'total': total, 'correct': correct, 'incorrect': incorrect}
+
 
 # condensed k-nearest neighbor
 # example set begins as empty and is added to iteratively
@@ -156,7 +155,7 @@ def condensed_knn(train, test, label, threshold = None):
 
     for i in range(rounds):
         l = len(z)
-        z = _condense_helper(train, z, label)
+        z = _condense_helper(train, z, label, threshold)
         
         # z is still changing, continue
         if(len(z) > l):
@@ -184,16 +183,18 @@ def _condense_helper(train, z, label, threshold = None):
             prediction = table_sorted.head(1)[label].values
 
             # classifier: add points that do not match target
-            if (prediction != row[label]):
-                z = z.append(row)
-            else:
-                pass
-            
+            if threshold == None:
+                if (prediction != row[label]):
+                    z = z.append(row)
+                else:
+                    pass
+
             # regressor: add points outside threshold for target
-            if (abs(prediction - row[label]) >= threshold):
-                z = z.append(row)
             else:
-                pass
+                if (abs(prediction - row[label]) >= threshold):
+                    z = z.append(row)
+                else:
+                    pass
     return z
 
 # wrapper for inner loop to create Z in edited nearest neighbor
@@ -280,6 +281,8 @@ def knn_regressor(train, test, label, k, sigma):
         predicted.append(acc)
 
     mse = np.mean((np.subtract(actual, predicted)) ** 2)
+    print('-- KNN REGRESSOR SUMMARY --')
     print('k\t', k)
     print('sigma\t', sigma)
     print('MSE\t', mse)
+    return(mse)
