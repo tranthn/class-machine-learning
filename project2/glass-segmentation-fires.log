@@ -1,0 +1,414 @@
+
+============== HOUSE DATA ============== 
+
+============== GLASS DATA ============== 
+
+======== F O L D #0 ========
+-- KNN CLASSIFIER SUMMARY --
+k = 11
+# total		 39
+# correct:	 27
+# incorrect:	 12
+
+edited knn
+-- KNN CLASSIFIER SUMMARY --
+k = 11
+# total		 39
+# correct:	 17
+# incorrect:	 22
+
+condensed knn
+-- KNN CLASSIFIER SUMMARY --
+k = 11
+# total		 39
+# correct:	 21
+# incorrect:	 18
+
+======== F O L D #1 ========
+-- KNN CLASSIFIER SUMMARY --
+k = 11
+# total		 38
+# correct:	 25
+# incorrect:	 13
+
+edited knn
+-- KNN CLASSIFIER SUMMARY --
+k = 11
+# total		 38
+# correct:	 18
+# incorrect:	 20
+
+condensed knn
+-- KNN CLASSIFIER SUMMARY --
+k = 11
+# total		 38
+# correct:	 20
+# incorrect:	 18
+
+======== F O L D #2 ========
+-- KNN CLASSIFIER SUMMARY --
+k = 11
+# total		 38
+# correct:	 22
+# incorrect:	 16
+
+edited knn
+-- KNN CLASSIFIER SUMMARY --
+k = 11
+# total		 38
+# correct:	 12
+# incorrect:	 26
+
+condensed knn
+-- KNN CLASSIFIER SUMMARY --
+k = 11
+# total		 38
+# correct:	 18
+# incorrect:	 20
+
+======== F O L D #3 ========
+-- KNN CLASSIFIER SUMMARY --
+k = 11
+# total		 39
+# correct:	 25
+# incorrect:	 14
+
+edited knn
+-- KNN CLASSIFIER SUMMARY --
+k = 11
+# total		 39
+# correct:	 15
+# incorrect:	 24
+
+condensed knn
+-- KNN CLASSIFIER SUMMARY --
+k = 11
+# total		 39
+# correct:	 19
+# incorrect:	 20
+
+======== F O L D #4 ========
+-- KNN CLASSIFIER SUMMARY --
+k = 11
+# total		 38
+# correct:	 23
+# incorrect:	 15
+
+edited knn
+-- KNN CLASSIFIER SUMMARY --
+k = 11
+# total		 38
+# correct:	 18
+# incorrect:	 20
+
+condensed knn
+-- KNN CLASSIFIER SUMMARY --
+k = 11
+# total		 38
+# correct:	 17
+# incorrect:	 21
+-------
+
+======== AVG. SUMMARY OF PERFORMANCE [KNN] ========
+fold #0, misclassified	31%
+fold #1, misclassified	34%
+fold #2, misclassified	42%
+fold #3, misclassified	36%
+fold #4, misclassified	39%
+------
+avg. % misclassified:	36%
+
+======== AVG. SUMMARY OF PERFORMANCE [ENN] ========
+fold #0, misclassified	56%
+fold #1, misclassified	53%
+fold #2, misclassified	68%
+fold #3, misclassified	62%
+fold #4, misclassified	53%
+------
+avg. % misclassified:	58%
+
+======== AVG. SUMMARY OF PERFORMANCE [CNN] ========
+fold #0, misclassified	46%
+fold #1, misclassified	47%
+fold #2, misclassified	53%
+fold #3, misclassified	51%
+fold #4, misclassified	55%
+------
+avg. % misclassified:	51%
+
+============== SEGMENTATION DATA ============== 
+
+======== F O L D #0 ========
+-- KNN CLASSIFIER SUMMARY --
+k = 13
+# total		 35
+# correct:	 25
+# incorrect:	 10
+
+edited knn
+-- KNN CLASSIFIER SUMMARY --
+k = 13
+# total		 35
+# correct:	 8
+# incorrect:	 27
+
+condensed knn
+-- KNN CLASSIFIER SUMMARY --
+k = 13
+# total		 35
+# correct:	 7
+# incorrect:	 28
+
+======== F O L D #1 ========
+-- KNN CLASSIFIER SUMMARY --
+k = 13
+# total		 42
+# correct:	 35
+# incorrect:	 7
+
+edited knn
+-- KNN CLASSIFIER SUMMARY --
+k = 13
+# total		 42
+# correct:	 15
+# incorrect:	 27
+
+condensed knn
+-- KNN CLASSIFIER SUMMARY --
+k = 13
+# total		 42
+# correct:	 18
+# incorrect:	 24
+
+======== F O L D #2 ========
+-- KNN CLASSIFIER SUMMARY --
+k = 13
+# total		 35
+# correct:	 27
+# incorrect:	 8
+
+edited knn
+-- KNN CLASSIFIER SUMMARY --
+k = 13
+# total		 35
+# correct:	 10
+# incorrect:	 25
+
+condensed knn
+-- KNN CLASSIFIER SUMMARY --
+k = 13
+# total		 35
+# correct:	 12
+# incorrect:	 23
+
+======== F O L D #3 ========
+-- KNN CLASSIFIER SUMMARY --
+k = 13
+# total		 42
+# correct:	 33
+# incorrect:	 9
+
+edited knn
+-- KNN CLASSIFIER SUMMARY --
+k = 13
+# total		 42
+# correct:	 11
+# incorrect:	 31
+
+condensed knn
+-- KNN CLASSIFIER SUMMARY --
+k = 13
+# total		 42
+# correct:	 15
+# incorrect:	 27
+
+======== F O L D #4 ========
+-- KNN CLASSIFIER SUMMARY --
+k = 13
+# total		 35
+# correct:	 25
+# incorrect:	 10
+
+edited knn
+-- KNN CLASSIFIER SUMMARY --
+k = 13
+# total		 35
+# correct:	 11
+# incorrect:	 24
+
+condensed knn
+-- KNN CLASSIFIER SUMMARY --
+k = 13
+# total		 35
+# correct:	 12
+# incorrect:	 23
+-------
+
+======== AVG. SUMMARY OF PERFORMANCE [KNN] ========
+fold #0, misclassified	29%
+fold #1, misclassified	17%
+fold #2, misclassified	23%
+fold #3, misclassified	21%
+fold #4, misclassified	29%
+------
+avg. % misclassified:	24%
+
+======== AVG. SUMMARY OF PERFORMANCE [ENN] ========
+fold #0, misclassified	77%
+fold #1, misclassified	64%
+fold #2, misclassified	71%
+fold #3, misclassified	74%
+fold #4, misclassified	69%
+------
+avg. % misclassified:	71%
+
+======== AVG. SUMMARY OF PERFORMANCE [CNN] ========
+fold #0, misclassified	80%
+fold #1, misclassified	57%
+fold #2, misclassified	66%
+fold #3, misclassified	64%
+fold #4, misclassified	66%
+------
+avg. % misclassified:	67%
+
+============== ABALONE DATA ============== 
+
+============== FOREST FIRE DATA ============== 
+
+T H R E S H O L D	 200
+---
+
+======== F O L D #0 ========
+knn regressor
+-- KNN REGRESSOR SUMMARY --
+k	 15
+sigma	 20
+MSE	 110569.2909268817
+
+edited knn
+knn regressor
+-- KNN REGRESSOR SUMMARY --
+k	 15
+sigma	 20
+MSE	 93639.9238397849
+
+condensed knn
+knn regressor
+-- KNN REGRESSOR SUMMARY --
+k	 15
+sigma	 20
+MSE	 2471075.4922118275
+
+======== F O L D #1 ========
+knn regressor
+-- KNN REGRESSOR SUMMARY --
+k	 15
+sigma	 20
+MSE	 91826.5100752688
+
+edited knn
+knn regressor
+-- KNN REGRESSOR SUMMARY --
+k	 15
+sigma	 20
+MSE	 132253.7360784946
+
+condensed knn
+knn regressor
+-- KNN REGRESSOR SUMMARY --
+k	 15
+sigma	 20
+MSE	 2278194.128879569
+
+======== F O L D #2 ========
+knn regressor
+-- KNN REGRESSOR SUMMARY --
+k	 15
+sigma	 20
+MSE	 55678.52063870968
+
+edited knn
+knn regressor
+-- KNN REGRESSOR SUMMARY --
+k	 15
+sigma	 20
+MSE	 56268.23999999999
+
+condensed knn
+knn regressor
+-- KNN REGRESSOR SUMMARY --
+k	 15
+sigma	 20
+MSE	 1993655.936151612
+
+======== F O L D #3 ========
+knn regressor
+-- KNN REGRESSOR SUMMARY --
+k	 15
+sigma	 20
+MSE	 79257.69939354839
+
+edited knn
+knn regressor
+-- KNN REGRESSOR SUMMARY --
+k	 15
+sigma	 20
+MSE	 110548.23062795699
+
+condensed knn
+knn regressor
+-- KNN REGRESSOR SUMMARY --
+k	 15
+sigma	 20
+MSE	 2878987.313011829
+
+======== F O L D #4 ========
+knn regressor
+-- KNN REGRESSOR SUMMARY --
+k	 15
+sigma	 20
+MSE	 50005.895160215056
+
+edited knn
+knn regressor
+-- KNN REGRESSOR SUMMARY --
+k	 15
+sigma	 20
+MSE	 49715.18721935483
+
+condensed knn
+knn regressor
+-- KNN REGRESSOR SUMMARY --
+k	 15
+sigma	 20
+MSE	 112017.87750107523
+----------
+
+======== AVG. SUMMARY OF PERFORMANCE [KNN] ========
+fold #0, MSE	1.11e+05
+fold #1, MSE	9.18e+04
+fold #2, MSE	5.57e+04
+fold #3, MSE	7.93e+04
+fold #4, MSE	5e+04
+------
+avg. MSE:	7.75e+04
+
+======== AVG. SUMMARY OF PERFORMANCE [ENN] ========
+fold #0, MSE	9.36e+04
+fold #1, MSE	1.32e+05
+fold #2, MSE	5.63e+04
+fold #3, MSE	1.11e+05
+fold #4, MSE	4.97e+04
+------
+avg. MSE:	8.85e+04
+
+======== AVG. SUMMARY OF PERFORMANCE [CNN] ========
+fold #0, MSE	2.47e+06
+fold #1, MSE	2.28e+06
+fold #2, MSE	1.99e+06
+fold #3, MSE	2.88e+06
+fold #4, MSE	1.12e+05
+------
+avg. MSE:	1.95e+06
+
+============== MACHINE DATA ============== 

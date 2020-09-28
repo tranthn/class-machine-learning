@@ -45,7 +45,7 @@ def euclidean_dist(v1, v2, squared = False):
 #   - v2: row vector representing an instance
 #
 # returns
-#   - XYZ
+#   - K value from kernel function
 def rbf(v1, v2, sigma):
     dist = euclidean_dist(v1, v2, squared = True)
     gamma = 1 / (2 * (sigma ** sigma))
@@ -265,6 +265,7 @@ def edited_knn(train, test, label, threshold = None):
 #   - None
 def knn_regressor(train, test, label, k, sigma):
     train_dist = train.copy()
+    print('knn regressor')
 
     acc = 0
     actual = []

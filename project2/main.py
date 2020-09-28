@@ -32,7 +32,7 @@ def printer_helper_regressor(perf, fold):
 
 # wrapper helpers to reduce code duplication for running knn
 # optional execution of condensed or edit methods
-def classification_helper(data, k, label = None, tuning = True, 
+def classification_helper(data, k, label = None, tuning = False, 
                             enn = False, cnn = False):
 
     if label == None:
@@ -87,7 +87,7 @@ def classification_helper(data, k, label = None, tuning = True,
     print_helper_classifier(cnn_perf, f)
 
 ## regression wrapper helper
-def regression_helper(data, k, sigma, label = None, tuning = True, 
+def regression_helper(data, k, sigma, label = None, tuning = False, 
                         enn = False, cnn = False, threshold = None):
 
     if label == None:
@@ -152,20 +152,17 @@ classification_helper(data = data, k = 11, tuning = False, enn = True, cnn = Tru
 ########################################
 print('\n============== SEGMENTATION DATA ============== ')
 data = dl.get_segmentation_data()
-# classification_helper(data = data, k = 13, label = 'CLASS', tuning = True, enn = True, cnn = True)
+classification_helper(data = data, k = 13, label = 'CLASS', tuning = False, enn = True, cnn = True)
 
 ################# regression data sets #################
 print('\n============== ABALONE DATA ============== ')
 data = dl.get_abalone_data()
-# regression_helper(data, k = 10, sigma = 2, label = 'rings', 
-#                 threshold = 1, enn = True, cnn = True)
+# regression_helper(data, k = 10, sigma = 2, tuning = True, label = 'rings', threshold = 1, enn = False, cnn = False)
 
 print('\n============== FOREST FIRE DATA ============== ')
 data = dl.get_forest_fires_data()
-# regression_helper(data, k = 20, sigma = 10, label = 'area', 
-#                 threshold = 200, enn = True, cnn = True)
+regression_helper(data, k = 15, sigma = 20, label = 'area', threshold = 200, enn = True, cnn = True)
 
 print('\n============== MACHINE DATA ============== ')
 data = dl.get_machine_data()
-regression_helper(data, k = 20, sigma = 5.3, label = 'prp', 
-                threshold = 90, enn = True, cnn = True)
+# regression_helper(data, k = 20, sigma = 5.3, label = 'prp', threshold = 90, enn = True, cnn = True)

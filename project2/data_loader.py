@@ -13,8 +13,8 @@ import pandas as pd
 # - one-hot encoding
 # - splitting data into train, tune, test sets
 
-glass = '../data/glass.data'
-house = '../data/house-votes-84.data'
+glass = './data/glass.data'
+house = './data/house-votes-84.data'
 abalone = './data/abalone.data'
 forestfires = './data/forestfires.data'
 machine = './data/machine.data'

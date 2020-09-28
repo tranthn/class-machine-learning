@@ -1,0 +1,67 @@
+============== HOUSE DATA ============== 
+
+============== GLASS DATA ============== 
+
+============== SEGMENTATION DATA ============== 
+
+============== ABALONE DATA ============== 
+
+T H R E S H O L D        1
+---
+
+======== F O L D #0 ========
+knn regressor
+-- KNN REGRESSOR SUMMARY --
+k        10
+sigma    2
+MSE      2793.646208696394
+
+======== F O L D #1 ========
+knn regressor
+-- KNN REGRESSOR SUMMARY --
+k        10
+sigma    2
+MSE      2845.330356241535
+
+======== F O L D #2 ========
+knn regressor
+-- KNN REGRESSOR SUMMARY --
+k        10
+sigma    2
+MSE      2874.989801017973
+
+======== F O L D #3 ========
+knn regressor
+-- KNN REGRESSOR SUMMARY --
+k        10
+sigma    2
+MSE      2883.0235974045468
+
+======== F O L D #4 ========
+knn regressor
+-- KNN REGRESSOR SUMMARY --
+k        10
+sigma    2
+MSE      2874.1956154773084
+----------
+
+======== AVG. SUMMARY OF PERFORMANCE [KNN] ========
+fold #0, MSE    2.79e+03
+fold #1, MSE    2.85e+03
+fold #2, MSE    2.87e+03
+fold #3, MSE    2.88e+03
+fold #4, MSE    2.87e+03
+------
+avg. MSE:       2.85e+03
+
+======== AVG. SUMMARY OF PERFORMANCE [ENN] ========
+------
+avg. MSE:       0
+
+======== AVG. SUMMARY OF PERFORMANCE [CNN] ========
+------
+avg. MSE:       0
+
+============== FOREST FIRE DATA ============== 
+
+============== MACHINE DATA ============== 
