@@ -142,24 +142,24 @@ def regression_helper(data, k, sigma, label = None, tuning = True,
 ########################################
 print('\n============== HOUSE DATA ============== ')
 data = dl.get_house_data()
-# classification_helper(data = data, k = 5, tuning = True, enn = True, cnn = True)
+# classification_helper(data = data, k = 5, tuning = False, enn = True, cnn = True)
 
 ########################################
 print('\n============== GLASS DATA ============== ')
 data = dl.get_glass_data()
-# classification_helper(data = data, k = 5)
+classification_helper(data = data, k = 11, tuning = False, enn = True, cnn = True)
 
 ########################################
 print('\n============== SEGMENTATION DATA ============== ')
 data = dl.get_segmentation_data()
-class_label = 'CLASS'
-# classification_helper(data = data, k = 5, label = class_label)
+# classification_helper(data = data, k = 13, label = 'CLASS', tuning = True, enn = True, cnn = True)
 
 ################# regression data sets #################
 print('\n============== ABALONE DATA ============== ')
 data = dl.get_abalone_data()
 # regression_helper(data, k = 10, sigma = 2, label = 'rings', 
 #                 threshold = 1, enn = True, cnn = True)
+
 print('\n============== FOREST FIRE DATA ============== ')
 data = dl.get_forest_fires_data()
 # regression_helper(data, k = 20, sigma = 10, label = 'area', 

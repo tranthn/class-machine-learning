@@ -158,7 +158,7 @@ def get_segmentation_data():
 def get_abalone_data():
     abalone_fields = ['sex', 'length', 'diameter', 'height', 'whole_weight', 'shucked_weight', 'viscera_weight', 'shell_weight', 'rings']
     abalone_df = read_csv(abalone, abalone_fields)
-    
+
     abalone_df = pd.get_dummies(abalone_df, columns = ['sex'])
     data_sets = split_tuning_data(abalone_df)
     return data_sets
@@ -179,5 +179,6 @@ def get_machine_data():
 ## regression predictor: area [of fire]
 def get_forest_fires_data():
     fire_df = read_csv_with_header(forestfires)
+    fire_df = pd.get_dummies(fire_df, columns = ['month', 'day'])
     data_sets = split_tuning_data(fire_df)
     return data_sets

@@ -151,7 +151,7 @@ def knn_classifier(train, test, label, k):
 #   - condensed training set
 def condensed_knn(train, test, label, threshold = None):
     z = pd.DataFrame()
-    rounds = 2
+    rounds = 3
 
     for i in range(rounds):
         l = len(z)
