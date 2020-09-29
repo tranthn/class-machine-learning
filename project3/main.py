@@ -99,16 +99,15 @@ def regression_helper(data, k, sigma, label = None, tuning = False,
     print('\n======== AVG. SUMMARY OF PERFORMANCE [KNN] ========')
     printer_helper_regressor(knn_perf, f)
 
-################ regression data sets ################
-print('\n============== HOUSE DATA ============== ')
-data = dl.get_house_data()
+################ classification data sets ################
+print('\n============== BREAST DATA ============== ')
+data = dl.get_breast_data()
 
-########################################
-print('\n============== GLASS DATA ============== ')
-data = dl.get_glass_data()
+print('\n============== CAR DATA ============== ')
+data = dl.get_car_data()
+print(data)
 
-########################################
-print('\n============== SEGMENTATION DATA ============== ')
+print('\n============ SEGMENTATION DATA ============ ')
 data = dl.get_segmentation_data()
 
 ################# regression data sets #################

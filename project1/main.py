@@ -6,11 +6,11 @@ import data_loader
 import winnow2 as win
 import bayes
 
-breast = './data/breast-cancer-wisconsin.data'
-glass = './data/glass.data'
+breast = '../data/breast-cancer-wisconsin.data'
+glass = '../data/glass.data'
 iris = './data/iris.data'
 soybean = './data/soybean-small.data'
-house = './data/house-votes-84.data'
+house = '../data/house-votes-84.data'
 
 # field name that maps to the class column for data
 # all data sets used here will be "class", but is externalized

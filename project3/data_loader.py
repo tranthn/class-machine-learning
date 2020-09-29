@@ -11,7 +11,7 @@ import pandas as pd
 # - data parsing
 # - splitting data into train, tune, test sets
 
-glass = '../data/glass.data'
+breast = '../data/breast-cancer-wisconsin.data'
 car = './data/car.data'
 segmentation = '../data/segmentation.data'
 abalone = '../data/abalone.data'
@@ -69,7 +69,7 @@ def stratify_data(df, label):
 
     ## split off tuning set first
     ## we won't keep groupby frame since its multi-leveled
-    ## we will grab its indices to reindex the original dataframe   
+    ## we will grab its indices to reindex the original dataframe
     tune_df = df.groupby(label).apply(lambda x: x.sample(frac = 0.1, random_state = 1))
     part_idx = tune_df.index.get_level_values(1)
     tune = df.loc[part_idx, :]
@@ -93,27 +93,34 @@ def sample_regression_data(df, sort_by, fold):
     df = df.sort_values(by = [sort_by])
     return df.iloc[fold::5]
 
-####################### classification (stratify) data sets #######################
-## attribute values need values binned into ranges (except id, class)
-## class: 6 options
-def get_glass_data():
-    glass_fields = ['id','ri','na','mg', 'al','si','k','ca','ba','fe','class']
-    bin_fields = glass_fields[1:-1]
-    gdf = read_csv(glass, glass_fields)
-    gdf2 = gdf.copy().astype({'class': object}).drop(columns = 'id')
+############### main ###############
+## each column has domain: 1-10, need to be binned (except sample-code-number, class)
+## missing: 16 rows - missing 1 column value for bare_nuclei
+## class:  2 options (2 = benign, 4 = malignant) - remap to 0 = benign, 1 malignant
+def get_breast_data():
+    breast_fields = ['sample-code-number','clump-thickness','uniformity-of-cell-size',
+                    'uniformity-of-cell-shape','marginal-adhesion','single-epithelial-cell-size',
+                    'bare-nuclei','bland-chromatin','normal-nucleoli','mitoses','class']
+    bin_fields = breast_fields[1:-1]
+    bdf = read_csv(breast, breast_fields)
+    bdf = bdf.replace({'class': {4: 1, 2: 0}})
+    bdf2 = bdf[bdf['bare-nuclei'] != '?']
+    bdf3 = bdf2.copy().astype({ 'bare-nuclei': int })
 
-    data_sets = stratify_data(gdf2, 'class')
-
+    # drop sample-code-number since it not needed for learning model
+    bdf4 = pd.get_dummies(bdf3).drop(columns = 'sample-code-number')
+    data_sets = split_tuning_data(bdf4)
     return data_sets
 
 ########################################s
+# all fields are categorical
+# class: 4 options
 def get_car_data():
-    car_fields = []
-    bin_fields = car_fields
+    car_fields = ['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety', 'class']
+    bin_fields = car_fields[:-1]
     cardf = read_csv(car, car_fields)
-
-    cardf = pd.get_dummies(cardf, columns = bin_fields)
     data_sets = stratify_data(cardf, 'class')
+
     return data_sets
 
 ########################################
