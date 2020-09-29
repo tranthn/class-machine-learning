@@ -9,16 +9,14 @@ import pandas as pd
 # convenience class that handles:
 # - data loading
 # - data parsing
-# - binning continuous data into discrete bins
-# - one-hot encoding
 # - splitting data into train, tune, test sets
 
 glass = '../data/glass.data'
-house = '../data/house-votes-84.data'
-abalone = '../data/abalone.data'
-forestfires = '../data/forestfires.data'
-machine = '../data/machine.data'
+car = './data/car.data'
 segmentation = '../data/segmentation.data'
+abalone = '../data/abalone.data'
+machine = '../data/machine.data'
+forestfires = '../data/forestfires.data'
 
 ## generic csv reader wrapper function
 def read_csv(file_path, fieldnames):
@@ -41,19 +39,6 @@ def read_csv_with_header(file_path):
         sys.exit('file read error: { }'.format(e))
 
     return df
-
-## data pre-processing
-## for multi-value categorical: one-hot coding to turn each potential category value to its own boolean column
-## only one of the category options will be "hot", i.e = 1, in a given row
-## for values with continuous ranges - bin them into ranges, then do one-hot coding
-def bin_continuous(df, bin_fields):
-    for f in bin_fields:
-        values = df[f]
-        m1 = min(values)
-        m2 = max(values)
-
-        arr = np.histogram_bin_edges(values, bins='auto')
-        df.loc[:, f] = pd.cut(x = values, bins = arr, include_lowest=True)
 
 ## split data into 3 sets:
 ##  - tune: 10% of original
@@ -121,26 +106,14 @@ def get_glass_data():
 
     return data_sets
 
-########################################
-## attribute values are either multi-categorical or binary (assuming no missing)
-## ? = abstain, not missing values
-## class: 2 options
-def get_house_data():
-    house_fields = ['class', 'handicapped-infants', 'water-project-cost-sharing', 'adoption-of-the-budget-resolution',
-                    'physician-fee-freeze', 'el-salvador-aid', 'religious-groups-in-schools', 'anti-satellite-test-ban',
-                    'aid-to-nicaraguan-contras', 'mx-missile', 'immigration', 'synfuels-corporation-cutback', 
-                    'education-spending', 'superfund-right-to-sue', 'crime', 'duty-free-exports', 'export-administration-act-south-africa']
-    bin_fields = house_fields[1:]
-    housedf = read_csv(house, house_fields)
+########################################s
+def get_car_data():
+    car_fields = []
+    bin_fields = car_fields
+    cardf = read_csv(car, car_fields)
 
-    # manually replace democrat and republican for boolean fields
-    # using default pandas replace wasn't working on object type
-    housedf['class'] = housedf['class'].str.strip().replace('democrat', '0')
-    housedf['class'] = housedf['class'].str.strip().replace('republican', '1')
-    housedf['class'] = pd.to_numeric(housedf['class'])
-
-    housedf = pd.get_dummies(housedf, columns = bin_fields)
-    data_sets = stratify_data(housedf, 'class')
+    cardf = pd.get_dummies(cardf, columns = bin_fields)
+    data_sets = stratify_data(cardf, 'class')
     return data_sets
 
 ########################################
