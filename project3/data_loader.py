@@ -95,7 +95,6 @@ def sample_regression_data(df, sort_by, fold):
 
 ############### main ###############
 ## each column has domain: 1-10, need to be binned (except sample-code-number, class)
-## missing: 16 rows - missing 1 column value for bare_nuclei
 ## class:  2 options (2 = benign, 4 = malignant) - remap to 0 = benign, 1 malignant
 def get_breast_data():
     breast_fields = ['sample-code-number','clump-thickness','uniformity-of-cell-size',
@@ -107,9 +106,9 @@ def get_breast_data():
     bdf2 = bdf[bdf['bare-nuclei'] != '?']
     bdf3 = bdf2.copy().astype({ 'bare-nuclei': int })
 
-    # drop sample-code-number since it not needed for learning model
+    # drop unique id: sample-code-number, not needed
     bdf4 = pd.get_dummies(bdf3).drop(columns = 'sample-code-number')
-    data_sets = split_tuning_data(bdf4)
+    data_sets = stratify_data(bdf4, 'class')
     return data_sets
 
 ########################################s

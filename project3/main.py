@@ -102,10 +102,13 @@ def regression_helper(data, k, sigma, label = None, tuning = False,
 ################ classification data sets ################
 print('\n============== BREAST DATA ============== ')
 data = dl.get_breast_data()
+tune = data['tune']
+print(tune)
+m = tree.get_numeric_split(tune, 'clump-thickness')
 
+"""
 print('\n============== CAR DATA ============== ')
 data = dl.get_car_data()
-print(data)
 
 print('\n============ SEGMENTATION DATA ============ ')
 data = dl.get_segmentation_data()
@@ -119,3 +122,4 @@ data = dl.get_forest_fires_data()
 
 print('\n============== MACHINE DATA ============== ')
 data = dl.get_machine_data()
+"""
