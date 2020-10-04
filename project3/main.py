@@ -103,13 +103,14 @@ def regression_helper(data, k, sigma, label = None, tuning = False,
 print('\n============== DUMMY DATA ============== ')
 weather = dl.get_weather()
 # print(weather)
-# tree.pick_feature(weather, class_label)
+feat = tree.pick_feature(weather, class_label)
+print('root-feat', feat)
 
 print('\n============== BREAST DATA ============== ')
 data = dl.get_breast_data()
 tune = data['tune']
 print(tune)
-tree.pick_feature(tune, class_label)
+# tree.pick_feature(tune, class_label)
 
 print('\n============== CAR DATA ============== ')
 data = dl.get_car_data()
