@@ -94,15 +94,16 @@ def sample_regression_data(df, sort_by, fold):
     df = df.sort_values(by = [sort_by])
     return df.iloc[fold::5]
 
-############### main ###############
+############### main data loading ###############
 ## dummy data from class lecture for weather
 def get_weather():
     wea_df = read_csv_with_header(weather)
     wea_df = wea_df.replace({'class': {'p': 1, 'n': 0}})
     return wea_df
 
-## each column has domain: 1-10, need to be binned (except sample-code-number, class)
+########################################
 ## class:  2 options (2 = benign, 4 = malignant) - remap to 0 = benign, 1 malignant
+## each column has domain: 1-10
 def get_breast_data():
     breast_fields = ['sample-code-number','clump-thickness','uniformity-of-cell-size',
                     'uniformity-of-cell-shape','marginal-adhesion','single-epithelial-cell-size',
@@ -118,9 +119,9 @@ def get_breast_data():
     data_sets = stratify_data(bdf4, 'class')
     return data_sets
 
-########################################s
-# all fields are categorical
+########################################
 # class: 4 options
+# all fields are categorical
 def get_car_data():
     car_fields = ['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety', 'class']
     bin_fields = car_fields[:-1]
@@ -131,9 +132,9 @@ def get_car_data():
 
 ########################################
 ## class: 7 options
-## bin fields: CLASS,REGION-CENTROID-COL,REGION-CENTROID-ROW,REGION-PIXEL-COUNT,SHORT-LINE-DENSITY-5,
-# ## SHORT-LINE-DENSITY-2,VEDGE-MEAN,VEDGE-SD,HEDGE-MEAN,HEDGE-SD,INTENSITY-MEAN,RAWRED-MEAN,
-# ## RAWBLUE-MEAN,RAWGREEN-MEAN,EXRED-MEAN,EXBLUE-MEAN,EXGREEN-MEAN,VALUE-MEAN,SATURATION-MEAN,HUE-MEAN
+## all fields are numeric (float / int)
+## SHORT-LINE-DENSITY-2,VEDGE-MEAN,VEDGE-SD,HEDGE-MEAN,HEDGE-SD,INTENSITY-MEAN,RAWRED-MEAN,
+## RAWBLUE-MEAN,RAWGREEN-MEAN,EXRED-MEAN,EXBLUE-MEAN,EXGREEN-MEAN,VALUE-MEAN,SATURATION-MEAN,HUE-MEAN
 def get_segmentation_data():
     segmentation_df = read_csv_with_header(segmentation)
     data_sets = stratify_data(segmentation_df, 'CLASS')

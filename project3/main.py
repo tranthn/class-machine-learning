@@ -102,22 +102,22 @@ def regression_helper(data, k, sigma, label = None, tuning = False,
 ################ classification data sets ################
 print('\n============== DUMMY DATA ============== ')
 weather = dl.get_weather()
-print(weather)
-tree.pick_feature(weather, class_label)
-# entropy = tree.entropy(weather, 'outlook', class_label)
+# print(weather)
+# tree.pick_feature(weather, class_label)
 
 print('\n============== BREAST DATA ============== ')
 data = dl.get_breast_data()
 tune = data['tune']
-# print(tune)
-# m = tree.get_numeric_split(tune, 'clump-thickness')
+print(tune)
+tree.pick_feature(tune, class_label)
 
-"""
 print('\n============== CAR DATA ============== ')
 data = dl.get_car_data()
+tune = data['tune']
 
 print('\n============ SEGMENTATION DATA ============ ')
 data = dl.get_segmentation_data()
+tune = data['tune']
 
 ################# regression data sets #################
 print('\n============== ABALONE DATA ============== ')
@@ -128,4 +128,3 @@ data = dl.get_forest_fires_data()
 
 print('\n============== MACHINE DATA ============== ')
 data = dl.get_machine_data()
-"""
