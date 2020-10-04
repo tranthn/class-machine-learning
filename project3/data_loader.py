@@ -11,6 +11,7 @@ import pandas as pd
 # - data parsing
 # - splitting data into train, tune, test sets
 
+weather = './data/weather.data'
 breast = '../data/breast-cancer-wisconsin.data'
 car = './data/car.data'
 segmentation = '../data/segmentation.data'
@@ -94,6 +95,12 @@ def sample_regression_data(df, sort_by, fold):
     return df.iloc[fold::5]
 
 ############### main ###############
+## dummy data from class lecture for weather
+def get_weather():
+    wea_df = read_csv_with_header(weather)
+    wea_df = wea_df.replace({'class': {'p': 1, 'n': 0}})
+    return wea_df
+
 ## each column has domain: 1-10, need to be binned (except sample-code-number, class)
 ## class:  2 options (2 = benign, 4 = malignant) - remap to 0 = benign, 1 malignant
 def get_breast_data():
