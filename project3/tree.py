@@ -129,59 +129,75 @@ def pick_feature(df, class_label):
 
     return best_feat
 
-def id3_tree(df, class_label, tree = None, keys = None):
-    root = pick_feature(df, class_label)
-    root_node = ID3Node(feature = root, items = df)
-
+def id3_tree(df, label, tree = None, features = None):
     print('---------------------\n')
-    print(df)
+    print('remaining features', features)
+
+    root_node = ID3Node()
 
     # if tree hasn't started yet, set to current root
     if (tree == None):
         tree = root_node
 
+    # label decision on node
+    if (len(features) <= 1):
+        print('remaining features <=1')    
+        return tree
+
+    # create root
+    root = pick_feature(df, label)
+    root_node.feature = root
+
     # recalculate groupings to create children nodes
     grouping = df.groupby(by = [root], dropna = False).size()
-    nested_grouping = df.groupby(by = [root, class_label], dropna = False).size()
     feature_opts = grouping.index
 
-    print('\nroot\t', root)
+    # make leaf node with decision
+    if (len(feature_opts) == 1):
+        print('only 1 feature option for ', feature_opts)
+        return tree
+
+    # there are more than 1 features left
+    print('\nroot', root)
     print(feature_opts.values)
+    next_features = np.delete(features, np.where(features == [root])) 
 
     for f in feature_opts.values:
-        print('f\t', f)
-
-        fn = (lambda x : x == f)
-
         # only 1 class represented, so it becomes leaf
+
+        ## THIS PART NEEDS FIXING
+        nested_grouping = df.groupby(by = [root, label], dropna = False).size()
+
         if (len(nested_grouping[f]) == 1):
-            leaf = ID3Node(feature = root, split_fn = fn)
+            print('\nnested grouping {0} has 1 class'.format(f))
+            print(nested_grouping)
+            print(nested_grouping[f])
+
+            leaf = ID3Node(decision = nested_grouping[f])
             tree.append_child(leaf)
         else:
             # get df split for given feature-attr
-            if (len(df.keys()) > 1):
-                subset = df[df[root] == f]
-                subset = subset.drop(columns = root)
-                print('\nsubset\n', subset)
+            subset = df[df[root] == f]
+            subset = subset.drop(columns = root)
 
-                # recursive call with given feature-attr split
-                subtree = id3_tree(subset, class_label, tree)
-
-            # no more columns/features to separate on
-            else:
-                print('wtf going on here')
-                leaf = ID3Node(feature = root, split_fn = fn)
-                tree.append_child(leaf)
+            # recursive call with given feature-attr split
+            print('\nrecursive call')
+            print('next features', next_features)
+            subtree = id3_tree(subset, label, tree, next_features)
 
     return tree
 
 ######################################################
 class ID3Node():
-    def __init__(self, feature, split_fn = None, items = None):
+    def __init__(self, feature = None, split_fn = None, items = None, decision = None):
         self.feature = feature
         self.split_fn = split_fn
         self.children = []
         self.items = items
     
+    def __str__(self):
+        pretty = "feature\n{0}\n, items\n{1}".format(feature, items)
+        return pretty
+
     def append_child(self, node):
         self.children.append(node)
