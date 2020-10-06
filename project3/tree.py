@@ -1,15 +1,8 @@
 #!/usr/bin/env python3
 import sys
 import math
-from anytree import NodeMixin, RenderTree
 import numpy as np
 import pandas as pd
-
-## id3
-## 1: figure out how to split numeric fields
-##   - might be easiest to start with binary splits only
-## 2: once splits can be determined, then we can determine information gain
-## 3: main split knowledge as we build tree - maybe implement or use simple tree lib?
 
 # binary split for numeric columns
 #
@@ -116,7 +109,6 @@ def pick_feature(df, class_label):
     # calculate set entropy
     grouping = df.groupby(by = [class_label]).size()
     set_entropy = info_gain(tot, grouping[1])
-    # print('\nset entropy', set_entropy)
     best_feat = ""
     best_gain = -1
 
@@ -129,13 +121,11 @@ def pick_feature(df, class_label):
 
     return best_feat
 
-def id3_tree(df, label, tree = None, features = None):
+def id3_tree(df, label, tree = None, features = None, prior_value = None):
     print('---------------------\n')
-    # print('remaining features', features)
-    # print('df\n', df)
 
     # default root node
-    root_node = ID3Node(items = df)
+    root_node = Node(items = df, transition_value = prior_value)
 
     # if tree hasn't started yet, set to current root
     if (tree == None):
@@ -160,8 +150,7 @@ def id3_tree(df, label, tree = None, features = None):
         return tree
 
     # there are more than 1 features left
-    print('\nnext root root', root)
-    print(feature_opts.values)
+    print('\nnext root', root)
     next_features = np.delete(features, np.where(features == [root]))
 
     for f in feature_opts.values:
@@ -169,10 +158,9 @@ def id3_tree(df, label, tree = None, features = None):
         nested_grouping = df.groupby(by = [root, label], dropna = False).size()
 
         if (len(nested_grouping[f]) == 1):
-            # print('feature-attr combo is all 1 class')
             # get the only represented class
             dec = nested_grouping[f].index.values[0]
-            leaf = ID3Node(feature = root, decision = dec)
+            leaf = Node(feature = root, transition_value = f, decision = dec)
             tree.append_child(leaf)
         else:
             # get df split for given feature-attr
@@ -180,35 +168,36 @@ def id3_tree(df, label, tree = None, features = None):
             subset = subset.drop(columns = root)
 
             # recursive call with given feature-attr split
-            # print('\nrecursive call')
-            # print('next features', next_features)
-            subtree = id3_tree(subset, label, tree, next_features)
+            subtree = id3_tree(subset, label, tree, next_features, f)
             tree.append_child(subtree)
 
     return tree
 
 ######################################################
-class ID3Node():
-    def __init__(self, feature = None, split_fn = None, items = None, decision = None):
+class Node():
+    def __init__(self, feature = None, transition_value = None, split_fn = None, items = None, decision = None):
         self.feature = feature
         self.split_fn = split_fn
         self.children = list()
         self.decision = decision
+        self.transition_value = transition_value
         self.items = items
 
-    def print(self):
-        print('----- node print -----')
-        print('node: {0}'.format(self.feature))
+    def print(self, levels = 0):
+        pre = '\t' * levels
+        print()
+        print('{0} feat: {1}'.format(pre, self.feature))
+        print('{0} transition value: {1}'.format(pre, self.transition_value))
         if not (self.items is None):
-            print('items #: {0}'.format(len(self.items)))
+            print('{0} items #: {1}'.format(pre, len(self.items)))
 
         if (len(self.children) > 0):
-            print('children #: {0}'.format(len(self.children)))
+            print('{0} children #: {1}'.format(pre, len(self.children)))
             for c in self.children:
-                c.print()
+                c.print(levels = levels + 1)
         else:
-            print('leaf node')
-            print('decision = ', self.decision)
+            print(pre, 'leaf node')
+            print(pre, 'decision = {0}'.format(self.decision))
 
     def append_child(self, node):
         self.children.append(node)
