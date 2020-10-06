@@ -50,18 +50,18 @@ def entropy_helper_numeric(df, feature, class_label):
     tot = df.shape[0]
     split_point = get_numeric_split(df, feature)
     left = df[df[feature] <= split_point].count()[feature]
-    left_pos = df[(df[feature] <= split_point) & (df[class_label] == 1)].count()[feature]
+    left_positive = df[(df[feature] <= split_point) & (df[class_label] == 1)].count()[feature]
 
     right = df[df[feature] > split_point].count()[feature]
-    right_pos = df[(df[feature] > split_point) & (df[class_label] == 1)].count()[feature]
+    right_positive = df[(df[feature] > split_point) & (df[class_label] == 1)].count()[feature]
 
     print('# <= {0}:\t {1}'.format(split_point, left))
-    print('# <= {0} (p):\t{1} '.format(split_point, left_pos))
+    print('# <= {0} (p):\t{1} '.format(split_point, left_positive))
     print('# >> {0}:\t {1}'.format(split_point, right))
-    print('# >> {0} (p):\t{1}'.format(split_point, right_pos))
+    print('# >> {0} (p):\t{1}'.format(split_point, right_positive))
 
-    left_gain = (left / tot) * info_gain(left, left_pos)
-    right_gain = (right / tot) * info_gain(right, right_pos)
+    left_gain = (left / tot) * info_gain(left, left_positive)
+    right_gain = (right / tot) * info_gain(right, right_positive)
 
     ent = right_gain + left_gain
     return ent
@@ -157,17 +157,17 @@ def id3_tree(df, label, tree = None, features = None, prior_value = None):
         # only 1 class represented, so it becomes leaf
         nested_grouping = df.groupby(by = [root, label], dropna = False).size()
 
+        # feature-attr pair only represents 1 class, so it'll become leaf
         if (len(nested_grouping[f]) == 1):
             # get the only represented class
             dec = nested_grouping[f].index.values[0]
             leaf = Node(feature = root, transition_value = f, decision = dec)
             tree.append_child(leaf)
+
+        # otherwise, feature-attr pair will be recursively split
         else:
-            # get df split for given feature-attr
             subset = df[df[root] == f]
             subset = subset.drop(columns = root)
-
-            # recursive call with given feature-attr split
             subtree = id3_tree(subset, label, tree, next_features, f)
             tree.append_child(subtree)
 
