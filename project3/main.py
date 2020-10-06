@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import data_loader as dl
 import tree
+import example as ex
 
 # field name that maps to the class column for data
 # all data sets used here will be "class", but is externalized
@@ -105,10 +106,12 @@ weather = dl.get_weather()
 print(weather)
 attrs = weather.drop(columns = ['class']).columns.values
 t = tree.id3_tree(df = weather, label = class_label, tree = None, features = attrs)
+print('==========================================')
+t.print()
 
-print('\n============== BREAST DATA ============== ')
-data = dl.get_breast_data()
-tune = data['tune']
+# print('\n============== BREAST DATA ============== ')
+# data = dl.get_breast_data()
+# tune = data['tune']
 # print(tune)
 # tree.pick_feature(tune, class_label)
 

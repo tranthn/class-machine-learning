@@ -131,9 +131,10 @@ def pick_feature(df, class_label):
 
 def id3_tree(df, label, tree = None, features = None):
     print('---------------------\n')
-    print('remaining features', features)
-    print('df\n', df)
+    # print('remaining features', features)
+    # print('df\n', df)
 
+    # default root node
     root_node = ID3Node(items = df)
 
     # if tree hasn't started yet, set to current root
@@ -142,12 +143,12 @@ def id3_tree(df, label, tree = None, features = None):
 
     # label decision on node
     if (len(features) <= 1):
-        print('remaining features <=1')    
         return tree
 
-    # create root
+    # initialize root node with actual feature
     root = pick_feature(df, label)
     root_node.feature = root
+    tree = root_node
 
     # recalculate groupings to create children nodes
     grouping = df.groupby(by = [root], dropna = False).size()
@@ -159,7 +160,7 @@ def id3_tree(df, label, tree = None, features = None):
         return tree
 
     # there are more than 1 features left
-    print('\nroot', root)
+    print('\nnext root root', root)
     print(feature_opts.values)
     next_features = np.delete(features, np.where(features == [root]))
 
@@ -168,8 +169,10 @@ def id3_tree(df, label, tree = None, features = None):
         nested_grouping = df.groupby(by = [root, label], dropna = False).size()
 
         if (len(nested_grouping[f]) == 1):
-            print('feature-attr combo is all 1 class')
-            leaf = ID3Node(feature = root, decision = nested_grouping[f])
+            # print('feature-attr combo is all 1 class')
+            # get the only represented class
+            dec = nested_grouping[f].index.values[0]
+            leaf = ID3Node(feature = root, decision = dec)
             tree.append_child(leaf)
         else:
             # get df split for given feature-attr
@@ -177,8 +180,8 @@ def id3_tree(df, label, tree = None, features = None):
             subset = subset.drop(columns = root)
 
             # recursive call with given feature-attr split
-            print('\nrecursive call')
-            print('next features', next_features)
+            # print('\nrecursive call')
+            # print('next features', next_features)
             subtree = id3_tree(subset, label, tree, next_features)
             tree.append_child(subtree)
 
@@ -189,12 +192,23 @@ class ID3Node():
     def __init__(self, feature = None, split_fn = None, items = None, decision = None):
         self.feature = feature
         self.split_fn = split_fn
-        self.children = []
+        self.children = list()
+        self.decision = decision
         self.items = items
 
-    def __str__(self):
-        pretty = "feature\n{0}\n, items\n{1}".format(self.feature, self.items)
-        return pretty
+    def print(self):
+        print('----- node print -----')
+        print('node: {0}'.format(self.feature))
+        if not (self.items is None):
+            print('items #: {0}'.format(len(self.items)))
+
+        if (len(self.children) > 0):
+            print('children #: {0}'.format(len(self.children)))
+            for c in self.children:
+                c.print()
+        else:
+            print('leaf node')
+            print('decision = ', self.decision)
 
     def append_child(self, node):
         self.children.append(node)
