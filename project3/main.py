@@ -112,13 +112,8 @@ t.print()
 # print('\n============== BREAST DATA ============== ')
 data = dl.get_breast_data()
 tune = data['tune']
-# print(tune)
-df = tune.copy()
-
-f = 'mitoses'
-df = df.query("mitoses > 3 and `class` == 1")
-# print(df)
-
+f = tree.pick_feature(tune, class_label)
+# print(f)
 """
 print('\n============== CAR DATA ============== ')
 data = dl.get_car_data()

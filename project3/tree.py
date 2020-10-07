@@ -44,28 +44,6 @@ def info_gain(total, pos):
         i = (-p_pn * math.log(p_pn, 2)) - (n_pn * math.log(n_pn, 2))
         return i
 
-# helper that calculates information gain for numeric columns
-def entropy_helper_numeric(df, feature, class_label):
-    print('\n---- entropy helper ----')
-    tot = df.shape[0]
-    split_point = get_numeric_split(df, feature)
-    left = df[df[feature] <= split_point].count()[feature]
-    left_positive = df[(df[feature] <= split_point) & (df[class_label] == 1)].count()[feature]
-
-    right = df[df[feature] > split_point].count()[feature]
-    right_positive = df[(df[feature] > split_point) & (df[class_label] == 1)].count()[feature]
-
-    print('# <= {0}:\t {1}'.format(split_point, left))
-    print('# <= {0} (p):\t{1} '.format(split_point, left_positive))
-    print('# >> {0}:\t {1}'.format(split_point, right))
-    print('# >> {0} (p):\t{1}'.format(split_point, right_positive))
-
-    left_gain = (left / tot) * info_gain(left, left_positive)
-    right_gain = (right / tot) * info_gain(right, right_positive)
-
-    ent = right_gain + left_gain
-    return ent
-
 def is_categorical(df, feature):
     ftype = df[feature].dtype
     categorical = ftype != 'float64' and ftype != 'int64'
@@ -83,7 +61,8 @@ def build_query_string(features, operators, values):
         if (type(v) is str):
             v = "'{0}'".format(v)
 
-        q = "{0} {1} {2}".format(features[idx], operators[idx], v)
+        # {0} - feature name, is escaped within str format, for safety
+        q = "`{0}` {1} {2}".format(features[idx], operators[idx], v)
         query_str += q
         if (idx < stop):
             query_str = query_str + " and "
@@ -124,10 +103,25 @@ def entropy(df, feature, class_label):
                 if_gain = 0
     
     # handle numeric columns with separate split logic
-    else:
-        ent = entropy_helper_numeric(df, feature, class_label)
+    else:      
+        split_point = get_numeric_split(df, feature)
+        q_lte = build_query_string([feature], ['<='], [split_point])
+        q_gt = build_query_string([feature], ['>'], [split_point])
+        feature_opts = [q_lte, q_gt]
 
-    # print('ent\t', ent)
+        for f in feature_opts:
+            # query split
+            split = df.query(f)
+            split_tot = split.shape[0]
+            split_positive = split[split[class_label] == 1].shape[0]
+
+            print('# <= {0}:\t {1}'.format(split_point, split_tot))
+            print('# <= {0} (p):\t{1} '.format(split_point, split_positive))
+
+            split_gain = (split_tot / tot) * info_gain(split_tot, split_positive)
+
+            ent += split_gain
+
     return ent
 
 # find best feature to be root node
