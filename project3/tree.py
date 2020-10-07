@@ -3,6 +3,7 @@ import sys
 import math
 import numpy as np
 import pandas as pd
+from node import Node
 
 # binary split for numeric columns
 #
@@ -74,53 +75,49 @@ def entropy(df, feature, class_label):
     tot = df.shape[0]
     ent = 0
 
-    if (is_categorical(df, feature)):        
-        # find unique value options for this feature column
-        feature_opts = df[feature].unique()
+    feature_opts = []
+    if (is_categorical(df, feature)):
+        raw_opts = df[feature].unique()
+        for o in raw_opts:
+            qry = build_query_string([feature], ['=='], [o])
+            feature_opts.append(qry)
 
-        for f in feature_opts:
-            # build query string, e.g. "feature == f"
-            # query will filter dataframe based on the query condition
-            qry = build_query_string([feature], ['=='], [f])
-            df_grouped = df.query(qry)
-
-            # determine how many classes represented after filtering above
-            class_count = len(df_grouped[class_label].unique())
-
-            # this is hard-coded for class belonging / class == 1
-            df_grouped_cl = df_grouped[df_grouped[class_label] == 1]
-            
-            # check if the feature has a split for predicting class or not
-            # if the length = 0, that means this feature-opt combo all fell
-            # within the same outcome class, take else branch
-            if (class_count > 1):
-                p = df_grouped_cl.shape[0]
-                pn = df_grouped.shape[0]
-                if_gain = info_gain(pn, p)
-                ent += (pn / tot) * if_gain
-            else:
-                # gain should be 0
-                if_gain = 0
-    
-    # handle numeric columns with separate split logic
-    else:      
+    ## do binary split for numerical features, we'll
+    ## create 2 queries, one less than or equal to split pt
+    ## and remaining split is greater than split pt
+    else:
         split_point = get_numeric_split(df, feature)
         q_lte = build_query_string([feature], ['<='], [split_point])
         q_gt = build_query_string([feature], ['>'], [split_point])
         feature_opts = [q_lte, q_gt]
 
-        for f in feature_opts:
-            # query split
-            split = df.query(f)
-            split_tot = split.shape[0]
-            split_positive = split[split[class_label] == 1].shape[0]
+    ## feature_opts is genericized to being query string for filtering
+    ## this allows handling when val == [categorical value]
+    ## as well as val <= or > [numerical split]
+    for f in feature_opts:
+        # query will filter dataframe based on the query condition
+        df_grouped = df.query(f)
+        pn = df_grouped.shape[0]
 
-            print('# <= {0}:\t {1}'.format(split_point, split_tot))
-            print('# <= {0} (p):\t{1} '.format(split_point, split_positive))
+        # determine how many classes represented after filtering above
+        class_count = len(df_grouped[class_label].unique())
 
-            split_gain = (split_tot / tot) * info_gain(split_tot, split_positive)
+        # this is hard-coded for class belonging / class == 1
+        df_grouped_cl = df_grouped[df_grouped[class_label] == 1]
+        p = df_grouped_cl.shape[0]
 
-            ent += split_gain
+        print('# {0}:\t {1}'.format(f, pn))
+        print('# {0} (p):\t{1} '.format(f, p))
+        
+        # check if the feature has a split for predicting class or not
+        # if the length = 0, that means this feature-opt combo all fell
+        # within the same outcome class, take else branch
+        if (class_count > 1):
+            if_gain = info_gain(pn, p)
+            ent += (pn / tot) * if_gain
+        else:
+            # gain should be 0
+            if_gain = 0
 
     return ent
 
@@ -195,32 +192,3 @@ def id3_tree(df, label, tree = None, features = None, prior_value = None):
             tree.append_child(subtree)
 
     return tree
-
-######################################################
-class Node():
-    def __init__(self, feature = None, transition_value = None, split_fn = None, items = None, decision = None):
-        self.feature = feature
-        self.split_fn = split_fn
-        self.children = list()
-        self.decision = decision
-        self.transition_value = transition_value
-        self.items = items
-
-    def print(self, levels = 0):
-        pre = '\t' * levels
-        print()
-        print('{0} feat: {1}'.format(pre, self.feature))
-        print('{0} transition value: {1}'.format(pre, self.transition_value))
-        if not (self.items is None):
-            print('{0} items #: {1}'.format(pre, len(self.items)))
-
-        if (len(self.children) > 0):
-            print('{0} children #: {1}'.format(pre, len(self.children)))
-            for c in self.children:
-                c.print(levels = levels + 1)
-        else:
-            print(pre, 'leaf node')
-            print(pre, 'decision = {0}'.format(self.decision))
-
-    def append_child(self, node):
-        self.children.append(node)
