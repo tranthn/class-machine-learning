@@ -3,8 +3,7 @@ import sys
 import numpy as np
 import pandas as pd
 import data_loader as dl
-import tree
-import example as ex
+from tree import ID3Tree
 
 # field name that maps to the class column for data
 # all data sets used here will be "class", but is externalized
@@ -105,14 +104,17 @@ def regression_helper(data, k, sigma, label = None, tuning = False,
 weather = dl.get_weather()
 print(weather)
 attrs = weather.drop(columns = ['class']).columns.values
-t = tree.id3_tree(df = weather, label = class_label, tree = None, features = attrs)
+t = ID3Tree(data = weather)
+
+tr = t.id3_tree(df = weather, label = class_label, tree = None, features = attrs)
 print('==========================================')
-t.print()
+tr.print()
 
 # print('\n============== BREAST DATA ============== ')
 data = dl.get_breast_data()
 tune = data['tune']
-f = tree.pick_feature(tune, class_label)
+t = ID3Tree(data = tune)
+f = t.pick_feature(tune, class_label)
 # print(f)
 """
 print('\n============== CAR DATA ============== ')
