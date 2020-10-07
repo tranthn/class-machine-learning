@@ -66,28 +66,57 @@ def entropy_helper_numeric(df, feature, class_label):
     ent = right_gain + left_gain
     return ent
 
+def is_categorical(df, feature):
+    ftype = df[feature].dtype
+    categorical = ftype != 'float64' and ftype != 'int64'
+    return categorical
+
+def build_query_string(features, operators, values):
+    query_str = ""
+    stop = len(features) - 1
+
+    for idx, f in enumerate(features):
+        v = values[idx]
+
+        # must escape categorical / string values, so that
+        # pandas.query() does not interpret value as another column name
+        if (type(v) is str):
+            v = "'{0}'".format(v)
+
+        q = "{0} {1} {2}".format(features[idx], operators[idx], v)
+        query_str += q
+        if (idx < stop):
+            query_str = query_str + " and "
+
+    return query_str
+
 # wrapper that calculates entropy for a given feature
 def entropy(df, feature, class_label):
     tot = df.shape[0]
     ent = 0
-    ftype = df[feature].dtype
 
-    if (ftype != 'float64' and ftype != 'int64'):
-        # group just by feature-attr summary
-        grouping = df.groupby(by = [feature], dropna = False).size()
-        
-        # group by feature-attr x class combos
-        nested_grouping = df.groupby(by = [feature, class_label], dropna = False).size()
-        feature_opts = grouping.index
-        
+    if (is_categorical(df, feature)):        
+        # find unique value options for this feature column
+        feature_opts = df[feature].unique()
+
         for f in feature_opts:
+            # build query string, e.g. "feature == f"
+            # query will filter dataframe based on the query condition
+            qry = build_query_string([feature], ['=='], [f])
+            df_grouped = df.query(qry)
 
+            # determine how many classes represented after filtering above
+            class_count = len(df_grouped[class_label].unique())
+
+            # this is hard-coded for class belonging / class == 1
+            df_grouped_cl = df_grouped[df_grouped[class_label] == 1]
+            
             # check if the feature has a split for predicting class or not
             # if the length = 0, that means this feature-opt combo all fell
             # within the same outcome class, take else branch
-            if (len(nested_grouping[f]) > 1):
-                p = nested_grouping[f, 1]
-                pn = grouping[f]
+            if (class_count > 1):
+                p = df_grouped_cl.shape[0]
+                pn = df_grouped.shape[0]
                 if_gain = info_gain(pn, p)
                 ent += (pn / tot) * if_gain
             else:
