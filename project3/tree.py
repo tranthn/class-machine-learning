@@ -90,7 +90,7 @@ class ID3Tree():
                 qry = self.build_query_string([feature], ['=='], [o])
                 feature_opts.append(qry)
 
-        ## do binary split for numerical features, we'll
+        ## numeric: do binary split
         ## create 2 queries, one less than or equal to split pt
         ## and remaining split is greater than split pt
         else:
@@ -102,20 +102,21 @@ class ID3Tree():
         ## feature_opts is genericized to being query string for filtering
         ## this allows handling when val == [categorical value]
         ## as well as val <= or > [numerical split]
+        self.feature_map[feature] = feature_opts
         for f in feature_opts:
             # query will filter dataframe based on the query condition
-            df_grouped = df.query(f)
-            pn = df_grouped.shape[0]
+            df_filtered = df.query(f)
+            pn = df_filtered.shape[0]
 
             # determine how many classes represented after filtering above
-            class_count = len(df_grouped[class_label].unique())
+            class_count = len(df_filtered[class_label].unique())
 
             # this is hard-coded for class belonging / class == 1
-            df_grouped_cl = df_grouped[df_grouped[class_label] == 1]
-            p = df_grouped_cl.shape[0]
+            df_filtered_cl = df_filtered[df_filtered[class_label] == 1]
+            p = df_filtered_cl.shape[0]
 
-            print('# {0}:\t {1}'.format(f, pn))
-            print('# {0} (p):\t{1} '.format(f, p))
+            # print('# {0}:\t {1}'.format(f, pn))
+            # print('# {0} (p):\t{1} '.format(f, p))
             
             # check if the feature has a split for predicting class or not
             # if the length = 0, that means this feature-opt combo all fell
@@ -153,7 +154,7 @@ class ID3Tree():
         print('---------------------\n')
 
         # default root node
-        root_node = Node(items = df, transition_value = prior_value)
+        root_node = Node(items = df, transition = prior_value)
 
         # if tree hasn't started yet, set to current root
         if (tree == None):
@@ -180,21 +181,24 @@ class ID3Tree():
         # there are more than 1 features left
         print('\nnext root', root)
         next_features = np.delete(features, np.where(features == [root]))
+        feature_opts = self.feature_map[root]
 
-        for f in feature_opts.values:
-            # only 1 class represented, so it becomes leaf
-            nested_grouping = df.groupby(by = [root, label], dropna = False).size()
+        for f in feature_opts:
+            # query will filter dataframe based on the query condition
+            df_filtered = df.query(f)
+            df_byclass = df_filtered.groupby(by = [label], dropna = False)
+            classes = list(df_byclass.groups.keys())
 
             # feature-attr pair only represents 1 class, so it'll become leaf
-            if (len(nested_grouping[f]) == 1):
+            if (len(classes) == 1):
                 # get the only represented class
-                dec = nested_grouping[f].index.values[0]
-                leaf = Node(feature = root, transition_value = f, decision = dec)
+                dec = classes[0]
+                leaf = Node(feature = root, transition = f, decision = dec)
                 tree.append_child(leaf)
 
             # otherwise, feature-attr pair will be recursively split
             else:
-                subset = df[df[root] == f]
+                subset = df_filtered
                 subset = subset.drop(columns = root)
                 subtree = self.id3_tree(subset, label, tree, next_features, f)
                 tree.append_child(subtree)

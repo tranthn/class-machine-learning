@@ -114,7 +114,7 @@ tr.print()
 data = dl.get_breast_data()
 tune = data['tune']
 t = ID3Tree(data = tune)
-f = t.pick_feature(tune, class_label)
+# f = t.pick_feature(tune, class_label)
 # print(f)
 """
 print('\n============== CAR DATA ============== ')
