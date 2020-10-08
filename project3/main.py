@@ -102,20 +102,25 @@ def regression_helper(data, k, sigma, label = None, tuning = False,
 ################ classification data sets ################
 # print('\n============== DUMMY DATA ============== ')
 weather = dl.get_weather()
-print(weather)
+# print(weather)
 attrs = weather.drop(columns = ['class']).columns.values
-t = ID3Tree(data = weather)
+# t = ID3Tree(data = weather)
 
-tr = t.id3_tree(df = weather, label = class_label, tree = None, features = attrs)
-print('==========================================')
-tr.print()
+# tr = t.id3_tree(df = weather, label = class_label, tree = None, features = attrs)
+# print('==========================================')
+# tr.print()
 
 # print('\n============== BREAST DATA ============== ')
 data = dl.get_breast_data()
 tune = data['tune']
+training = data['folds'][0]
+print(tune)
 t = ID3Tree(data = tune)
-# f = t.pick_feature(tune, class_label)
-# print(f)
+attrs = tune.drop(columns = [class_label]).columns.values
+tr = t.id3_tree(df = tune, label = class_label, tree = None, features = attrs)
+tr.print()
+
+t.test_tree(tr, training, class_label)
 """
 print('\n============== CAR DATA ============== ')
 data = dl.get_car_data()

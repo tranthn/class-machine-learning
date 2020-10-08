@@ -3,6 +3,7 @@ import sys
 import math
 import numpy as np
 import pandas as pd
+from termcolor import colored
 from node import Node
 
 class ID3Tree():
@@ -131,7 +132,7 @@ class ID3Tree():
         return ent
 
     # find best feature to be root node
-    def pick_feature(self, df, class_label):
+    def pick_best_feature(self, df, class_label):
         tot = df.shape[0]
         cols = df.columns.drop(class_label)
 
@@ -150,6 +151,38 @@ class ID3Tree():
 
         return best_feat
 
+    def predict(self, node, row):
+        # convert Series to DataFrame to allow query() to use
+        # the stored transition string (which looks like `condition` operator value)
+        # e.g: `clump-thickness` > 4.0
+        if (isinstance(row, pd.Series)):
+            row = row.to_frame().T # transpose series to frame
+
+        # if node is leaf, return its decision
+        if (node.children is None or len(node.children) == 0):
+            return node.decision
+        else:
+            picked_child = None
+            for c in node.children:
+                found = row.query(c.transition)
+                take_branch = found.shape[0] > 0
+                if take_branch:
+                    picked_child = c
+                    continue
+            
+            return self.predict(picked_child, row)
+
+    def test_tree(self, tree, df, class_label):
+        sself = self
+        def check_if_right(tree, row):
+            out = sself.predict(tree, row)
+            return out == row[class_label]
+
+        df['right'] = df.apply(lambda row : check_if_right(tree, row), axis = 1)
+        print()
+        print(colored(df['right'], 'blue'))
+        print(df[df['right'] == True])
+
     def id3_tree(self, df, label, tree = None, features = None, prior_value = None):
         print('---------------------\n')
 
@@ -165,7 +198,7 @@ class ID3Tree():
             return tree
 
         # initialize root node with actual feature
-        root = self.pick_feature(df, label)
+        root = self.pick_best_feature(df, label)
         root_node.feature = root
         tree = root_node
 
