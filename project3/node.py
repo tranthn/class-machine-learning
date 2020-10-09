@@ -8,6 +8,11 @@ class Node():
         self.transition = transition
         self.items = items
 
+    # prints tree in a semi-structured format
+    #
+    # arguments
+    #   - levels = tracker value to indicate how much to tab for printing
+    #       increases on each recursive call
     def print(self, levels = 0):
         pre = '\t' * levels
         print()
@@ -24,5 +29,6 @@ class Node():
             print(pre, 'leaf node')
             print(pre, 'decision = {0}'.format(self.decision))
 
+    # add child node to the children array of a given node
     def append_child(self, node):
         self.children.append(node)

@@ -19,18 +19,14 @@ class ID3Tree():
     # returns
     #   - median point
     def get_numeric_split(self, df, column):
-        print('\n- numeric split -')
-        print('col\t', column)
         sorted = df.sort_values(by = column)
         md1 = int(df.shape[0] / 2)
         md2 = int(md1 + 1)
 
         values = sorted[column].to_numpy()
         split = (values[md1] + values[md2]) / 2
-        print('split\t', split)
 
         med = df[column].median()
-        print('median\t', med)
 
         return med
 
@@ -54,11 +50,14 @@ class ID3Tree():
             i = (-p_pn * math.log(p_pn, 2)) - (n_pn * math.log(n_pn, 2))
             return i
 
+    # check if feature column is categorical
     def is_categorical(self, df, feature):
         ftype = df[feature].dtype
         categorical = ftype != 'float64' and ftype != 'int64'
         return categorical
 
+    # builds query string to use in conjunction with pandas.query()
+    # example:å `clump-thickness` > 4.0
     def build_query_string(self, features, operators, values):
         query_str = ""
         stop = len(features) - 1
@@ -80,6 +79,10 @@ class ID3Tree():
         return query_str
 
     # wrapper that calculates entropy for a given feature
+    # holds logic to handle both categorical and numerical columns
+    #
+    # returns
+    #   - the entropy for a given feature
     def entropy(self, df, feature, class_label):
         tot = df.shape[0]
         ent = 0
@@ -116,9 +119,6 @@ class ID3Tree():
             df_filtered_cl = df_filtered[df_filtered[class_label] == 1]
             p = df_filtered_cl.shape[0]
 
-            # print('# {0}:\t {1}'.format(f, pn))
-            # print('# {0} (p):\t{1} '.format(f, p))
-            
             # check if the feature has a split for predicting class or not
             # if the length = 0, that means this feature-opt combo all fell
             # within the same outcome class, take else branch
@@ -132,6 +132,10 @@ class ID3Tree():
         return ent
 
     # find best feature to be root node
+    # uses the entropy helper to determine which feature has best gain
+    #
+    # returns
+    #   - name of best feature
     def pick_best_feature(self, df, class_label):
         tot = df.shape[0]
         cols = df.columns.drop(class_label)
@@ -151,6 +155,15 @@ class ID3Tree():
 
         return best_feat
 
+    # classification prediction for a given row
+    # will recursively traverse down node (tree) if it can
+    #
+    # arguments:
+    #   - node: current node or subtree that is being evaluated for prediction
+    #   - row: instance to be predicted for
+    #
+    # returns
+    #   - the predicted class for the row
     def predict(self, node, row):
         # convert Series to DataFrame to allow query() to use
         # the stored transition string (which looks like `condition` operator value)
@@ -172,6 +185,12 @@ class ID3Tree():
             
             return self.predict(picked_child, row)
 
+    # method to assess accuracy of the tree given some dataframe
+    #
+    # arguments
+    #   - tree: the trained tree
+    #   - df: the set we're testing
+    #   - class_label: the name of class column
     def test_tree(self, tree, df, class_label):
         sself = self
         def check_if_right(tree, row):
@@ -180,12 +199,29 @@ class ID3Tree():
 
         df['right'] = df.apply(lambda row : check_if_right(tree, row), axis = 1)
         print()
-        print(colored(df['right'], 'blue'))
-        print(df[df['right'] == True])
+        tot = df.shape[0]
+        right = df[df['right'] == True].shape[0]
+        s = 'tree accuracy: {:.0%}'.format(right / tot)
+        print(colored(s, 'green'))
 
+    # method that builds up the id3 tree itself
+    # recursively builds down tree as it splits the data
+    # will stop under following conditions:
+    #   - no more attributes to use
+    #   - given feature only has 1 value option
+    #   - only leaf nodes created, i.e. remaining rows are all the same class
+    #
+    # arguments
+    #   - df
+    #   - label
+    #   - tree: recursively built, starts at None, but appended to during each call
+    #   - features: remaining features to be assessed for splits, reduced on each call
+    #   - prior_value: the transition query (condition) to lead to this node
+    #           i.e. relative to parent (feature node), what condition lead to this branch call
+    #
+    # returns
+    #   - the tree as its being built up, returns based on conditions above
     def id3_tree(self, df, label, tree = None, features = None, prior_value = None):
-        print('---------------------\n')
-
         # default root node
         root_node = Node(items = df, transition = prior_value)
 
@@ -212,7 +248,6 @@ class ID3Tree():
             return tree
 
         # there are more than 1 features left
-        print('\nnext root', root)
         next_features = np.delete(features, np.where(features == [root]))
         feature_opts = self.feature_map[root]
 
