@@ -141,7 +141,7 @@ print(test)
 
 reg = RegressionTree()
 tranined_tree = reg.reg_tree(df = tune, label = 'rings', tree = None, prior_value = None)
-tranined_tree.print()
+# tranined_tree.print()
 reg.test_tree(tranined_tree, test, 'rings')
 
 # print('\n============== FOREST FIRE DATA ============== ')

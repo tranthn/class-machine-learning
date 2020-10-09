@@ -42,7 +42,7 @@ class RegressionTree():
         values = sorted[feature].to_numpy()
         split = (values[md1] + values[md2]) / 2
 
-        med = df[feature].median()
+        med = df[feature].median().round(5)
 
         return med
 
@@ -79,9 +79,9 @@ class RegressionTree():
         avg = df[label].mean()
         rcount = df.shape[0]
         vals = np.full([rcount], avg)
-        mse = np.mean((np.subtract(vals, df[label])) ** 2)
+        mse = np.mean((vals - df[label]) ** 2)
 
-        return mse
+        return round(mse, 5)
 
     def get_feature_mse(self, df, feature, label):
         # will store query strings we'll use for pandas.query()
@@ -171,7 +171,7 @@ class RegressionTree():
     #   - label: the name of class column
     def test_tree(self, tree, df, label):
         df['guess'] = df.apply(lambda row : self.predict(tree, row), axis = 1)
-        mse = np.mean((np.subtract(df['guess'], df[label])) ** 2)
+        mse = np.mean((df['guess'] -  df[label]) ** 2)
         s = 'tree mse: {0:.3g}'.format(mse)
         print(colored(s, 'green'))
 
@@ -216,7 +216,7 @@ class RegressionTree():
             if (df.shape[0] <= 20):
                 # if remaining data items are less than or equal 20
                 # then we won't split anymore, return tree
-                dec = df[label].mean()
+                dec = df[label].mean().round(5)
                 leaf = Node(feature = root, transition = f, decision = dec)
                 tree.append_child(leaf)
             else:
