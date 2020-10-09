@@ -1,5 +1,7 @@
+#!/usr/bin/env python3
 from math import log  # We need this to compute log base 2
 from collections import Counter  # Used for counting
+from node import Node
 
 # File name: id3.py
 # Author: Addison Sears-Collins
@@ -16,34 +18,15 @@ from collections import Counter  # Used for counting
 # ...
 # N: Attribute N
 
-class Node:
-   
-  # Method used to initialize a new node's data fields with initial values
-  def __init__(self, label):
- 
-    # Declaring variables specific to this node
-    self.attribute = None  # Attribute (e.g. 'Outlook')
-    self.attribute_values = []  # Values (e.g. 'Sunny')
-    self.label = label   # Class label for the node (e.g. 'Play')
-    self.children = {}   # Keeps track of the node's children
-     
-    # References to the parent node
-    self.parent_attribute = None
-    self.parent_attribute_value = None
- 
-    # Used for pruned trees
-    self.pruned = False  # Is this tree pruned? 
-    self.instances_labeled = []
-
 def ID3(instances, default):
     """
     Parameters:
       instances: A list of dictionaries where each dictionary is an instance. 
                  Each dictionary contains attribute:value pairs 
                  e.g.: instances =
-                   {'Class':'Play','Outlook':'Sunny','Temperature':'Hot'}
-                   {'Class':'Don't Play','Outlook':'Rain','Temperature':'Cold'}
-                   {'Class':'Play','Outlook':'Overcast','Temperature':'Hot'}
+                   {'class':'Play','Outlook':'Sunny','Temperature':'Hot'}
+                   {'class':'Don't Play','Outlook':'Rain','Temperature':'Cold'}
+                   {'class':'Play','Outlook':'Overcast','Temperature':'Hot'}
                    ...
                    etc.
                  The first attribute:value pair is the 
@@ -63,7 +46,7 @@ def ID3(instances, default):
     # For each instance in the list of instances, append the value of the class
     # to the end of the classes list
     for instance in instances:
-        classes.append(instance['Class'])
+        classes.append(instance['class'])
 
     # If all instances have the same class label or there is only one instance
     # remaining, create a leaf node labeled with that class.
@@ -151,7 +134,7 @@ def mode_class(instances):
     # For each instance in the list of instances, append the value of the class
     # to the end of the classes list
     for instance in instances:
-        classes.append(instance['Class'])
+        classes.append(instance['class'])
 
     # The 1 ensures that we get the top most common class
     # The [0][0] ensures we get the name of the class label and not the tally
@@ -174,7 +157,7 @@ def prior_entropy(instances):
     classes = []  # Create an empty list named 'classes'
 
     for instance in instances:
-        classes.append(instance['Class'])
+        classes.append(instance['class'])
     counter = Counter(classes)
 
     # If all instances have the same class, the entropy is 0
@@ -207,7 +190,7 @@ def entropy(instances, attribute, attribute_value):
 
     for instance in instances:
         if instance[attribute] == attribute_value:
-            classes.append(instance['Class'])
+            classes.append(instance['class'])
     counter = Counter(classes)
 
     # If all instances have the same class, the entropy is 0
@@ -294,7 +277,7 @@ def most_informative_attribute(instances):
     # In short, this code creates a list of the attribute names
     attributes = [key for key, value in instances[0].items()]
     # Remove the "Class" attribute name from the list
-    attributes.remove('Class')
+    attributes.remove('class')
 
     # For every attribute in the list of attributes
     for attribute in attributes:
@@ -321,7 +304,7 @@ def accuracy(trained_tree, test_instances):
     no_of_correct_predictions = 0
 
     for test_instance in test_instances:
-        if predict(trained_tree, test_instance) == test_instance['Class']:
+        if predict(trained_tree, test_instance) == test_instance['class']:
             no_of_correct_predictions += 1
 
     return no_of_correct_predictions / len(test_instances)
