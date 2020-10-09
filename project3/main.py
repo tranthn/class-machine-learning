@@ -134,8 +134,15 @@ tune = data['tune']
 print('\n============== ABALONE DATA ============== ')
 data = dl.get_abalone_data()
 tune = data['tune']
-reg = RegressionTree(tune)
-feat = reg.pick_best_feature(tune, 'rings')
+
+train = data['folds'][0]
+test = data['folds'][1]
+print(test)
+
+reg = RegressionTree()
+tranined_tree = reg.reg_tree(df = tune, label = 'rings', tree = None, prior_value = None)
+tranined_tree.print()
+reg.test_tree(tranined_tree, test, 'rings')
 
 # print('\n============== FOREST FIRE DATA ============== ')
 # predictor: area

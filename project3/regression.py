@@ -24,12 +24,11 @@ early stopping
 """
 
 class RegressionTree():
-    def __init__(self, data):
+    def __init__(self):
         # stores feature name to the string query values used for splitting logic
-        # meant to keep the query logic we use in entropy for re-use in the tree build
+        # meant to keep the query logic we use during split for re-use in the tree build
         # and tree prediction later on
         self.feature_map = {}
-        self.data = data
 
     # binary split for numeric columns
     #
@@ -75,31 +74,51 @@ class RegressionTree():
 
         return query_str
 
-    def mse(self, df, label):
+    def calc_mse(self, df, label):
         # best guess based on df passed in (which is split based on feature value)
         avg = df[label].mean()
         rcount = df.shape[0]
         vals = np.full([rcount], avg)
         mse = np.mean((np.subtract(vals, df[label])) ** 2)
-        print('mse', mse)
 
         return mse
 
     def get_feature_mse(self, df, feature, label):
-        split_pt = self.get_numeric_split(df, feature)
-        split_point = self.get_numeric_split(df, feature)
-        q_lte = self.build_query_string([feature], ['<='], [split_point])
-        q_gt = self.build_query_string([feature], ['>'], [split_point])
-        feature_opts = [q_lte, q_gt]
+        # will store query strings we'll use for pandas.query()
+        feature_opts = []
+
+        if (self.is_categorical(df, feature)):
+            raw_opts = df[feature].unique()
+            for o in raw_opts:
+                qry = self.build_query_string([feature], ['=='], [o])
+                feature_opts.append(qry)
+
+        else:
+            split_pt = self.get_numeric_split(df, feature)
+            split_point = self.get_numeric_split(df, feature)
+            q_lte = self.build_query_string([feature], ['<='], [split_point])
+            q_gt = self.build_query_string([feature], ['>'], [split_point])
+            feature_opts = [q_lte, q_gt]
 
         lowest_mse = math.inf
+        best_feature_condition = ''
+
+        ## feature_opts is genericized to being query string for filtering
+        ## this allows handling when val == [categorical value]
+        ## as well as val <= or > [numerical split]
+        self.feature_map[feature] = feature_opts
+
+        # evaluate which feature-value option has the optimal/lowest mse
         for f in feature_opts:
             df_filtered = df.query(f)
-            mse = self.mse(df_filtered, label)
+            mse = self.calc_mse(df_filtered, label)
             if (mse < lowest_mse):
                 lowest_mse = mse
-        
-        return lowest_mse
+                best_feature_condition = f
+
+        # return the lowest MSE as well as the feature condition that yielded this MSE
+        # feature_condition will take format for pandas.query, i.e. `sex == 'I'`
+        return { 'mse': lowest_mse, 'feature_condition': f }
 
     # find best feature to be root node
     #
@@ -108,10 +127,12 @@ class RegressionTree():
     def pick_best_feature(self, df, label):
         tot = df.shape[0]
         features = df.columns.drop(label)
-        best_feature = ""
+        best_feature = None
         lowest_mse = math.inf
+
         for f in features:
-            mse = self.get_feature_mse(df, f, label)
+            mse_result = self.get_feature_mse(df, f, label)
+            mse = mse_result['mse']
             if (mse < lowest_mse):
                 lowest_mse = mse
                 best_feature = f
@@ -149,16 +170,9 @@ class RegressionTree():
     #   - df: the set we're testing
     #   - label: the name of class column
     def test_tree(self, tree, df, label):
-        sself = self
-        def check_if_right(tree, row):
-            out = sself.predict(tree, row)
-            return out == row[label]
-
-        df['right'] = df.apply(lambda row : check_if_right(tree, row), axis = 1)
-        print()
-        tot = df.shape[0]
-        right = df[df['right'] == True].shape[0]
-        s = 'tree accuracy: {:.0%}'.format(right / tot)
+        df['guess'] = df.apply(lambda row : self.predict(tree, row), axis = 1)
+        mse = np.mean((np.subtract(df['guess'], df[label])) ** 2)
+        s = 'tree mse: {0:.3g}'.format(mse)
         print(colored(s, 'green'))
 
     # method that builds up the regression tree
@@ -174,7 +188,7 @@ class RegressionTree():
     #
     # returns
     #   - the tree as its being built up, returns based on conditions above
-    def reg_tree(self, df, label, tree = None, features = None, prior_value = None):
+    def reg_tree(self, df, label, tree = None, prior_value = None):
         # default root node
         root_node = Node(items = df, transition = prior_value)
 
@@ -182,46 +196,33 @@ class RegressionTree():
         if (tree == None):
             tree = root_node
 
-        # label decision on node
-        if (len(features) <= 1):
-            return tree
-
         # initialize root node with actual feature
         root = self.pick_best_feature(df, label)
         root_node.feature = root
         tree = root_node
 
-        # recalculate groupings to create children nodes
-        grouping = df.groupby(by = [root], dropna = False).size()
-        feature_opts = grouping.index
+        # there are more than 1 features left
+        feature_opts = self.feature_map[root]
 
         # make leaf node with decision
         if (len(feature_opts) == 1):
             print('only 1 feature option for ', feature_opts)
             return tree
 
-        # there are more than 1 features left
-        next_features = np.delete(features, np.where(features == [root]))
-        feature_opts = self.feature_map[root]
-
         for f in feature_opts:
             # query will filter dataframe based on the query condition
             df_filtered = df.query(f)
-            df_byclass = df_filtered.groupby(by = [label], dropna = False)
-            classes = list(df_byclass.groups.keys())
 
-            # feature-attr pair only represents 1 class, so it'll become leaf
-            if (len(classes) == 1):
-                # get the only represented class
-                dec = classes[0]
+            if (df.shape[0] <= 20):
+                # if remaining data items are less than or equal 20
+                # then we won't split anymore, return tree
+                dec = df[label].mean()
                 leaf = Node(feature = root, transition = f, decision = dec)
                 tree.append_child(leaf)
-
-            # otherwise, feature-attr pair will be recursively split
             else:
+                # otherwise, feature-attr pair will be recursively split
                 subset = df_filtered
-                subset = subset.drop(columns = root)
-                subtree = self.reg_tree(subset, label, tree, next_features, f)
+                subtree = self.reg_tree(subset, label, tree, f)
                 tree.append_child(subtree)
 
         return tree

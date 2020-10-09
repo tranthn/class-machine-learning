@@ -16,6 +16,7 @@ class Node():
     def print(self, levels = 0):
         pre = '\t' * levels
         print()
+        print('{0} lvl: {1}'.format(pre, levels))
         print('{0} feat: {1}'.format(pre, self.feature))
         print('{0} transition value: {1}'.format(pre, self.transition))
         if not (self.items is None):

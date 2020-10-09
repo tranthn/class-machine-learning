@@ -41,15 +41,6 @@ def read_csv_with_header(file_path):
 
     return df
 
-## split data into 3 sets:
-##  - tune: 10% of original
-##  - remainder: to be used for cross validation
-def split_tuning_data(df):
-    orig = df.copy()
-    tune = df.sample(frac = 0.1, random_state=1)
-    df = df.drop(tune.index)
-    return {'tune': tune, 'training': df, 'all': orig}
-
 # will need to do stratification for the classfication data sets
 # this will stratify based on indices
 def stratify_data(df, label):
@@ -89,10 +80,25 @@ def stratify_data(df, label):
     return sets
 
 # folds for cross validation for regression data
-# fold = int, representing which fold we're on
-def sample_regression_data(df, sort_by, fold):
-    df = df.sort_values(by = [sort_by])
-    return df.iloc[fold::5]
+# take out tuning first, then sort dataframe to split into folds
+def stratify_regression_data(df, label):
+    n = df.shape[0]
+    fold = 5
+
+    orig = df.copy()
+    tune = df.sample(frac = 0.1, random_state=1)
+    df = df.drop(tune.index)
+
+    # sort remaining dataframe by our target class
+    df = df.sort_values(by = [label])
+    strats = []
+
+    for i in range(fold):
+        part = df.iloc[fold::5]
+        strats.append(part)
+
+    sets = { 'tune': tune, 'folds': strats }
+    return sets
 
 ############### main data loading ###############
 ## dummy data from class lecture for weather
@@ -145,9 +151,8 @@ def get_segmentation_data():
 def get_abalone_data():
     abalone_fields = ['sex', 'length', 'diameter', 'height', 'whole_weight', 'shucked_weight', 'viscera_weight', 'shell_weight', 'rings']
     abalone_df = read_csv(abalone, abalone_fields)
+    data_sets = stratify_regression_data(abalone_df, 'rings')
 
-    abalone_df = pd.get_dummies(abalone_df, columns = ['sex'])
-    data_sets = split_tuning_data(abalone_df)
     return data_sets
 
 ########################################
@@ -158,14 +163,12 @@ def get_machine_data():
     bin_fields = machine_fields[:-1]
     machine_df = read_csv(machine, machine_fields)
     machine_df = machine_df.drop(columns = ['erp', 'model_name'])
-    machine_df2 = pd.get_dummies(machine_df, columns = ['vendor_name'])
-    data_sets = split_tuning_data(machine_df2)
+    data_sets = stratify_regression_data(machine_df, 'prp')
     return data_sets
 
 ########################################
 ## regression predictor: area [of fire]
 def get_forest_fires_data():
     fire_df = read_csv_with_header(forestfires)
-    fire_df = pd.get_dummies(fire_df, columns = ['month', 'day'])
-    data_sets = split_tuning_data(fire_df)
+    data_sets = stratify_regression_data(fire_df, 'area')
     return data_sets
