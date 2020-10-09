@@ -3,7 +3,8 @@ import sys
 import numpy as np
 import pandas as pd
 import data_loader as dl
-from tree import ID3Tree
+from id3 import ID3Tree
+from regression import RegressionTree
 
 # field name that maps to the class column for data
 # all data sets used here will be "class", but is externalized
@@ -110,30 +111,36 @@ attrs = weather.drop(columns = ['class']).columns.values
 # print('\n============== BREAST DATA ============== ')
 data = dl.get_breast_data()
 tune = data['tune']
-training = data['folds'][0]
-print(tune)
-t = ID3Tree(data = tune)
-attrs = tune.drop(columns = [class_label]).columns.values
-tr = t.id3_tree(df = tune, label = class_label, tree = None, features = attrs)
-tr.print()
-t.test_tree(tr, training, class_label)
+train = data['folds'][0]
+test = data['folds'][1]
 
 """
+tree = ID3Tree(data = train)
+attrs = tune.drop(columns = [class_label]).columns.values
+trained_tree = tree.id3_tree(df = tune, label = class_label, tree = None, features = attrs)
+trained_tree.print()
+tree.test_tree(trained_tree, test, class_label)
+"""
+
 print('\n============== CAR DATA ============== ')
 data = dl.get_car_data()
 tune = data['tune']
 
-print('\n============ SEGMENTATION DATA ============ ')
-data = dl.get_segmentation_data()
-tune = data['tune']
+# print('\n============ SEGMENTATION DATA ============ ')
+# data = dl.get_segmentation_data()
+# tune = data['tune']
 
 ################# regression data sets #################
 print('\n============== ABALONE DATA ============== ')
 data = dl.get_abalone_data()
+tune = data['tune']
+reg = RegressionTree(tune)
+feat = reg.pick_best_feature(tune, 'rings')
 
-print('\n============== FOREST FIRE DATA ============== ')
-data = dl.get_forest_fires_data()
+# print('\n============== FOREST FIRE DATA ============== ')
+# predictor: area
+# data = dl.get_forest_fires_data()
 
-print('\n============== MACHINE DATA ============== ')
-data = dl.get_machine_data()
-"""
+# print('\n============== MACHINE DATA ============== ')
+# predictor: prp
+# data = dl.get_machine_data()

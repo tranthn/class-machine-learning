@@ -6,7 +6,24 @@ import pandas as pd
 from termcolor import colored
 from node import Node
 
-class ID3Tree():
+###### algorithm steps ######
+"""
+1: iterate over features
+    - find best split for a given feature f (midpoint split or between each adjacent TBD)
+        - best split is determined by minimal MSE for predictor target class
+    - store whichever feature F currently has minimal MSE
+2: use that best feature F as root
+    - repeat step 1, but TBD if we remove feature F from further consideration
+3: keep building tree, we stop splitting if our remaining branch items drop below a preset bin size
+
+early stopping
+* stopping criterion
+    - threshold for acceptable error (when MSE drops below, stop growing tree)
+* lower threshold/error rate results in larger tree (greater height/depth)
+    - relaxing error threshold (increasing it) will shrink the tree
+"""
+
+class RegressionTree():
     def __init__(self, data):
         # stores feature name to the string query values used for splitting logic
         # meant to keep the query logic we use in entropy for re-use in the tree build
@@ -18,37 +35,17 @@ class ID3Tree():
     #
     # returns
     #   - median point
-    def get_numeric_split(self, df, column):
-        sorted = df.sort_values(by = column)
+    def get_numeric_split(self, df, feature):
+        sorted = df.sort_values(by = feature)
         md1 = int(df.shape[0] / 2)
         md2 = int(md1 + 1)
 
-        values = sorted[column].to_numpy()
+        values = sorted[feature].to_numpy()
         split = (values[md1] + values[md2]) / 2
 
-        med = df[column].median()
+        med = df[feature].median()
 
         return med
-
-    # calculate individual information gain value for given position / total combo
-    #
-    # arguments
-    #   - total: total # items in a given feature-attr combo
-    #   - pos: # of class positive examples with given feature-attr combo
-    #
-    # returns
-    #   - calculated log2 information gain
-    def info_gain(self, total, pos):
-        # negative count is just remainder
-        neg = total - pos
-        p_pn = pos / total
-        n_pn = neg / total
-
-        if (p_pn == 0 or n_pn == 0):
-            return 0
-        else:
-            i = (-p_pn * math.log(p_pn, 2)) - (n_pn * math.log(n_pn, 2))
-            return i
 
     # check if feature column is categorical
     def is_categorical(self, df, feature):
@@ -57,7 +54,7 @@ class ID3Tree():
         return categorical
 
     # builds query string to use in conjunction with pandas.query()
-    # example:å `clump-thickness` > 4.0
+    # example: `clump-thickness` > 4.0
     def build_query_string(self, features, operators, values):
         query_str = ""
         stop = len(features) - 1
@@ -78,92 +75,52 @@ class ID3Tree():
 
         return query_str
 
-    # wrapper that calculates entropy for a given feature
-    # holds logic to handle both categorical and numerical columns
-    #
-    # returns
-    #   - the entropy for a given feature
-    def entropy(self, df, feature, class_label):
-        tot = df.shape[0]
-        ent = 0
+    def mse(self, df, label):
+        # best guess based on df passed in (which is split based on feature value)
+        avg = df[label].mean()
+        rcount = df.shape[0]
+        vals = np.full([rcount], avg)
+        mse = np.mean((np.subtract(vals, df[label])) ** 2)
+        print('mse', mse)
 
-        feature_opts = []
-        if (self.is_categorical(df, feature)):
-            raw_opts = df[feature].unique()
-            for o in raw_opts:
-                qry = self.build_query_string([feature], ['=='], [o])
-                feature_opts.append(qry)
+        return mse
 
-        ## numeric: do binary split
-        ## create 2 queries, one less than or equal to split pt
-        ## and remaining split is greater than split pt
-        else:
-            split_point = self.get_numeric_split(df, feature)
-            q_lte = self.build_query_string([feature], ['<='], [split_point])
-            q_gt = self.build_query_string([feature], ['>'], [split_point])
-            feature_opts = [q_lte, q_gt]
+    def get_feature_mse(self, df, feature, label):
+        split_pt = self.get_numeric_split(df, feature)
+        split_point = self.get_numeric_split(df, feature)
+        q_lte = self.build_query_string([feature], ['<='], [split_point])
+        q_gt = self.build_query_string([feature], ['>'], [split_point])
+        feature_opts = [q_lte, q_gt]
 
-        ## feature_opts is genericized to being query string for filtering
-        ## this allows handling when val == [categorical value]
-        ## as well as val <= or > [numerical split]
-        self.feature_map[feature] = feature_opts
+        lowest_mse = math.inf
         for f in feature_opts:
-            # query will filter dataframe based on the query condition
             df_filtered = df.query(f)
-            pn = df_filtered.shape[0]
-
-            # determine how many classes represented after filtering above
-            class_count = len(df_filtered[class_label].unique())
-
-            # this is hard-coded for class belonging / class == 1
-            df_filtered_cl = df_filtered[df_filtered[class_label] == 1]
-            p = df_filtered_cl.shape[0]
-
-            # check if the feature has a split for predicting class or not
-            # if the length = 0, that means this feature-opt combo all fell
-            # within the same outcome class, take else branch
-            if (class_count > 1):
-                if_gain = self.info_gain(pn, p)
-                ent += (pn / tot) * if_gain
-            else:
-                # gain should be 0
-                if_gain = 0
-
-        return ent
+            mse = self.mse(df_filtered, label)
+            if (mse < lowest_mse):
+                lowest_mse = mse
+        
+        return lowest_mse
 
     # find best feature to be root node
-    # uses the entropy helper to determine which feature has best gain
     #
     # returns
     #   - name of best feature
-    def pick_best_feature(self, df, class_label):
+    def pick_best_feature(self, df, label):
         tot = df.shape[0]
-        cols = df.columns.drop(class_label)
+        features = df.columns.drop(label)
+        best_feature = ""
+        lowest_mse = math.inf
+        for f in features:
+            mse = self.get_feature_mse(df, f, label)
+            if (mse < lowest_mse):
+                lowest_mse = mse
+                best_feature = f
 
-        # calculate set entropy
-        grouping = df.groupby(by = [class_label]).size()
-        set_entropy = self.info_gain(tot, grouping[1])
-        best_feat = ""
-        best_gain = -1
+        print()
+        print('best feature', best_feature)
+        print('lowest mse', lowest_mse)
+        return best_feature
 
-        for f in cols:
-            e = self.entropy(df, f, class_label)
-            total_gain = set_entropy - e
-            if (total_gain > best_gain):
-                best_gain = total_gain
-                best_feat = f
-
-        return best_feat
-
-    # classification prediction for a given row
-    # will recursively traverse down node (tree) if it can
-    #
-    # arguments:
-    #   - node: current node or subtree that is being evaluated for prediction
-    #   - row: instance to be predicted for
-    #
-    # returns
-    #   - the predicted class for the row
     def predict(self, node, row):
         # convert Series to DataFrame to allow query() to use
         # the stored transition string (which looks like `condition` operator value)
@@ -190,12 +147,12 @@ class ID3Tree():
     # arguments
     #   - tree: the trained tree
     #   - df: the set we're testing
-    #   - class_label: the name of class column
-    def test_tree(self, tree, df, class_label):
+    #   - label: the name of class column
+    def test_tree(self, tree, df, label):
         sself = self
         def check_if_right(tree, row):
             out = sself.predict(tree, row)
-            return out == row[class_label]
+            return out == row[label]
 
         df['right'] = df.apply(lambda row : check_if_right(tree, row), axis = 1)
         print()
@@ -204,12 +161,8 @@ class ID3Tree():
         s = 'tree accuracy: {:.0%}'.format(right / tot)
         print(colored(s, 'green'))
 
-    # method that builds up the id3 tree itself
+    # method that builds up the regression tree
     # recursively builds down tree as it splits the data
-    # will stop under following conditions:
-    #   - no more attributes to use
-    #   - given feature only has 1 value option
-    #   - only leaf nodes created, i.e. remaining rows are all the same class
     #
     # arguments
     #   - df
@@ -221,7 +174,7 @@ class ID3Tree():
     #
     # returns
     #   - the tree as its being built up, returns based on conditions above
-    def id3_tree(self, df, label, tree = None, features = None, prior_value = None):
+    def reg_tree(self, df, label, tree = None, features = None, prior_value = None):
         # default root node
         root_node = Node(items = df, transition = prior_value)
 
@@ -268,7 +221,7 @@ class ID3Tree():
             else:
                 subset = df_filtered
                 subset = subset.drop(columns = root)
-                subtree = self.id3_tree(subset, label, tree, next_features, f)
+                subtree = self.reg_tree(subset, label, tree, next_features, f)
                 tree.append_child(subtree)
 
         return tree
