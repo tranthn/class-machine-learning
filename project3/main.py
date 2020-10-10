@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import sys
+import time
 import numpy as np
 import pandas as pd
 import data_loader as dl
@@ -83,8 +84,8 @@ def regression_helper(data, label = None, threshold = None):
         folds.pop(i) # remove holdout fold
         training = pd.concat(folds) # concat remaining folds to create training set
 
-        reg = RegressionTree(threshold = threshold, node_min = 25)
-        tree = reg.reg_tree(training, label, tree = None, prior_value = None)
+        reg = RegressionTree(validation_set = tune, threshold = threshold, node_min = 25)
+        tree = reg.reg_tree(df = training, label = label, tree = None, prior_value = None)
         result = reg.test_tree(tree, holdout, label)
         perf.append(result)
         
@@ -127,7 +128,10 @@ print('\n============== ABALONE DATA ============== ')
 data = dl.get_abalone_data()
 tune = data['tune']
 label = 'rings'
+
+start_time = time.time()
 regression_helper(data, label, threshold = 0)
+print("\n--- execution time for abalone data:\t{:.2f}".format(time.time() - start_time))
 
 # print('\n============== FOREST FIRE DATA ============== ')
 # predictor: area

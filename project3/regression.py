@@ -24,18 +24,21 @@ early stopping
 """
 
 class RegressionTree():
-    def __init__(self, threshold = 0, node_min = 20):
+    def __init__(self, validation_set = None, threshold = 0, node_min = 20):
         # stores feature name to the string query values used for splitting logic
         # meant to keep the query logic we use during split for re-use in the tree build
         # and tree prediction later on
         self.feature_map = {}
 
         # used as threshold to stop growing tree once MSE drops enough
-        self.threshold = 0
+        self.threshold = threshold
 
         # the minimum number of items left in a branch to continue splitting
         # if the number of items < node_min, we stop growing that branch
         self.node_min = node_min
+
+        # validation set used for early stopping as we build the tree
+        self.validation_set = validation_set
 
     # binary split for numeric columns
     #
@@ -44,7 +47,7 @@ class RegressionTree():
     def get_numeric_split(self, df, feature):
         sorted = df.sort_values(by = feature)
         df_len = df.shape[0]
-        med = None
+        split = None
         values = sorted[feature].to_numpy()
 
         # handle scenarios where we're trying to split on df with only 1 row or 2 rows
@@ -55,10 +58,9 @@ class RegressionTree():
         else:
             md1 = int(df_len / 2)
             md2 = md1 + 1
-            med = (values[md1] + values[md2]) / 2
-            # med = df[feature].median().round(5)
+            split = (values[md1] + values[md2]) / 2
 
-        return med
+        return round(split, 5)
 
     # check if feature column is categorical
     def is_categorical(self, df, feature):
@@ -205,21 +207,24 @@ class RegressionTree():
         # default root node
         root_node = Node(items = df, transition = prior_value)
 
-        # if tree hasn't started yet, set to current root
-        if (tree == None):
-            tree = root_node
-
         # initialize root node with actual feature
         root = self.pick_best_feature(df, label)
         root_node.feature = root
+
+        # set the default decision for any given node to be average of its item set
+        root_node.decision = df[label].mean().round(5)
         tree = root_node
 
-        # there are more than 1 features left
-        feature_opts = self.feature_map[root]
+        ## early stopping handling
+        if (self.threshold > 0):
+            mse = self.test_tree(tree, self.validation_set, label)
+            if (mse < self.threshold):
+                # early stop: if tree's mse drops below threshold, stop growing
+                return tree
 
-        # make leaf node with decision
-        if (len(feature_opts) == 1):
-            return tree
+        # get the feature's transition options 
+        # e.g. `shell_weight` > 0.58 or `shell_weight` <= 0.58
+        feature_opts = self.feature_map[root]
 
         for f in feature_opts:
             # query will filter dataframe based on the query condition
