@@ -94,7 +94,7 @@ def stratify_regression_data(df, label):
     strats = []
 
     for i in range(fold):
-        part = df.iloc[fold::5]
+        part = df.iloc[i::5]
         strats.append(part)
 
     sets = { 'tune': tune, 'folds': strats }

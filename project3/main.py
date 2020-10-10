@@ -33,9 +33,7 @@ def printer_helper_regressor(perf, fold):
 
 # wrapper helpers to reduce code duplication for running knn
 # optional execution of condensed or edit methods
-def classification_helper(data, k, label = None, tuning = False, 
-                            enn = False, cnn = False):
-
+def classification_helper(data, k, label = None, tuning = False):
     if label == None:
         label = class_label
 
@@ -68,37 +66,31 @@ def classification_helper(data, k, label = None, tuning = False,
     print_helper_classifier(knn_perf, f)
 
 ## regression wrapper helper
-def regression_helper(data, k, sigma, label = None, tuning = False, 
-                        enn = False, cnn = False, threshold = None):
-
+def regression_helper(data, label = None, threshold = None):
     if label == None:
         label = class_label
-    
+
     f = 5 # fold-value
     tune = data['tune']
-
-    knn_perf = []
+    perf = []
 
     print('\nT H R E S H O L D\t', threshold)
     print('---')
     for i in range(f):
         print('\n======== F O L D #{0} ========'.format(i))
-        training = data['training'].copy()
-        holdout = dl.sample_regression_data(training, label, i)
-        training = training.drop(holdout.index)
+        folds = data['folds'].copy()
+        holdout = folds[i]
+        folds.pop(i) # remove holdout fold
+        training = pd.concat(folds) # concat remaining folds to create training set
 
-        # allow parameterized run with tuning or testing sets
-        if (tuning):
-            test = tune
-        else:
-            test = holdout
-
-        knn_results = tree.knn_regressor(training, test, label, k, sigma)
-        knn_perf.append(knn_results)
+        reg = RegressionTree(threshold = threshold, node_min = 25)
+        tree = reg.reg_tree(training, label, tree = None, prior_value = None)
+        result = reg.test_tree(tree, holdout, label)
+        perf.append(result)
         
     print('----------')
-    print('\n======== AVG. SUMMARY OF PERFORMANCE [KNN] ========')
-    printer_helper_regressor(knn_perf, f)
+    print('\n======== AVG. SUMMARY OF PERFORMANCE ========')
+    printer_helper_regressor(perf, f)
 
 ################ classification data sets ################
 # print('\n============== DUMMY DATA ============== ')
@@ -134,15 +126,8 @@ tune = data['tune']
 print('\n============== ABALONE DATA ============== ')
 data = dl.get_abalone_data()
 tune = data['tune']
-
-train = data['folds'][0]
-test = data['folds'][1]
-print(test)
-
-reg = RegressionTree()
-tranined_tree = reg.reg_tree(df = tune, label = 'rings', tree = None, prior_value = None)
-# tranined_tree.print()
-reg.test_tree(tranined_tree, test, 'rings')
+label = 'rings'
+regression_helper(data, label, threshold = 0)
 
 # print('\n============== FOREST FIRE DATA ============== ')
 # predictor: area

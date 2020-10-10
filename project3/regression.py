@@ -24,11 +24,18 @@ early stopping
 """
 
 class RegressionTree():
-    def __init__(self):
+    def __init__(self, threshold = 0, node_min = 20):
         # stores feature name to the string query values used for splitting logic
         # meant to keep the query logic we use during split for re-use in the tree build
         # and tree prediction later on
         self.feature_map = {}
+
+        # used as threshold to stop growing tree once MSE drops enough
+        self.threshold = 0
+
+        # the minimum number of items left in a branch to continue splitting
+        # if the number of items < node_min, we stop growing that branch
+        self.node_min = node_min
 
     # binary split for numeric columns
     #
@@ -36,13 +43,20 @@ class RegressionTree():
     #   - median point
     def get_numeric_split(self, df, feature):
         sorted = df.sort_values(by = feature)
-        md1 = int(df.shape[0] / 2)
-        md2 = int(md1 + 1)
-
+        df_len = df.shape[0]
+        med = None
         values = sorted[feature].to_numpy()
-        split = (values[md1] + values[md2]) / 2
 
-        med = df[feature].median().round(5)
+        # handle scenarios where we're trying to split on df with only 1 row or 2 rows
+        if (df_len == 1):
+            split = df[feature].values[0]
+        elif (df_len == 2):
+            split = (values[0] + values[1]) / 2
+        else:
+            md1 = int(df_len / 2)
+            md2 = md1 + 1
+            med = (values[md1] + values[md2]) / 2
+            # med = df[feature].median().round(5)
 
         return med
 
@@ -137,9 +151,6 @@ class RegressionTree():
                 lowest_mse = mse
                 best_feature = f
 
-        print()
-        print('best feature', best_feature)
-        print('lowest mse', lowest_mse)
         return best_feature
 
     def predict(self, node, row):
@@ -170,10 +181,12 @@ class RegressionTree():
     #   - df: the set we're testing
     #   - label: the name of class column
     def test_tree(self, tree, df, label):
+        df = df.copy()
         df['guess'] = df.apply(lambda row : self.predict(tree, row), axis = 1)
         mse = np.mean((df['guess'] -  df[label]) ** 2)
         s = 'tree mse: {0:.3g}'.format(mse)
         print(colored(s, 'green'))
+        return mse
 
     # method that builds up the regression tree
     # recursively builds down tree as it splits the data
@@ -206,14 +219,13 @@ class RegressionTree():
 
         # make leaf node with decision
         if (len(feature_opts) == 1):
-            print('only 1 feature option for ', feature_opts)
             return tree
 
         for f in feature_opts:
             # query will filter dataframe based on the query condition
             df_filtered = df.query(f)
 
-            if (df.shape[0] <= 20):
+            if (df.shape[0] <= self.node_min):
                 # if remaining data items are less than or equal 20
                 # then we won't split anymore, return tree
                 dec = df[label].mean().round(5)
