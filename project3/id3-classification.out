@@ -77,6 +77,84 @@ avg. % accuracy:                89%
 avg. pruning time:              83.64s
 avg. runtime (pruned)           1.07s
 
+==================== CAR DATA ==================== 
+
+========= F O L D #0 =========
+# tree nodes:           242
+tree accuracy:          92%
+runtime:                3.92s
+
+-- pruned --
+# pruned nodes:         174
+pruned tree accuracy:   85%
+pruning time:           1055.30s
+runtime (pruned):       3.53s
+
+========= F O L D #1 =========
+# tree nodes:           230
+tree accuracy:          91%
+runtime:                3.72s
+
+-- pruned --
+# pruned nodes:         164
+pruned tree accuracy:   85%
+pruning time:           951.68s
+runtime (pruned):       3.37s
+
+========= F O L D #2 =========
+# tree nodes:           237
+tree accuracy:          91%
+runtime:                3.69s
+
+-- pruned --
+# pruned nodes:         165
+pruned tree accuracy:   83%
+pruning time:           994.56s
+runtime (pruned):       3.42s
+
+========= F O L D #3 =========
+# tree nodes:           210
+tree accuracy:          93%
+runtime:                3.66s
+
+-- pruned --
+# pruned nodes:         147
+pruned tree accuracy:   87%
+pruning time:           873.25s
+runtime (pruned):       3.29s
+
+========= F O L D #4 =========
+# tree nodes:           223
+tree accuracy:          90%
+runtime:                3.75s
+
+-- pruned --
+# pruned nodes:         170
+pruned tree accuracy:   85%
+pruning time:           888.36s
+runtime (pruned):       3.19s
+------------
+
+====== UNPRUNED SUMMARY ======
+fold #0, accuracy       92%
+fold #1, accuracy       91%
+fold #2, accuracy       91%
+fold #3, accuracy       93%
+fold #4, accuracy       90%
+------
+avg. % accuracy:                91%
+avg. runtime (unpruned):        3.75s
+
+====== PRUNED SUMMARY ======
+fold #0, accuracy       85%
+fold #1, accuracy       85%
+fold #2, accuracy       83%
+fold #3, accuracy       87%
+fold #4, accuracy       85%
+------
+avg. % accuracy:                85%
+avg. pruning time:              952.63s
+avg. runtime (pruned)           3.36s
 
 ================== SEGMENTATION DATA ================== 
 

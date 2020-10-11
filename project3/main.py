@@ -149,12 +149,12 @@ data = dl.get_breast_data()
 
 print('\n==================== CAR DATA ==================== ')
 data = dl.get_car_data()
-classification_helper(data, label = 'class')
+# classification_helper(data, label = 'class')
 
 print('\n================== SEGMENTATION DATA ================== ')
 data = dl.get_segmentation_data()
 label = 'CLASS'
-# classification_helper(data, label)
+classification_helper(data, label)
 
 ################# regression data sets #################
 print('\n================== ABALONE DATA ================== ')
@@ -180,6 +180,6 @@ data = dl.get_forest_fires_data()
 label = 'area'
 threshold = 10680
 
-# regression_helper(data, label, threshold = 0)
-# print()
-# regression_helper(data, label, threshold = threshold)
+regression_helper(data, label, threshold = 0)
+print()
+regression_helper(data, label, threshold = threshold)
