@@ -104,6 +104,7 @@ def ID3(instances, default):
                     instances_i.append(instance)
 
             # Create a subtree recursively
+            print('most common class', mode_class(instances))
             subtree = ID3(instances_i, mode_class(instances))
 
             # Initialize the values of the subtree
@@ -238,8 +239,7 @@ def gain_ratio(instances, attribute):
     # items() method returns a list of all dictionary key-value pairs
     for attribute_value, attribute_value_count in counter.items():
         probability = attribute_value_count/len(values)
-        remaining_entropy += (probability * entropy(
-            instances, attribute, attribute_value))
+        remaining_entropy += (probability * entropy(instances, attribute, attribute_value))
         split_information += probability * (log(probability, 2))
 
     information_gain = priorentropy - remaining_entropy

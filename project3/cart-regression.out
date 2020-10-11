@@ -6,27 +6,27 @@ THRESHOLD        0
 ========= F O L D #0 =========
 # tree nodes:           720
 tree accuracy:          537%
-execution time:         15.84s
+runtime:                15.84s
 
 ========= F O L D #1 =========
 # tree nodes:           690
 tree accuracy:          589%
-execution time:         16.09s
+runtime:                16.09s
 
 ========= F O L D #2 =========
 # tree nodes:           729
 tree accuracy:          593%
-execution time:         16.31s
+runtime:                16.31s
 
 ========= F O L D #3 =========
 # tree nodes:           693
 tree accuracy:          580%
-execution time:         15.40s
+runtime:                15.40s
 
 ========= F O L D #4 =========
 # tree nodes:           674
 tree accuracy:          581%
-execution time:         17.17s
+runtime:                17.17s
 ------------
 
 ====== AVG. SUMMARY OF PERFORMANCE ======
@@ -46,27 +46,27 @@ THRESHOLD        9.8
 ========= F O L D #0 =========
 # tree nodes:           600
 tree accuracy:          539%
-execution time:         15.48s
+runtime:                15.48s
 
 ========= F O L D #1 =========
 # tree nodes:           566
 tree accuracy:          589%
-execution time:         14.83s
+runtime:                14.83s
 
 ========= F O L D #2 =========
 # tree nodes:           589
 tree accuracy:          588%
-execution time:         17.41s
+runtime:                17.41s
 
 ========= F O L D #3 =========
 # tree nodes:           567
 tree accuracy:          597%
-execution time:         15.24s
+runtime:                15.24s
 
 ========= F O L D #4 =========
 # tree nodes:           641
 tree accuracy:          576%
-execution time:         14.32s
+runtime:                14.32s
 ------------
 
 ====== AVG. SUMMARY OF PERFORMANCE ======
@@ -87,27 +87,27 @@ THRESHOLD        0
 ========= F O L D #0 =========
 # tree nodes:           82
 tree accuracy:          2589416%
-execution time:         1.30s
+runtime:                1.30s
 
 ========= F O L D #1 =========
 # tree nodes:           84
 tree accuracy:          2384657%
-execution time:         1.33s
+runtime:                1.33s
 
 ========= F O L D #2 =========
 # tree nodes:           81
 tree accuracy:          3436757%
-execution time:         1.29s
+runtime:                1.29s
 
 ========= F O L D #3 =========
 # tree nodes:           77
 tree accuracy:          1962423%
-execution time:         1.22s
+runtime:                1.22s
 
 ========= F O L D #4 =========
 # tree nodes:           83
 tree accuracy:          1264404%
-execution time:         1.23s
+runtime:                1.23s
 ------------
 
 ====== AVG. SUMMARY OF PERFORMANCE ======
@@ -127,27 +127,27 @@ THRESHOLD        4150
 ========= F O L D #0 =========
 # tree nodes:           82
 tree accuracy:          2589416%
-execution time:         1.30s
+runtime:                1.30s
 
 ========= F O L D #1 =========
 # tree nodes:           78
 tree accuracy:          2403551%
-execution time:         1.30s
+runtime:                1.30s
 
 ========= F O L D #2 =========
 # tree nodes:           79
 tree accuracy:          3436757%
-execution time:         1.24s
+runtime:                1.24s
 
 ========= F O L D #3 =========
 # tree nodes:           73
 tree accuracy:          1962423%
-execution time:         1.18s
+runtime:                1.18s
 
 ========= F O L D #4 =========
 # tree nodes:           82
 tree accuracy:          1264404%
-execution time:         1.25s
+runtime:                1.25s
 ------------
 
 ====== AVG. SUMMARY OF PERFORMANCE ======
@@ -168,27 +168,27 @@ THRESHOLD        0
 ========= F O L D #0 =========
 # tree nodes:           114
 tree accuracy:          109098%
-execution time:         2.33s
+runtime:                2.33s
 
 ========= F O L D #1 =========
 # tree nodes:           121
 tree accuracy:          65009%
-execution time:         2.33s
+runtime:                2.33s
 
 ========= F O L D #2 =========
 # tree nodes:           115
 tree accuracy:          114650%
-execution time:         2.10s
+runtime:                2.10s
 
 ========= F O L D #3 =========
 # tree nodes:           112
 tree accuracy:          153626%
-execution time:         2.24s
+runtime:                2.24s
 
 ========= F O L D #4 =========
 # tree nodes:           113
 tree accuracy:          1291982%
-execution time:         2.24s
+runtime:                2.24s
 ------------
 
 ====== AVG. SUMMARY OF PERFORMANCE ======
@@ -208,27 +208,27 @@ THRESHOLD        10680
 ========= F O L D #0 =========
 # tree nodes:           79
 tree accuracy:          70274%
-execution time:         1.96s
+runtime:                1.96s
 
 ========= F O L D #1 =========
 # tree nodes:           85
 tree accuracy:          66898%
-execution time:         2.60s
+runtime:                2.60s
 
 ========= F O L D #2 =========
 # tree nodes:           81
 tree accuracy:          86015%
-execution time:         1.89s
+runtime:                1.89s
 
 ========= F O L D #3 =========
 # tree nodes:           82
 tree accuracy:          139514%
-execution time:         2.10s
+runtime:                2.10s
 
 ========= F O L D #4 =========
 # tree nodes:           91
 tree accuracy:          1291982%
-execution time:         2.30s
+runtime:                2.30s
 ------------
 
 ====== AVG. SUMMARY OF PERFORMANCE ======

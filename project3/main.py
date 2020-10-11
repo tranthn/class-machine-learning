@@ -20,7 +20,7 @@ def print_helper_classifier(perf, fold):
         print('fold #{0}, accuracy\t{1}'.format(i, pstr))
         avg += k
 
-    print('------\navg. % accuracy:\t{:.0%}'.format(avg / fold))
+    print('------\navg. % accuracy:\t\t{:.0%}'.format(avg / fold))
 
 def printer_helper_regressor(perf, fold):
     avg = 0
@@ -38,8 +38,13 @@ def classification_helper(data, label = None):
         label = class_label
 
     f = 5 # fold-value
+
+    # tracker variables for performance/timing
     perf = []
+    pruned_perf = []
     elapsed_time = 0
+    prunning_time = 0
+    elapsed_time_pruned = 0
 
     # get starting attrs for building tree
     tune = data['tune']
@@ -55,21 +60,47 @@ def classification_helper(data, label = None):
         # build the tree model
         id3_tree = ID3Tree(validation_set = tune)
         trained_tree = id3_tree.id3_tree(df = training, label = label, tree = None, features = attrs)
-        print('# tree nodes:\t\t{0}'.format(id3_tree.num_nodes))
-
-        # time the run for testing tree
+        
+        # time initial tree testing
         start_time = time.time()
         result = id3_tree.test_tree(trained_tree, holdout, label)
-        print('tree accuracy:\t\t{:.0%}'.format(result))
         elapsed = time.time() - start_time
         elapsed_time += elapsed
-        print("execution time:\t\t{:.2f}s".format(elapsed))
+
+        # time the pruning process
+        start_time = time.time()
+        pruned_tree = id3_tree.prune_tree(trained_tree, label)
+        elapsed_pruning = time.time() - start_time
+        prunning_time += elapsed_pruning
+
+        # time the testing of the pruned tree
+        start_time = time.time()
+        pruned_result = id3_tree.test_tree(trained_tree, holdout, label)
+        elapsed_test_pruned = time.time() - start_time
+        elapsed_time_pruned += elapsed_test_pruned
+
+        # track results
+        pruned_perf.append(pruned_result)
         perf.append(result)
 
+        print('# tree nodes:\t\t{0}'.format(id3_tree.num_nodes))
+        print('tree accuracy:\t\t{:.0%}'.format(result))
+        print("runtime:\t\t{:.2f}s".format(elapsed))
+        print('\n-- pruned --')
+        print('# pruned nodes:\t\t{0}'.format(id3_tree.num_pruned_nodes))
+        print('pruned tree accuracy:\t{:.0%}'.format(pruned_result))
+        print("pruning time:\t\t{:.2f}s".format(elapsed_pruning))
+        print("runtime (pruned):\t{:.2f}s".format(elapsed_test_pruned))
+
     print('------------')
-    print('\n====== AVG. SUMMARY OF PERFORMANCE ======')
+    print('\n====== UNPRUNED SUMMARY ======')
     print_helper_classifier(perf, f)
-    print('avg. runtime:\t\t{:.2f}s'.format(elapsed_time / 5))
+    print('avg. runtime (unpruned):\t{:.2f}s'.format(elapsed_time / 5))
+
+    print('\n====== PRUNED SUMMARY ======')
+    print_helper_classifier(pruned_perf, f)
+    print("avg. pruning time:\t\t{:.2f}s".format(prunning_time / 5))
+    print("avg. runtime (pruned)\t\t{:.2f}s".format(elapsed_time_pruned / 5))
 
 ## regression wrapper helper
 def regression_helper(data, label = None, threshold = None):
@@ -102,7 +133,7 @@ def regression_helper(data, label = None, threshold = None):
         print('tree accuracy:\t\t{:.0%}'.format(result))
         elapsed = time.time() - start_time
         elapsed_time += elapsed
-        print("execution time:\t\t{:.2f}s".format(elapsed))
+        print("runtime:\t\t{:.2f}s".format(elapsed))
         perf.append(result)
         
     print('------------')
@@ -114,7 +145,7 @@ def regression_helper(data, label = None, threshold = None):
 
 print('\n================== BREAST DATA ================== ')
 data = dl.get_breast_data()
-classification_helper(data, label = 'class')
+# classification_helper(data, label = 'class')
 
 print('\n==================== CAR DATA ==================== ')
 data = dl.get_car_data()
@@ -123,7 +154,7 @@ classification_helper(data, label = 'class')
 print('\n================== SEGMENTATION DATA ================== ')
 data = dl.get_segmentation_data()
 label = 'CLASS'
-classification_helper(data, label)
+# classification_helper(data, label)
 
 ################# regression data sets #################
 print('\n================== ABALONE DATA ================== ')

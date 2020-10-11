@@ -7,6 +7,7 @@ class Node():
         self.decision = decision
         self.transition = transition
         self.items = items
+        self.pruned = False # used only for ID3 tree
 
     # prints tree in a semi-structured format
     #
@@ -19,6 +20,8 @@ class Node():
         print('{0} feat: {1}'.format(pre, self.feature))
         print('{0} transition value: {1}'.format(pre, self.transition))
         print(pre, 'decision = {0}'.format(self.decision))
+        print('pruned?: {0}'.format(self.pruned))
+
         if not (self.items is None):
             print('{0} items #: {1}'.format(pre, len(self.items)))
 

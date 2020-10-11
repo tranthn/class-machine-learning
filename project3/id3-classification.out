@@ -1,0 +1,158 @@
+================== BREAST DATA ================== 
+
+========= F O L D #0 =========
+# tree nodes:           73
+tree accuracy:          95%
+runtime:                1.43s
+
+-- pruned --
+# pruned nodes:         56
+pruned tree accuracy:   86%
+pruning time:           83.25s
+runtime (pruned):       1.05s
+
+========= F O L D #1 =========
+# tree nodes:           66
+tree accuracy:          90%
+runtime:                1.37s
+
+-- pruned --
+# pruned nodes:         47
+pruned tree accuracy:   84%
+pruning time:           79.33s
+runtime (pruned):       1.12s
+
+========= F O L D #2 =========
+# tree nodes:           72
+tree accuracy:          96%
+runtime:                1.34s
+
+-- pruned --
+# pruned nodes:         54
+pruned tree accuracy:   93%
+pruning time:           83.36s
+runtime (pruned):       1.01s
+
+========= F O L D #3 =========
+# tree nodes:           66
+tree accuracy:          95%
+runtime:                1.35s
+
+-- pruned --
+# pruned nodes:         38
+pruned tree accuracy:   94%
+pruning time:           94.70s
+runtime (pruned):       1.22s
+
+========= F O L D #4 =========
+# tree nodes:           64
+tree accuracy:          93%
+runtime:                1.35s
+
+-- pruned --
+# pruned nodes:         46
+pruned tree accuracy:   87%
+pruning time:           77.59s
+runtime (pruned):       0.98s
+------------
+
+====== UNPRUNED SUMMARY ======
+fold #0, accuracy       95%
+fold #1, accuracy       90%
+fold #2, accuracy       96%
+fold #3, accuracy       95%
+fold #4, accuracy       93%
+------
+avg. % accuracy:                94%
+avg. runtime (unpruned):        1.37s
+
+====== PRUNED SUMMARY ======
+fold #0, accuracy       86%
+fold #1, accuracy       84%
+fold #2, accuracy       93%
+fold #3, accuracy       94%
+fold #4, accuracy       87%
+------
+avg. % accuracy:                89%
+avg. pruning time:              83.64s
+avg. runtime (pruned)           1.07s
+
+
+================== SEGMENTATION DATA ================== 
+
+========= F O L D #0 =========
+# tree nodes:           92
+tree accuracy:          69%
+runtime:                0.82s
+
+-- pruned --
+# pruned nodes:         59
+pruned tree accuracy:   49%
+pruning time:           89.69s
+runtime (pruned):       0.73s
+
+========= F O L D #1 =========
+# tree nodes:           96
+tree accuracy:          83%
+runtime:                0.92s
+
+-- pruned --
+# pruned nodes:         64
+pruned tree accuracy:   69%
+pruning time:           93.40s
+runtime (pruned):       0.84s
+
+========= F O L D #2 =========
+# tree nodes:           100
+tree accuracy:          80%
+runtime:                0.77s
+
+-- pruned --
+# pruned nodes:         63
+pruned tree accuracy:   71%
+pruning time:           103.17s
+runtime (pruned):       0.70s
+
+========= F O L D #3 =========
+# tree nodes:           96
+tree accuracy:          71%
+runtime:                0.95s
+
+-- pruned --
+# pruned nodes:         68
+pruned tree accuracy:   52%
+pruning time:           86.91s
+runtime (pruned):       0.76s
+
+========= F O L D #4 =========
+# tree nodes:           122
+tree accuracy:          74%
+runtime:                0.85s
+
+-- pruned --
+# pruned nodes:         95
+pruned tree accuracy:   49%
+pruning time:           112.58s
+runtime (pruned):       0.58s
+------------
+
+====== UNPRUNED SUMMARY ======
+fold #0, accuracy       69%
+fold #1, accuracy       83%
+fold #2, accuracy       80%
+fold #3, accuracy       71%
+fold #4, accuracy       74%
+------
+avg. % accuracy:                76%
+avg. runtime (unpruned):        0.86s
+
+====== PRUNED SUMMARY ======
+fold #0, accuracy       49%
+fold #1, accuracy       69%
+fold #2, accuracy       71%
+fold #3, accuracy       52%
+fold #4, accuracy       49%
+------
+avg. % accuracy:                58%
+avg. pruning time:              97.15s
+avg. runtime (pruned)           0.72s

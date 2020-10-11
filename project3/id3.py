@@ -19,6 +19,9 @@ class ID3Tree():
         # track number of nodes appended
         self.num_nodes = 0
 
+        # track number of pruned nodes
+        self.num_pruned_nodes = 0
+
     # helper to find most common class in filtered dataframe
     def most_common_class(self, df, label):
         # groups by class and the count of rows that belong in a given class option
@@ -206,10 +209,15 @@ class ID3Tree():
                     continue
 
             # handle cases where the trained tree does not have a branch
-            # for a particular categorical feature option
             # in this scenario, we'll just end early at current node
             if (picked_child == None):
                 return node.decision
+
+            # if the chosen branch has been pruned, end at current node
+            elif (picked_child.pruned):
+                return node.decision
+
+            # otherwise, continue recursively traversing down tree
             else:
                 return self.predict(picked_child, row)
 
@@ -230,6 +238,36 @@ class ID3Tree():
         tot = df.shape[0]
         right = df[df['right'] == True].shape[0]
         return round(right / tot, 5)
+
+    def prune_tree(self, tree, label):
+
+        def prune_helper(node, label):
+            if (node.children is None or len(node.children) == 0):
+                accuracy = self.test_tree(tree, self.validation_set, label)
+                node.pruned = True
+                self.num_pruned_nodes += 1
+                pruned_accuracy = self.test_tree(tree, self.validation_set, label)
+
+                # accuracy dropped with pruning, so we'll keep this node
+                if (pruned_accuracy < accuracy):
+                    node.pruned = False
+                    self.num_pruned_nodes -= 1
+
+                return
+
+            else:
+                for c in node.children:
+                    prune_helper(c, label)
+
+                accuracy = self.test_tree(tree, self.validation_set, label)
+                node.pruned = True
+                self.num_pruned_nodes += 1
+                pruned_accuracy = self.test_tree(tree, self.validation_set, label)
+                if (pruned_accuracy < accuracy):
+                    node.pruned = False
+                    self.num_pruned_nodes -= 1
+
+        prune_helper(tree, label)
 
     # method that builds up the id3 tree itself
     # recursively builds down tree as it splits the data
