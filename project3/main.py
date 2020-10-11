@@ -81,7 +81,9 @@ def regression_helper(data, label = None, threshold = None):
     perf = []
     elapsed_time = 0
 
-    print('\nTHRESHOLD\t', threshold)
+    print('+++++++++++++++++++++++++')
+    print('THRESHOLD\t', threshold)
+    print('+++++++++++++++++++++++++')
     for i in range(f):
         print('\n========= F O L D #{0} ========='.format(i))
         folds = data['folds'].copy()
@@ -106,7 +108,7 @@ def regression_helper(data, label = None, threshold = None):
     print('------------')
     print('\n====== AVG. SUMMARY OF PERFORMANCE ======')
     printer_helper_regressor(perf, f)
-    print('avg. runtime:\t\t{:.2f}s'.format(elapsed_time / 5))
+    print('avg. runtime:\t{:.2f}s'.format(elapsed_time / 5))
 
 ################ classification data sets ################
 
