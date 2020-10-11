@@ -7,12 +7,17 @@ from termcolor import colored
 from node import Node
 
 class ID3Tree():
-    def __init__(self, data):
+    def __init__(self, validation_set = None):
         # stores feature name to the string query values used for splitting logic
         # meant to keep the query logic we use in entropy for re-use in the tree build
         # and tree prediction later on
         self.feature_map = {}
-        self.data = data
+
+        # validation set used for early stopping as we build the tree
+        self.validation_set = validation_set
+
+        # track number of nodes appended
+        self.num_nodes = 0
 
     # helper to find most common class in filtered dataframe
     def most_common_class(self, df, label):
@@ -220,12 +225,11 @@ class ID3Tree():
             out = sself.predict(tree, row)
             return out == row[label]
 
+        df = df.copy()
         df['right'] = df.apply(lambda row : check_if_right(tree, row), axis = 1)
-        print()
         tot = df.shape[0]
         right = df[df['right'] == True].shape[0]
-        s = 'tree accuracy: {:.0%}'.format(right / tot)
-        print(colored(s, 'green'))
+        return round(right / tot, 5)
 
     # method that builds up the id3 tree itself
     # recursively builds down tree as it splits the data
@@ -282,12 +286,19 @@ class ID3Tree():
                 dec = classes[0]
                 leaf = Node(feature = root, transition = f, decision = dec)
                 tree.append_child(leaf)
+                self.num_nodes += 1
 
             # otherwise, feature-attr pair will be recursively split
+            # if the split for this feature option doesn't yield any children
+            # then just return current tree
             else:
                 subset = df_filtered
                 subset = subset.drop(columns = root)
-                subtree = self.id3_tree(subset, label, tree, next_features, f)
-                tree.append_child(subtree)
+                if (subset.shape[0] > 1):
+                    subtree = self.id3_tree(subset, label, tree, next_features, f)
+                    tree.append_child(subtree)
+                    self.num_nodes += 1
+                else:
+                    return tree
 
         return tree

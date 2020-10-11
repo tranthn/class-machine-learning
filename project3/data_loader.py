@@ -123,7 +123,7 @@ def get_breast_data():
     bdf3 = bdf2.copy().astype({ 'bare-nuclei': int })
 
     # drop unique id: sample-code-number, not needed
-    bdf4 = pd.get_dummies(bdf3).drop(columns = 'sample-code-number')
+    bdf4 = bdf3.drop(columns = 'sample-code-number')
     data_sets = stratify_data(bdf4, 'class')
     return data_sets
 
