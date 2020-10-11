@@ -114,21 +114,28 @@ tune = data['tune']
 train = data['folds'][0]
 test = data['folds'][1]
 
-"""
+# tree = ID3Tree(data = train)
+# attrs = tune.drop(columns = [class_label]).columns.values
+# trained_tree = tree.id3_tree(df = tune, label = class_label, tree = None, features = attrs)
+# trained_tree.print()
+# tree.test_tree(trained_tree, test, class_label)
+
+print('\n================== CAR DATA ================== ')
+data = dl.get_car_data()
+tune = data['tune']
+train = data['folds'][0]
+test = data['folds'][1]
+
 tree = ID3Tree(data = train)
 attrs = tune.drop(columns = [class_label]).columns.values
 trained_tree = tree.id3_tree(df = tune, label = class_label, tree = None, features = attrs)
 trained_tree.print()
 tree.test_tree(trained_tree, test, class_label)
-"""
-
-print('\n================== CAR DATA ================== ')
-data = dl.get_car_data()
-tune = data['tune']
 
 # print('\n============ SEGMENTATION DATA ============ ')
 # data = dl.get_segmentation_data()
 # tune = data['tune']
+# class_label = 'CLASS'
 
 ################# regression data sets #################
 print('\n================== ABALONE DATA ================== ')

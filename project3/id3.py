@@ -14,21 +14,42 @@ class ID3Tree():
         self.feature_map = {}
         self.data = data
 
+    # helper to find most common class in filtered dataframe
+    def most_common_class(self, df, label):
+        # groups by class and the count of rows that belong in a given class option
+        # displays in descending count order, so the first index value corresponds
+        # the most common class of this dataframe
+        df_grouped = df.groupby(by = [label]).size()
+        return df_grouped.index.values[0]
+
+    # helper to check if feature column is categorical
+    def is_categorical(self, df, feature):
+        ftype = df[feature].dtype
+        categorical = ftype != 'float64' and ftype != 'int64'
+        return categorical
+
     # binary split for numeric columns
     #
     # returns
     #   - median point
-    def get_numeric_split(self, df, column):
-        sorted = df.sort_values(by = column)
-        md1 = int(df.shape[0] / 2)
-        md2 = int(md1 + 1)
+    def get_numeric_split(self, df, feature):
+        sorted = df.sort_values(by = feature)
+        df_len = df.shape[0]
+        split = None
+        values = sorted[feature].to_numpy()
 
-        values = sorted[column].to_numpy()
-        split = (values[md1] + values[md2]) / 2
+        # handle scenarios where we're trying to split on df with only 1 row or 2 rows
+        if (df_len == 1):
+            split = df[feature].values[0]
+        elif (df_len == 2):
+            split = (values[0] + values[1]) / 2
+        else:
+            # otherwise, use the average between the 2 midpoints of current feature colummn
+            md1 = int(df_len / 2)
+            md2 = md1 + 1
+            split = (values[md1] + values[md2]) / 2
 
-        med = df[column].median()
-
-        return med
+        return round(split, 5)
 
     # calculate individual information gain value for given position / total combo
     #
@@ -49,12 +70,6 @@ class ID3Tree():
         else:
             i = (-p_pn * math.log(p_pn, 2)) - (n_pn * math.log(n_pn, 2))
             return i
-
-    # check if feature column is categorical
-    def is_categorical(self, df, feature):
-        ftype = df[feature].dtype
-        categorical = ftype != 'float64' and ftype != 'int64'
-        return categorical
 
     # builds query string to use in conjunction with pandas.query()
     # example: `clump-thickness` > 4.0
@@ -83,7 +98,7 @@ class ID3Tree():
     #
     # returns
     #   - the entropy for a given feature
-    def entropy(self, df, feature, label):
+    def entropy(self, df, feature, label, class_opt):
         tot = df.shape[0]
         ent = 0
 
@@ -115,8 +130,8 @@ class ID3Tree():
             # determine how many classes represented after filtering above
             class_count = len(df_filtered[label].unique())
 
-            # this is hard-coded for class belonging / class == 1
-            df_filtered_cl = df_filtered[df_filtered[label] == 1]
+            # check information gain for a specific class option
+            df_filtered_cl = df_filtered[df_filtered[label] == class_opt]
             p = df_filtered_cl.shape[0]
 
             # check if the feature has a split for predicting class or not
@@ -139,6 +154,7 @@ class ID3Tree():
     def pick_best_feature(self, df, label):
         tot = df.shape[0]
         features = df.columns.drop(label)
+        class_opts = df[label].unique()
 
         # calculate set entropy
         grouping = df.groupby(by = [label]).size()
@@ -147,11 +163,12 @@ class ID3Tree():
         best_gain = -1
 
         for f in features:
-            e = self.entropy(df, f, label)
-            total_gain = set_entropy - e
-            if (total_gain > best_gain):
-                best_gain = total_gain
-                best_feat = f
+            for c in class_opts:
+                e = self.entropy(df, f, label, c)
+                total_gain = set_entropy - e
+                if (total_gain > best_gain):
+                    best_gain = total_gain
+                    best_feat = f
 
         return best_feat
 
@@ -182,8 +199,14 @@ class ID3Tree():
                 if take_branch:
                     picked_child = c
                     continue
-            
-            return self.predict(picked_child, row)
+
+            # handle cases where the trained tree does not have a branch
+            # for a particular categorical feature option
+            # in this scenario, we'll just end early at current node
+            if (picked_child == None):
+                return node.decision
+            else:
+                return self.predict(picked_child, row)
 
     # method to assess accuracy of the tree given some dataframe
     #
@@ -225,31 +248,27 @@ class ID3Tree():
         # default root node
         root_node = Node(items = df, transition = prior_value)
 
-        # if tree hasn't started yet, set to current root
-        if (tree == None):
-            tree = root_node
-
-        # label decision on node
-        if (len(features) <= 1):
-            return tree
-
         # initialize root node with actual feature
         root = self.pick_best_feature(df, label)
         root_node.feature = root
+        
+        # set the default decision for any given node to be most common class
+        dec = self.most_common_class(df, label)
+        root_node.decision = self.most_common_class(df, label)
         tree = root_node
 
-        # recalculate groupings to create children nodes
-        grouping = df.groupby(by = [root], dropna = False).size()
-        feature_opts = grouping.index
-
-        # make leaf node with decision
-        if (len(feature_opts) == 1):
-            print('only 1 feature option for ', feature_opts)
+        # if there are no more features to split on, then just return
+        if (len(features) <= 1):
             return tree
 
         # there are more than 1 features left
         next_features = np.delete(features, np.where(features == [root]))
         feature_opts = self.feature_map[root]
+
+        # make leaf node with decision
+        if (len(feature_opts) == 1):
+            print('only 1 feature option for ', feature_opts)
+            return tree
 
         for f in feature_opts:
             # query will filter dataframe based on the query condition

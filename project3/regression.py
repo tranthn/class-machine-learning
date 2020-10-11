@@ -59,6 +59,7 @@ class RegressionTree():
         elif (df_len == 2):
             split = (values[0] + values[1]) / 2
         else:
+            # otherwise, use the average between the 2 midpoints of current feature colummn
             md1 = int(df_len / 2)
             md2 = md1 + 1
             split = (values[md1] + values[md2]) / 2
@@ -203,7 +204,7 @@ class RegressionTree():
                     continue
 
             # handle cases where the trained tree does not have a branch
-            #   for a particular categorical feature option
+            # for a particular categorical feature option
             # in this scenario, we'll just end early at current node
             if (picked_child == None):
                 return node.decision

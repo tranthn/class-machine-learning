@@ -16,9 +16,9 @@ class Node():
     def print(self, levels = 0):
         pre = '\t' * levels
         print()
-        print('{0} lvl: {1}'.format(pre, levels))
         print('{0} feat: {1}'.format(pre, self.feature))
         print('{0} transition value: {1}'.format(pre, self.transition))
+        print(pre, 'decision = {0}'.format(self.decision))
         if not (self.items is None):
             print('{0} items #: {1}'.format(pre, len(self.items)))
 
@@ -28,7 +28,6 @@ class Node():
                 c.print(levels = levels + 1)
         else:
             print(pre, 'leaf node')
-            print(pre, 'decision = {0}'.format(self.decision))
 
     # add child node to the children array of a given node
     def append_child(self, node):
