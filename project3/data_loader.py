@@ -44,6 +44,7 @@ def read_csv_with_header(file_path):
 # will need to do stratification for the classfication data sets
 # this will stratify based on indices
 def stratify_data(df, label):
+    df_orig = df.copy()
     n = df.shape[0]
     fold = 5
 
@@ -75,13 +76,14 @@ def stratify_data(df, label):
         strats.append(part)
         df = df.drop(part_idx)
 
-    sets = { 'tune': tune, 'folds': strats }
+    sets = { 'tune': tune, 'folds': strats, 'all': df_orig }
 
     return sets
 
 # folds for cross validation for regression data
 # take out tuning first, then sort dataframe to split into folds
 def stratify_regression_data(df, label):
+    df_orig = df.copy()
     n = df.shape[0]
     fold = 5
 
@@ -97,7 +99,7 @@ def stratify_regression_data(df, label):
         part = df.iloc[i::5]
         strats.append(part)
 
-    sets = { 'tune': tune, 'folds': strats }
+    sets = { 'tune': tune, 'folds': strats, 'all': df_orig }
     return sets
 
 ############### main data loading ###############

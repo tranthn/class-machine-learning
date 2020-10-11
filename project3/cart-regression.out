@@ -1,0 +1,230 @@
+================== ABALONE DATA ================== 
+
+THRESHOLD        0
+
+======== F O L D #0 ========
+# nodes:  720
+tree mse after test      5.37326
+execution time for fold 0:      14.95s
+
+======== F O L D #1 ========
+# nodes:  690
+tree mse after test      5.88904
+execution time for fold 1:      14.90s
+
+======== F O L D #2 ========
+# nodes:  729
+tree mse after test      5.92518
+execution time for fold 2:      15.41s
+
+======== F O L D #3 ========
+# nodes:  693
+tree mse after test      5.80335
+execution time for fold 3:      14.00s
+
+======== F O L D #4 ========
+# nodes:  674
+tree mse after test      5.81338
+execution time for fold 4:      14.42s
+----------
+
+======== AVG. SUMMARY OF PERFORMANCE ========
+fold #0, MSE    5.3733
+fold #1, MSE    5.889
+fold #2, MSE    5.9252
+fold #3, MSE    5.8034
+fold #4, MSE    5.8134
+------
+avg. MSE:       5.7608
+
+
+THRESHOLD        9.8
+
+======== F O L D #0 ========
+# nodes:  600
+tree mse after test      5.3916
+execution time for fold 0:      13.97s
+
+======== F O L D #1 ========
+# nodes:  566
+tree mse after test      5.89163
+execution time for fold 1:      14.26s
+
+======== F O L D #2 ========
+# nodes:  589
+tree mse after test      5.88022
+execution time for fold 2:      14.21s
+
+======== F O L D #3 ========
+# nodes:  567
+tree mse after test      5.96867
+execution time for fold 3:      14.19s
+
+======== F O L D #4 ========
+# nodes:  641
+tree mse after test      5.76377
+execution time for fold 4:      15.51s
+----------
+
+======== AVG. SUMMARY OF PERFORMANCE ========
+fold #0, MSE    5.3916
+fold #1, MSE    5.8916
+fold #2, MSE    5.8802
+fold #3, MSE    5.9687
+fold #4, MSE    5.7638
+------
+avg. MSE:       5.7792
+
+================== MACHINE DATA ================== 
+
+THRESHOLD        0
+
+======== F O L D #0 ========
+# nodes:  82
+tree mse after test      25894.15842
+execution time for fold 0:      1.36s
+
+======== F O L D #1 ========
+# nodes:  84
+tree mse after test      23846.56958
+execution time for fold 1:      1.36s
+
+======== F O L D #2 ========
+# nodes:  81
+tree mse after test      34367.56582
+execution time for fold 2:      1.36s
+
+======== F O L D #3 ========
+# nodes:  77
+tree mse after test      19624.22558
+execution time for fold 3:      1.20s
+
+======== F O L D #4 ========
+# nodes:  83
+tree mse after test      12644.03566
+execution time for fold 4:      1.27s
+----------
+
+======== AVG. SUMMARY OF PERFORMANCE ========
+fold #0, MSE    25894
+fold #1, MSE    23847
+fold #2, MSE    34368
+fold #3, MSE    19624
+fold #4, MSE    12644
+------
+avg. MSE:       23275
+
+
+THRESHOLD        4150
+
+======== F O L D #0 ========
+# nodes:  82
+tree mse after test      25894.15842
+execution time for fold 0:      1.39s
+
+======== F O L D #1 ========
+# nodes:  78
+tree mse after test      24035.51323
+execution time for fold 1:      1.34s
+
+======== F O L D #2 ========
+# nodes:  79
+tree mse after test      34367.56582
+execution time for fold 2:      1.32s
+
+======== F O L D #3 ========
+# nodes:  73
+tree mse after test      19624.22558
+execution time for fold 3:      1.22s
+
+======== F O L D #4 ========
+# nodes:  82
+tree mse after test      12644.03566
+execution time for fold 4:      1.24s
+----------
+
+======== AVG. SUMMARY OF PERFORMANCE ========
+fold #0, MSE    25894
+fold #1, MSE    24036
+fold #2, MSE    34368
+fold #3, MSE    19624
+fold #4, MSE    12644
+------
+avg. MSE:       23313
+
+================== FOREST FIRE DATA ================== 
+
+THRESHOLD        0
+
+======== F O L D #0 ========
+# nodes:  114
+tree mse after test      1090.98431
+execution time for fold 0:      2.49s
+
+======== F O L D #1 ========
+# nodes:  121
+tree mse after test      650.08839
+execution time for fold 1:      2.61s
+
+======== F O L D #2 ========
+# nodes:  115
+tree mse after test      1146.50002
+execution time for fold 2:      2.23s
+
+======== F O L D #3 ========
+# nodes:  112
+tree mse after test      1536.26144
+execution time for fold 3:      2.39s
+
+======== F O L D #4 ========
+# nodes:  113
+tree mse after test      12919.82378
+execution time for fold 4:      2.33s
+----------
+
+======== AVG. SUMMARY OF PERFORMANCE ========
+fold #0, MSE    1091
+fold #1, MSE    650.09
+fold #2, MSE    1146.5
+fold #3, MSE    1536.3
+fold #4, MSE    12920
+------
+avg. MSE:       3468.7
+
+
+THRESHOLD        10680
+
+======== F O L D #0 ========
+# nodes:  79
+tree mse after test      702.74344
+execution time for fold 0:      2.11s
+
+======== F O L D #1 ========
+# nodes:  85
+tree mse after test      668.98303
+execution time for fold 1:      2.28s
+
+======== F O L D #2 ========
+# nodes:  81
+tree mse after test      860.14704
+execution time for fold 2:      1.83s
+
+======== F O L D #3 ========
+# nodes:  82
+tree mse after test      1395.14223
+execution time for fold 3:      2.08s
+
+======== F O L D #4 ========
+# nodes:  91
+tree mse after test      12919.82378
+execution time for fold 4:      2.32s
+----------
+
+======== AVG. SUMMARY OF PERFORMANCE ========
+fold #0, MSE    702.74
+fold #1, MSE    668.98
+fold #2, MSE    860.15
+fold #3, MSE    1395.1
+fold #4, MSE    12920
+------
+avg. MSE:       3309.4

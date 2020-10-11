@@ -40,6 +40,9 @@ class RegressionTree():
         # validation set used for early stopping as we build the tree
         self.validation_set = validation_set
 
+        # track number of nodes appended
+        self.num_nodes = 0
+
     # binary split for numeric columns
     #
     # returns
@@ -90,15 +93,28 @@ class RegressionTree():
 
         return query_str
 
+    # helper that calculates MSE for a dataframe
+    # it will take in a filtered dataframe and find its average target value
+    # the average is compared against each row's actual target value to find MSE
     def calc_mse(self, df, label):
-        # best guess based on df passed in (which is split based on feature value)
+        # avg is based on df passed in (which is pre-split based on feature value)
         avg = df[label].mean()
         rcount = df.shape[0]
         vals = np.full([rcount], avg)
         mse = np.mean((vals - df[label]) ** 2)
-
         return round(mse, 5)
 
+    # get the minimal MSE for a given feature
+    # will use the numeric split function to do
+    # a binary split and then pick the lowest MSE of the split groups
+    #
+    # arguments
+    #   - df
+    #   - feature: current column
+    #   - label: target predictor column, used to assess MSE
+    # 
+    # returns
+    #   - lowest MSE, feature condition that resulted in MSE
     def get_feature_mse(self, df, feature, label):
         # will store query strings we'll use for pandas.query()
         feature_opts = []
@@ -155,6 +171,15 @@ class RegressionTree():
 
         return best_feature
 
+    # traverse a given node to pick best decision for a given data row
+    # will recursively traverse down a node
+    #
+    # arguments:
+    #   - tree node: representing a given node at any point in a tree
+    #   - row: the data instance we're predicting on
+    #
+    # returns
+    #   - the decision / outcome based on the final leaf node
     def predict(self, node, row):
         # convert Series to DataFrame to allow query() to use
         # the stored transition string (which looks like `condition` operator value)
@@ -165,6 +190,9 @@ class RegressionTree():
         # if node is leaf, return its decision
         if (node.children is None or len(node.children) == 0):
             return node.decision
+
+        # else iterate through the children to see if there
+        # is an available branch to take for our row
         else:
             picked_child = None
             for c in node.children:
@@ -173,8 +201,14 @@ class RegressionTree():
                 if take_branch:
                     picked_child = c
                     continue
-            
-            return self.predict(picked_child, row)
+
+            # handle cases where the trained tree does not have a branch
+            #   for a particular categorical feature option
+            # in this scenario, we'll just end early at current node
+            if (picked_child == None):
+                return node.decision
+            else:            
+                return self.predict(picked_child, row)
 
     # method to assess accuracy of the tree given some dataframe
     #
@@ -186,9 +220,9 @@ class RegressionTree():
         df = df.copy()
         df['guess'] = df.apply(lambda row : self.predict(tree, row), axis = 1)
         mse = np.mean((df['guess'] -  df[label]) ** 2)
-        s = 'tree mse: {0:.3g}'.format(mse)
-        print(colored(s, 'green'))
-        return mse
+        # result = 'tree mse: {0:.5g}'.format(mse)
+        # print(colored(result, 'green'))
+        return round(mse, 5)
 
     # method that builds up the regression tree
     # recursively builds down tree as it splits the data
@@ -211,15 +245,15 @@ class RegressionTree():
         root = self.pick_best_feature(df, label)
         root_node.feature = root
 
-        # set the default decision for any given node to be average of its item set
+        # set the default decision for any given node to be average of its current item set
         root_node.decision = df[label].mean().round(5)
         tree = root_node
 
         ## early stopping handling
         if (self.threshold > 0):
             mse = self.test_tree(tree, self.validation_set, label)
+            # early stop: if tree's mse drops below threshold, stop growing
             if (mse < self.threshold):
-                # early stop: if tree's mse drops below threshold, stop growing
                 return tree
 
         # get the feature's transition options 
@@ -236,10 +270,12 @@ class RegressionTree():
                 dec = df[label].mean().round(5)
                 leaf = Node(feature = root, transition = f, decision = dec)
                 tree.append_child(leaf)
+                self.num_nodes += 1
             else:
                 # otherwise, feature-attr pair will be recursively split
                 subset = df_filtered
                 subtree = self.reg_tree(subset, label, tree, f)
                 tree.append_child(subtree)
+                self.num_nodes += 1
 
         return tree

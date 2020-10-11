@@ -26,11 +26,11 @@ def print_helper_classifier(perf, fold):
 def printer_helper_regressor(perf, fold):
     avg = 0
     for i, k in enumerate(perf):
-        pstr = "{0:.3g}".format(k)
+        pstr = "{0:.5g}".format(k)
         print('fold #{0}, MSE\t{1}'.format(i, pstr))
         avg += k
 
-    print('------\navg. MSE:\t{0:.3g}'.format(avg / fold))
+    print('------\navg. MSE:\t{0:.5g}'.format(avg / fold))
 
 # wrapper helpers to reduce code duplication for running knn
 # optional execution of condensed or edit methods
@@ -75,8 +75,7 @@ def regression_helper(data, label = None, threshold = None):
     tune = data['tune']
     perf = []
 
-    print('\nT H R E S H O L D\t', threshold)
-    print('---')
+    print('\nTHRESHOLD\t', threshold)
     for i in range(f):
         print('\n======== F O L D #{0} ========'.format(i))
         folds = data['folds'].copy()
@@ -84,9 +83,17 @@ def regression_helper(data, label = None, threshold = None):
         folds.pop(i) # remove holdout fold
         training = pd.concat(folds) # concat remaining folds to create training set
 
+        # build the tree model
         reg = RegressionTree(validation_set = tune, threshold = threshold, node_min = 25)
         tree = reg.reg_tree(df = training, label = label, tree = None, prior_value = None)
+        print('# nodes: ', reg.num_nodes)
+
+        # time the run for testing tree
+        start_time = time.time()
         result = reg.test_tree(tree, holdout, label)
+        print('tree mse after test\t', result)
+        elapsed = '{:.2f}'.format(time.time() - start_time)
+        print("execution time for fold {0}:\t{1}s".format(i, elapsed))
         perf.append(result)
         
     print('----------')
@@ -94,14 +101,14 @@ def regression_helper(data, label = None, threshold = None):
     printer_helper_regressor(perf, f)
 
 ################ classification data sets ################
-# print('\n============== DUMMY DATA ============== ')
+# print('\n================== DUMMY DATA ================== ')
 weather = dl.get_weather()
 attrs = weather.drop(columns = ['class']).columns.values
 # t = ID3Tree(data = weather)
 # tr = t.id3_tree(df = weather, label = class_label, tree = None, features = attrs)
 # tr.print()
 
-# print('\n============== BREAST DATA ============== ')
+# print('\n================== BREAST DATA ================== ')
 data = dl.get_breast_data()
 tune = data['tune']
 train = data['folds'][0]
@@ -115,7 +122,7 @@ trained_tree.print()
 tree.test_tree(trained_tree, test, class_label)
 """
 
-print('\n============== CAR DATA ============== ')
+print('\n================== CAR DATA ================== ')
 data = dl.get_car_data()
 tune = data['tune']
 
@@ -124,19 +131,29 @@ tune = data['tune']
 # tune = data['tune']
 
 ################# regression data sets #################
-print('\n============== ABALONE DATA ============== ')
+print('\n================== ABALONE DATA ================== ')
 data = dl.get_abalone_data()
-tune = data['tune']
 label = 'rings'
+threshold = 9.8
 
-start_time = time.time()
-regression_helper(data, label, threshold = 0)
-print("\n--- execution time for abalone data:\t{:.2f}".format(time.time() - start_time))
+# regression_helper(data, label, threshold = 0)
+# print()
+# regression_helper(data, label, threshold = threshold)
 
-# print('\n============== FOREST FIRE DATA ============== ')
-# predictor: area
-# data = dl.get_forest_fires_data()
+print('\n================== MACHINE DATA ================== ')
+data = dl.get_machine_data()
+label = 'prp'
+threshold = 4150
 
-# print('\n============== MACHINE DATA ============== ')
-# predictor: prp
-# data = dl.get_machine_data()
+# regression_helper(data, label, threshold = 0)
+# print()
+# regression_helper(data, label, threshold = threshold)
+
+print('\n================== FOREST FIRE DATA ================== ')
+data = dl.get_forest_fires_data()
+label = 'area'
+threshold = 10680
+
+# regression_helper(data, label, threshold = 0)
+# print()
+# regression_helper(data, label, threshold = threshold)
