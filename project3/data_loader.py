@@ -11,7 +11,6 @@ import pandas as pd
 # - data parsing
 # - splitting data into train, tune, test sets
 
-weather = './data/weather.data'
 breast = '../data/breast-cancer-wisconsin.data'
 car = './data/car.data'
 segmentation = '../data/segmentation.data'
@@ -103,12 +102,6 @@ def stratify_regression_data(df, label):
     return sets
 
 ############### main data loading ###############
-## dummy data from class lecture for weather
-def get_weather():
-    wea_df = read_csv_with_header(weather)
-    wea_df = wea_df.replace({'class': {'p': 1, 'n': 0}})
-    return wea_df
-
 ########################################
 ## class:  2 options (2 = benign, 4 = malignant) - remap to 0 = benign, 1 malignant
 ## each column has domain: 1-10
