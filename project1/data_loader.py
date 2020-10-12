@@ -13,10 +13,10 @@ import pandas as pd
 # - one-hot encoding
 # - splitting data into train, tune, test sets
 
-breast = './data/breast-cancer-wisconsin.data'
+breast = '../data/breast-cancer-wisconsin.data'
 glass = '../data/glass.data'
-iris = './data/iris.data'
-soybean = './data/soybean-small.data'
+iris = '../data/iris.data'
+soybean = '../data/soybean-small.data'
 house = '../data/house-votes-84.data'
 
 ## generic csv reader wrapper function
