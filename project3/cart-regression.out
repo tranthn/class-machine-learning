@@ -5,27 +5,27 @@ THRESHOLD        0
 
 ========= F O L D #0 =========
 # tree nodes:           720
-tree accuracy:          537%
+tree accuracy:          5.37
 runtime:                15.84s
 
 ========= F O L D #1 =========
 # tree nodes:           690
-tree accuracy:          589%
+tree accuracy:          5.89
 runtime:                16.09s
 
 ========= F O L D #2 =========
 # tree nodes:           729
-tree accuracy:          593%
+tree accuracy:          5.93
 runtime:                16.31s
 
 ========= F O L D #3 =========
 # tree nodes:           693
-tree accuracy:          580%
+tree accuracy:          5.80
 runtime:                15.40s
 
 ========= F O L D #4 =========
 # tree nodes:           674
-tree accuracy:          581%
+tree accuracy:          5.81
 runtime:                17.17s
 ------------
 
@@ -45,27 +45,27 @@ THRESHOLD        9.8
 
 ========= F O L D #0 =========
 # tree nodes:           600
-tree accuracy:          539%
+tree accuracy:          5.39
 runtime:                15.48s
 
 ========= F O L D #1 =========
 # tree nodes:           566
-tree accuracy:          589%
+tree accuracy:          5.89
 runtime:                14.83s
 
 ========= F O L D #2 =========
 # tree nodes:           589
-tree accuracy:          588%
+tree accuracy:          5.88
 runtime:                17.41s
 
 ========= F O L D #3 =========
 # tree nodes:           567
-tree accuracy:          597%
+tree accuracy:          5.97
 runtime:                15.24s
 
 ========= F O L D #4 =========
 # tree nodes:           641
-tree accuracy:          576%
+tree accuracy:          5.76
 runtime:                14.32s
 ------------
 
@@ -86,27 +86,27 @@ THRESHOLD        0
 
 ========= F O L D #0 =========
 # tree nodes:           82
-tree accuracy:          2589416%
+tree accuracy:          25894.16
 runtime:                1.30s
 
 ========= F O L D #1 =========
 # tree nodes:           84
-tree accuracy:          2384657%
+tree accuracy:          23846.57
 runtime:                1.33s
 
 ========= F O L D #2 =========
 # tree nodes:           81
-tree accuracy:          3436757%
+tree accuracy:          34367.57
 runtime:                1.29s
 
 ========= F O L D #3 =========
 # tree nodes:           77
-tree accuracy:          1962423%
+tree accuracy:          19624.23
 runtime:                1.22s
 
 ========= F O L D #4 =========
 # tree nodes:           83
-tree accuracy:          1264404%
+tree accuracy:          12644.04
 runtime:                1.23s
 ------------
 
@@ -126,27 +126,27 @@ THRESHOLD        4150
 
 ========= F O L D #0 =========
 # tree nodes:           82
-tree accuracy:          2589416%
+tree accuracy:          25894.16
 runtime:                1.30s
 
 ========= F O L D #1 =========
 # tree nodes:           78
-tree accuracy:          2403551%
+tree accuracy:          24035.51
 runtime:                1.30s
 
 ========= F O L D #2 =========
 # tree nodes:           79
-tree accuracy:          3436757%
+tree accuracy:          34367.57
 runtime:                1.24s
 
 ========= F O L D #3 =========
 # tree nodes:           73
-tree accuracy:          1962423%
+tree accuracy:          19624.23
 runtime:                1.18s
 
 ========= F O L D #4 =========
 # tree nodes:           82
-tree accuracy:          1264404%
+tree accuracy:          12644.04
 runtime:                1.25s
 ------------
 
@@ -167,27 +167,27 @@ THRESHOLD        0
 
 ========= F O L D #0 =========
 # tree nodes:           114
-tree accuracy:          109098%
+tree accuracy:          1090.98
 runtime:                2.33s
 
 ========= F O L D #1 =========
 # tree nodes:           121
-tree accuracy:          65009%
+tree accuracy:          650.09
 runtime:                2.33s
 
 ========= F O L D #2 =========
 # tree nodes:           115
-tree accuracy:          114650%
+tree accuracy:          1146.50
 runtime:                2.10s
 
 ========= F O L D #3 =========
 # tree nodes:           112
-tree accuracy:          153626%
+tree accuracy:          1536.26
 runtime:                2.24s
 
 ========= F O L D #4 =========
 # tree nodes:           113
-tree accuracy:          1291982%
+tree accuracy:          12919.82
 runtime:                2.24s
 ------------
 
@@ -207,27 +207,27 @@ THRESHOLD        10680
 
 ========= F O L D #0 =========
 # tree nodes:           79
-tree accuracy:          70274%
+tree accuracy:          702.74
 runtime:                1.96s
 
 ========= F O L D #1 =========
 # tree nodes:           85
-tree accuracy:          66898%
+tree accuracy:          668.98
 runtime:                2.60s
 
 ========= F O L D #2 =========
 # tree nodes:           81
-tree accuracy:          86015%
+tree accuracy:          860.15
 runtime:                1.89s
 
 ========= F O L D #3 =========
 # tree nodes:           82
-tree accuracy:          139514%
+tree accuracy:          1395.14
 runtime:                2.10s
 
 ========= F O L D #4 =========
 # tree nodes:           91
-tree accuracy:          1291982%
+tree accuracy:          12919.82
 runtime:                2.30s
 ------------
 
