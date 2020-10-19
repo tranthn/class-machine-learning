@@ -73,12 +73,13 @@ def stratify_data(df, label):
 
 ############### main data loading ###############
 ########################################
+## features are continuous, each column has domain: 1-10
 ## class:  2 options (2 = benign, 4 = malignant) - remap to 0 = benign, 1 malignant
-## each column has domain: 1-10
 def get_breast_data():
     breast_fields = ['sample-code-number','clump-thickness','uniformity-of-cell-size',
                     'uniformity-of-cell-shape','marginal-adhesion','single-epithelial-cell-size',
                     'bare-nuclei','bland-chromatin','normal-nucleoli','mitoses','class']
+
     bin_fields = breast_fields[1:-1]
     bdf = read_csv(breast, breast_fields)
     bdf = bdf.replace({'class': {4: 1, 2: 0}})
@@ -92,7 +93,7 @@ def get_breast_data():
     return data_sets
 
 ########################################
-## attribute values need values binned into ranges (except id, class)
+## features are all continuous 
 ## class: 6 options
 def get_glass_data():
     glass_fields = ['id','ri','na','mg', 'al','si','k','ca','ba','fe','class']
@@ -104,8 +105,7 @@ def get_glass_data():
     return data_sets
 
 ########################################
-## attribute values need values binned into ranges (except class)
-## missing: none
+## features are all continuous
 ## class: 3 options
 def get_iris_data():
     iris_fields = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
@@ -117,7 +117,6 @@ def get_iris_data():
 
 ########################################
 ## attribute values are either multi-categorical or binary (assuming no missing)
-## missing: none
 ## class: 4 options
 def get_soy_data():
     soybean_fields = ['date','plant-stand','precip','temp','hail','crop-hist','area-damaged','severity',
@@ -127,6 +126,7 @@ def get_soy_data():
                     'fruit-pods','fruit spots','seed','mold-growth','seed-discolor','seed-size','shriveling','roots', 'class']
     bin_fields = soybean_fields[:-1]
     soydf = read_csv(soybean, soybean_fields)
+    soydf = pd.get_dummies(soydf, columns = bin_fields)
     data_sets = stratify_data(soydf, 'class')
 
     return data_sets
@@ -140,6 +140,7 @@ def get_house_data():
                     'physician-fee-freeze', 'el-salvador-aid', 'religious-groups-in-schools', 'anti-satellite-test-ban',
                     'aid-to-nicaraguan-contras', 'mx-missile', 'immigration', 'synfuels-corporation-cutback', 
                     'education-spending', 'superfund-right-to-sue', 'crime', 'duty-free-exports', 'export-administration-act-south-africa']
+
     bin_fields = house_fields[1:]
     housedf = read_csv(house, house_fields)
 
@@ -148,6 +149,7 @@ def get_house_data():
     housedf['class'] = housedf['class'].str.strip().replace('democrat', '0')
     housedf['class'] = housedf['class'].str.strip().replace('republican', '1')
     housedf['class'] = pd.to_numeric(housedf['class'])
-    data_sets = stratify_data(housedf, 'class')
+    housedf2 = pd.get_dummies(housedf, columns = bin_fields)
+    data_sets = stratify_data(housedf2, 'class')
 
     return data_sets

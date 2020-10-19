@@ -70,17 +70,21 @@ def classification_helper(data, label = None):
 print('\n================== BREAST DATA ================== ')
 data = dl.get_breast_data()
 print(data['tune'])
-w = lr.logistic_regression(data['tune'])
-print(w)
+# w = lr.gradient_descent(data['tune'])
+print(data['tune'].dtypes)
 
 print('\n================== GLASS DATA ================== ')
 data = dl.get_glass_data()
+print(data['tune'].dtypes)
 
 print('\n================== IRIS DATA ================== ')
 data = dl.get_iris_data()
+print(data['tune'].dtypes)
 
 print('\n================== SOYBEAN DATA ================== ')
 data = dl.get_soy_data()
+print(data['tune'].dtypes)
 
 print('\n================== HOUSE VOTING DATA ================== ')
 data = dl.get_house_data()
+print(data['tune'].dtypes)
