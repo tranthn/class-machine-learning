@@ -4,6 +4,7 @@ import time
 import numpy as np
 import pandas as pd
 import data_loader as dl
+import logistic as lr
 
 # field name that maps to the class column for data
 # all data sets used here will be "class", but is externalized
@@ -32,8 +33,6 @@ def classification_helper(data, label = None):
     perf = []
     pruned_perf = []
     elapsed_time = 0
-    prunning_time = 0
-    elapsed_time_pruned = 0
 
     # get starting attrs for building tree
     tune = data['tune']
@@ -59,7 +58,7 @@ def classification_helper(data, label = None):
         # track results
         perf.append(result)
 
-        print('tree accuracy:\t\t{:.0%}'.format(result))
+        print('accuracy:\t\t{:.0%}'.format(result))
         print("runtime:\t\t{:.2f}s".format(elapsed))
 
     print('------------')
@@ -71,19 +70,17 @@ def classification_helper(data, label = None):
 print('\n================== BREAST DATA ================== ')
 data = dl.get_breast_data()
 print(data['tune'])
+w = lr.logistic_regression(data['tune'])
+print(w)
 
 print('\n================== GLASS DATA ================== ')
 data = dl.get_glass_data()
-print(data['tune'])
 
 print('\n================== IRIS DATA ================== ')
 data = dl.get_iris_data()
-print(data['tune'])
 
 print('\n================== SOYBEAN DATA ================== ')
 data = dl.get_soy_data()
-print(data['tune'])
 
 print('\n================== HOUSE VOTING DATA ================== ')
 data = dl.get_house_data()
-print(data['tune'])
