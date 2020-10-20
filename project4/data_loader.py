@@ -80,7 +80,6 @@ def get_breast_data():
                     'uniformity-of-cell-shape','marginal-adhesion','single-epithelial-cell-size',
                     'bare-nuclei','bland-chromatin','normal-nucleoli','mitoses','class']
 
-    bin_fields = breast_fields[1:-1]
     bdf = read_csv(breast, breast_fields)
     bdf = bdf.replace({'class': {4: 1, 2: 0}})
     bdf2 = bdf[bdf['bare-nuclei'] != '?']
@@ -97,7 +96,6 @@ def get_breast_data():
 ## class: 6 options
 def get_glass_data():
     glass_fields = ['id','ri','na','mg', 'al','si','k','ca','ba','fe','class']
-    bin_fields = glass_fields[1:-1]
     gdf = read_csv(glass, glass_fields)
     gdf2 = gdf.copy().astype({'class': object}).drop(columns = 'id')
     data_sets = stratify_data(gdf2, 'class')
@@ -109,7 +107,6 @@ def get_glass_data():
 ## class: 3 options
 def get_iris_data():
     iris_fields = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
-    bin_fields = iris_fields[:-1]
     irdf = read_csv(iris, iris_fields)
     data_sets = stratify_data(irdf, 'class')
 
