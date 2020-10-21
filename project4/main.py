@@ -69,16 +69,14 @@ def classification_helper(data, label = None):
 
 print('\n================== BREAST DATA ================== ')
 data = dl.get_breast_data()
-w = lr.gradient_descent_binary(data['tune'], class_label)
-print(w)
 
 print('\n================== GLASS DATA ================== ')
 data = dl.get_glass_data()
-w = lr.gradient_descent_multi(data['tune'], class_label)
-print(w)
 
 print('\n================== IRIS DATA ================== ')
 data = dl.get_iris_data()
+w = lr.logistic_multi(data['tune'], class_label)
+print(w)
 
 print('\n================== SOYBEAN DATA ================== ')
 data = dl.get_soy_data()
