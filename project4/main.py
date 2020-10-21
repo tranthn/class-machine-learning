@@ -69,7 +69,6 @@ def classification_helper(data, label = None):
 
 print('\n================== BREAST DATA ================== ')
 data = dl.get_breast_data()
-# print(data['tune'])
 w = lr.gradient_descent_binary(data['tune'], class_label)
 print(w)
 

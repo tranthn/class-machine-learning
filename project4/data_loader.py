@@ -10,7 +10,7 @@ iris = '../data/iris.data'
 soybean = '../data/soybean-small.data'
 house = '../data/house-votes-84.data'
 
-## generic csv reader wrapper function
+# generic csv reader wrapper function
 def read_csv(file_path, fieldnames):
     try:
         df = pd.read_csv(file_path, names = fieldnames)
@@ -21,7 +21,7 @@ def read_csv(file_path, fieldnames):
 
     return df
 
-## read csv data that contains header row already
+# read csv data that contains header row already
 def read_csv_with_header(file_path):
     try:
         df = pd.read_csv(file_path, header = 0)
@@ -71,6 +71,13 @@ def stratify_data(df, label):
 
     return sets
 
+# convert continuous fields to standardized scale
+def standardize(df, continuous_columns):
+    for c in continuous_columns:
+        df[c] = (df[c] - df[c].mean()) / df[c].std()
+
+    return df
+
 ############### main data loading ###############
 ########################################
 ## features are continuous, each column has domain: 1-10
@@ -79,14 +86,14 @@ def get_breast_data():
     breast_fields = ['sample-code-number','clump-thickness','uniformity-of-cell-size',
                     'uniformity-of-cell-shape','marginal-adhesion','single-epithelial-cell-size',
                     'bare-nuclei','bland-chromatin','normal-nucleoli','mitoses','class']
+    std_fields = breast_fields[1:-1]
 
     bdf = read_csv(breast, breast_fields)
-    bdf = bdf.replace({'class': {4: 1, 2: 0}})
+    bdf = bdf.replace({'class': {4: 1, 2: 0}}).drop(columns = 'sample-code-number')
     bdf2 = bdf[bdf['bare-nuclei'] != '?']
     bdf3 = bdf2.copy().astype({ 'bare-nuclei': int })
+    bdf4 = standardize(bdf3, std_fields)
 
-    # drop unique id: sample-code-number, not needed
-    bdf4 = bdf3.drop(columns = 'sample-code-number')
     data_sets = stratify_data(bdf4, 'class')
 
     return data_sets
@@ -96,8 +103,12 @@ def get_breast_data():
 ## class: 6 options
 def get_glass_data():
     glass_fields = ['id','ri','na','mg', 'al','si','k','ca','ba','fe','class']
+    std_fields = glass_fields[1:-1]
+
     gdf = read_csv(glass, glass_fields)
     gdf2 = gdf.copy().astype({'class': object}).drop(columns = 'id')
+    gdf2 = standardize(gdf2, std_fields)
+
     data_sets = stratify_data(gdf2, 'class')
 
     return data_sets
@@ -107,7 +118,10 @@ def get_glass_data():
 ## class: 3 options
 def get_iris_data():
     iris_fields = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
+    std_fields = iris_fields[:-1]
+
     irdf = read_csv(iris, iris_fields)
+    irdf = standardize(irdf, std_fields)
     data_sets = stratify_data(irdf, 'class')
 
     return data_sets

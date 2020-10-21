@@ -75,7 +75,8 @@ def gradient_descent_binary(df = None, label = ''):
 
             for j in range(d):
 
-                # real value, aka class probability?
+                # rv = 1 if x is in class C1
+                # rv = 0 if x is in class C2
                 rv = 1.0
 
                 # not sure how x_tj factors here [todo]
@@ -83,8 +84,8 @@ def gradient_descent_binary(df = None, label = ''):
                 weights_delta[j] = weights_delta[j] + (rv - y[j])
 
         for j in range(d):
-            weird_N = 1 # Kronecker delta? [todo]
-            weights[j] = weights[j] + weird_N * weights[j]
+            learning_rate = 0.5
+            weights[j] = weights[j] + learning_rate * weights[j]
 
     return weights
 
@@ -112,10 +113,8 @@ def gradient_descent_multi(df = None, label = ''):
         for _, x in df.iterrows():
 
             output = np.arange(k1)
-            print(output)
             for i in range(0, k1):
                 output[i] = 0
-                print(output[i])
 
                 # set output of model
                 for j in range(d):
@@ -140,7 +139,7 @@ def gradient_descent_multi(df = None, label = ''):
 
         for i in range(0, k1):
             for j in range(d):
-                weird_N = 1 # Kronecker delta? [todo]
-                weights[i][j] = weights[i][j] + weird_N * weights[i][j]
+                learning_rate = 0.5
+                weights[i][j] = weights[i][j] + learning_rate * weights[i][j]
 
     return weights
