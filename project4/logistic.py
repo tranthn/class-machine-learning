@@ -23,28 +23,15 @@ import math
 # logistic regression for k > 2
 #
 # arguments
-#   - w: array of floats
-#   - x: array of floats
+#   - z
 #
 # returns
 #   - returns array with exponential value applied over
-def softmax(x, w):
-    # x = feature matrix, dimensions = n x d
-    # w = weights matrix, dimensions = d x k
-    # pick axis = 1 for dot product along the column (k)
-    # z = output, dimensions = n x k
-    z = x.dot(w)
-    print('\nz')
-    print(z)
-
-    # denom dimensions = n
-    denom = np.sum(np.exp(z), axis = 1).values
-    print('\ndenom')
-    print(denom)
-    print()
-
+def softmax(z):
+    # z = x * w, dimensions = n x k
+    # denom dimensions = n, axis = 1 is along columns
+    denom = np.sum(np.exp(z), axis = 1)
     sfm = np.exp(z).T / denom
-    print(sfm)
     return sfm.T
 
 def logistic_multi(df = None, label = ''):
@@ -72,22 +59,61 @@ def logistic_multi(df = None, label = ''):
     # classes, one-hot encoded here so that main dataframe class is left alone
     # y, dimensions = n x k
     y = pd.get_dummies(df[[label]], columns = [label])
-    probabilities = softmax(x, w)
+
+    # x = feature matrix, dimensions = n x d
+    # w = weights matrix, dimensions = d x k
+    # pick axis = 1 for dot product along the column (k)
+    # z = output, dimensions = n x k
+    z = x.dot(w)
+    print('\nz')
+    print(z)
+    probabilities = softmax(z)
  
     #### calculate weight changes ####
+    ### gradient
     # (real-value r_t - yi) times x
     # x, dimensions = n x d
-    print('\n=========================')
-    print(x.values)
-    print()
-    print(y) # dimensions = n x k
-    print('\nprobs')
-    print(probabilities) # dimensions = n x k
-    diff = y.values - probabilities.values
-    print('\ndiff')
-    print(diff)
+    # x.T, dimensions =  d x n
+    # y, dimensions = n x k
+    # probabilities, dimensions = n x k
+    # gradient, dimensions = d x k
+    gradient = np.dot(x.T, np.subtract(y, probabilities))
+    print('\ngradient')
+    print(gradient)
 
-    # BROKEN IDK CHECK LATER
-    w = w + x.dot(y - probabilities)
+    ### weight changes
+    # learning rate
+    eta = 0.05
+    w = w + (eta * gradient)
 
     return w
+
+def predict(x, w):
+    # dimensions = n x k
+    z = np.dot(x, w)
+
+    # probabilities, dimensions = n x k
+    probabilities = softmax(z)
+    predictions = np.argmax(probabilities, axis = 1)
+    return predictions
+
+def test(df, w, label):
+    n = df.shape[0]
+
+    # get original class column for comparison
+    # convert df into x and y frames for features and dummied classes
+    classes = df[label]
+    x = df.copy().drop(columns = label)
+    y = pd.get_dummies(df[[label]], columns = [label])
+
+    # predict classes with out given weight array
+    predictions = predict(x, w)
+    print('\ntest predictions')
+
+    # convert classes to factors, to use with predictions
+    vals, levels = pd.factorize(classes)
+    predictions_with_class = levels.take(predictions)
+    comp = np.equal(classes.to_numpy(), predictions_with_class.to_numpy())
+    corr = sum(comp)
+    print('correct\t', corr)
+    print('total\t', n)

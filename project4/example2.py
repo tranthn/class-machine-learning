@@ -143,8 +143,7 @@ class SoftmaxRegression(_BaseModel, _IterativeModel,
                 grad = np.dot(X[idx].T, diff)
 
                 # update in opp. direction of the cost gradient
-                self.w_ -= (self.eta * grad +
-                            self.eta * self.l2 * self.w_)
+                self.w_ -= (self.eta * grad + self.eta * self.l2 * self.w_)
                 self.b_ -= (self.eta * np.sum(diff, axis=0))
 
             # compute cost of the whole epoch

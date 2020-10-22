@@ -5,6 +5,8 @@ import pandas as pd
 import math
 import data_loader as dl
 
+# source https://medium.com/@awjuliani/simple-softmax-in-python-tutorial-d6b4c4ed5c16
+
 label = 'class'
 
 def getProbsAndPreds(someX):
@@ -20,8 +22,6 @@ def softmax(z):
 
     # denom, dimensions = n
     denom = np.sum(np.exp(z),axis=1)
-    print('\ndenom')
-    print(denom)
     sm = (np.exp(z).T / denom).T
     return sm
 
@@ -37,7 +37,7 @@ def getLoss(w, x, y, lam):
     print('\nscores')
     print(scores) # dimensions = n x k
     print()
-    prob = softmax(scores) #Next we perform a softmax on these scores to get their probabilities
+    prob = softmax(scores) # next we perform a softmax on these scores to get their probabilities
     print('\nprob')
     print(prob) # dimensions = n x k
     loss = (-1 / m) * np.sum(y_mat * np.log(prob)) + (lam/2)*np.sum(w*w) #We then find the loss of the probabilities
@@ -46,11 +46,15 @@ def getLoss(w, x, y, lam):
 
 def getAccuracy(someX, someY):
     prob,prede = getProbsAndPreds(someX)
+    print('\ngetAccuracy')
+    print('\n', prob)
+    print('\n', prede)
     accuracy = sum(prede == someY) / (float(len(someY)))
     return accuracy
 
 ########### main softmax loop ###########
 df = dl.get_iris_data()['folds'][0]
+test = dl.get_iris_data()['folds'][1]
 # df = dl.get_breast_data()['tune']
 
 # dimensions = n x d
@@ -68,7 +72,14 @@ learningRate = 1e-5
 losses = []
 for i in range(0,iterations):
     loss,grad = getLoss(w, x, y, lam)
+    print('\ngrad')
+    print(grad)
+    print()
     losses.append(loss)
     w = w - (learningRate * grad)
 
-print(losses)
+print('\nweights')
+print(w)
+print()
+print('\naccuracy')
+print(getAccuracy(x, y))

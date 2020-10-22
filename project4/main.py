@@ -75,8 +75,10 @@ data = dl.get_glass_data()
 
 print('\n================== IRIS DATA ================== ')
 data = dl.get_iris_data()
-w = lr.logistic_multi(data['tune'], class_label)
-print(w)
+df = data['tune']
+
+w = lr.logistic_multi(df, class_label)
+lr.test(df, w, class_label)
 
 print('\n================== SOYBEAN DATA ================== ')
 data = dl.get_soy_data()
