@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import data_loader as dl
 import logistic as lr
+import adaline as ada
 
 # field name that maps to the class column for data
 # all data sets used here will be "class", but is externalized
@@ -77,8 +78,10 @@ print('\n================== IRIS DATA ================== ')
 data = dl.get_iris_data()
 df = data['tune']
 
-w = lr.logistic_multi(df, class_label)
-lr.test(df, w, class_label)
+# w = lr.logistic_multi(df, class_label)
+# lr.test(df, w, class_label)
+
+w = ada.adaline(df, class_label, iterations = 1)
 
 print('\n================== SOYBEAN DATA ================== ')
 data = dl.get_soy_data()

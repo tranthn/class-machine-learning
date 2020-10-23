@@ -106,7 +106,7 @@ def test(df, w, label):
     x = df.copy().drop(columns = label)
     y = pd.get_dummies(df[[label]], columns = [label])
 
-    # predict classes with out given weight array
+    # predict classes with given weight array
     predictions = predict(x, w)
     print('\ntest predictions')
 
