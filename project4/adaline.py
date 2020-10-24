@@ -46,14 +46,13 @@ def adaline(df = None, label = '', iterations = 10):
     print('d = ', d)
     print('k = ', k)
 
-    # set weights 2-d frame, with dimensions d x k
-    w = np.random.uniform(-.01, 0.01, k + 1)
-    print('\nweights')
+    # set weights 2-d frame, with dimensions d
+    w = np.random.uniform(-.01, 0.01, d)
+    print('\nstarting weights')
     print(w)
 
     # classes, one-hot encoded here so that main dataframe class is left alone
     y, levels = pd.factorize(df[label])
-    # y = pd.get_dummies(df[[label]], columns = [label])
 
     # learning rate / eta, hard-coded here for now
     eta = 0.05
@@ -64,17 +63,24 @@ def adaline(df = None, label = '', iterations = 10):
 
         # y, dimensions = n (with k factors for the classes)
         diff = (y - z)
-        error = (diff ** 2)
+        error = 0.5 * (diff ** 2)
 
-        # x, dimensions = n * d - NEED TO FIX [todo]
-        w = w + eta * (np.dot(x, diff))
+        # diff, dimensions = n
+        # transpose x to line up dimensions (d x n)
+        w = w + eta * (np.dot(x.T, diff))
+
+    return w
 
 def predict(x, w):
     # check if activation function  >= 0
     #  - return 1
     #  - otherwise return 0
+    print('\nx')
+    print(x)
+    print('\nw')
+    print(w)
     out =  activation(x, w)
-    return out
+    return np.where(out > 0, 1, 0)
 
 def test(df, w, label):
     n = df.shape[0]
@@ -88,10 +94,19 @@ def test(df, w, label):
     x = df.copy().drop(columns = label)
 
     # classes, one-hot encoded here so that main dataframe class is left alone
-    y, levels = pd.factorize(df[[label]])
+    print('\nclasses')
+    print(classes)
+    print()
 
     # predict classes with given weight array
     predictions = predict(x, w)
+    print('\npredictions')
+    print(predictions)
 
     # convert predictions to class label
-    comp = np.equal(classes.to_numpy(), predictions.to_numpy())
+    comp = np.equal(classes.to_numpy(), predictions)
+    corr = sum(comp)
+    print('\ncomp')
+    print(comp)
+    print('correct\t', corr)
+    print('total\t', n)
