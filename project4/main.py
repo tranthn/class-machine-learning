@@ -70,18 +70,23 @@ def classification_helper(data, label = None):
 
 print('\n================== BREAST DATA ================== ')
 data = dl.get_breast_data()
+train = data['folds'][0]
+test = data['folds'][1]
+
+w = lr.logistic_multi(train, class_label)
+lr.test(test, w, class_label)
 
 print('\n================== GLASS DATA ================== ')
 data = dl.get_glass_data()
 
 print('\n================== IRIS DATA ================== ')
 data = dl.get_iris_data()
-df = data['tune']
+train = data['folds'][0]
+test = data['folds'][1]
 
-# w = lr.logistic_multi(df, class_label)
-# lr.test(df, w, class_label)
-
-w = ada.adaline(df, class_label, iterations = 1)
+w = lr.logistic_multi(train, class_label)
+lr.test(test, w, class_label)
+# w = ada.adaline(df, class_label, iterations = 1)
 
 print('\n================== SOYBEAN DATA ================== ')
 data = dl.get_soy_data()

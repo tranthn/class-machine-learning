@@ -29,26 +29,31 @@ def getLoss(w, x, y, lam):
     m = x.shape[0] #First we get the number of training examples
     y_mat = oneHotIt(y) #Next we convert the integer class coding into a one-hot representation
     scores = np.dot(x,w) #Then we compute raw class scores given our input and current weights
-    print(w)
-    print('\nx')
-    print(x)
+  
     print('\ny_mat')
     print(y_mat) # dimensions = n x k
     print('\nscores')
     print(scores) # dimensions = n x k
+    print(w)
+    print('\nx')
+    print(x)
     print()
+  
     prob = softmax(scores) # next we perform a softmax on these scores to get their probabilities
+    
     print('\nprob')
     print(prob) # dimensions = n x k
+    
     loss = (-1 / m) * np.sum(y_mat * np.log(prob)) + (lam/2)*np.sum(w*w) #We then find the loss of the probabilities
+    
+    print('\nloss')
+    print(loss)
+    
     grad = (-1 / m) * np.dot(x.T,(y_mat - prob)) + lam*w #And compute the gradient for that loss
     return loss,grad
 
 def getAccuracy(someX, someY):
     prob,prede = getProbsAndPreds(someX)
-    print('\ngetAccuracy')
-    print('\n', prob)
-    print('\n', prede)
     accuracy = sum(prede == someY) / (float(len(someY)))
     return accuracy
 

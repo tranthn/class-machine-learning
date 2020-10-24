@@ -51,9 +51,11 @@ def logistic_multi(df = None, label = ''):
     print('n = ', n)
     print('d = ', d)
     print('k = ', k)
+    print()
 
     # set weights 2-d frame, with dimensions d x k
     w = np.random.uniform(-.01, 0.01, (d, k))
+    print('\nstarting weights (w)')
     print(w)
 
     # classes, one-hot encoded here so that main dataframe class is left alone
@@ -64,8 +66,8 @@ def logistic_multi(df = None, label = ''):
     # w = weights matrix, dimensions = d x k
     # pick axis = 1 for dot product along the column (k)
     # z = output, dimensions = n x k
-    z = x.dot(w)
-    print('\nz')
+    z = np.dot(x, w)
+    print('\nz (net input, x * w)')
     print(z)
     probabilities = softmax(z)
  
@@ -80,6 +82,19 @@ def logistic_multi(df = None, label = ''):
     gradient = np.dot(x.T, np.subtract(y, probabilities))
     print('\ngradient')
     print(gradient)
+
+    print('\n==== cost function ====')
+
+    ### cost function example
+    # example 1
+    regularization = 1
+    cross_entropy = (-1 / n) * np.sum(y * np.log(probabilities)) + (regularization / 2) * np.sum(w * w)
+    cost = 0.5 * np.mean(cross_entropy)
+    print('\nloss')
+    print(cross_entropy)
+    print('\ncost')
+    print(cost)
+    print()
 
     ### weight changes
     # learning rate
