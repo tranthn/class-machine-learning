@@ -23,7 +23,6 @@ def print_helper_classifier(perf, fold):
     print('------\navg. % accuracy:\t{:.0%}'.format(avg / fold))
 
 # wrapper helpers to reduce code duplication for processing folds
-# optional execution of condensed or edit methods
 def logistic_helper(data, label = None, eta = 0.005, iterations = 1):
     if label == None:
         label = class_label
@@ -56,6 +55,52 @@ def logistic_helper(data, label = None, eta = 0.005, iterations = 1):
     print('\n====== PERFORMANCE SUMMARY ======')
     print_helper_classifier(perf, f)
 
+# wrapper for adaline classification to process folds
+def adaline_helper(data, label = None, eta = 0.005, multi = False, iterations = 1):
+    if label == None:
+        label = class_label
+
+    f = 5 # fold-value
+
+    # tracker variables for performance/timing
+    perf = []
+
+    # get starting attrs for building tree
+    tune = data['tune']
+    attrs = tune.drop(columns = [label]).columns.values
+
+    for i in range(f):
+        print('\n========= F O L D #{0} ========='.format(i + 1))
+        folds = data['folds'].copy()
+        holdout = folds[i]
+        folds.pop(i) # remove holdout fold
+        training = pd.concat(folds) # concat remaining folds to create training set
+        accuracy = 0
+
+        # build adaline model, depending on whether there are multiple classes (k > 2) or not
+        if (multi):
+            w_map = ada.build(training, label, eta, iterations)
+            accuracy_map = ada.test_multi_class_helper(holdout, w_map, label)
+
+            # grab the accuracies (values) per class and sum them for total accuracy
+            accuracy_sum = np.sum(list(accuracy_map.values()))
+
+            # divide by number of class options (keys) to determine average accuracy
+            # for the multi-class scenario
+            accuracy = accuracy_sum / (len(accuracy_map.keys()))
+        else:
+            w_map = ada.build(training, label, eta, iterations)
+            accuracy = ada.test(holdout, w_map['main'], label)
+
+        # track results
+        perf.append(accuracy)
+        print('accuracy:\t{:.0%}'.format(accuracy))
+
+    print('------------')
+    print('\n====== PERFORMANCE SUMMARY ======')
+    print_helper_classifier(perf, f)
+
+
 ################ classification data sets ################
 
 print('\n================== BREAST DATA ================== ')
@@ -63,18 +108,23 @@ data = dl.get_breast_data()
 training = data['folds'][0]
 holdout = data['folds'][1]
 # logistic_helper(data, 'class', eta = 0.05, iterations = 10)
+# adaline_helper(data, class_label, eta = 0.05, iterations = 5)
 
-w = ada.build(training, class_label, eta = 0.05, iterations = 1)
-ada.test(holdout, w, class_label)
+# w_map = ada.build(training, class_label, eta = 0.05, iterations = 1)
+# accuracy = ada.test(holdout, w_map['main'], class_label)
 
 print('\n================== GLASS DATA ================== ')
 data = dl.get_glass_data()
 training = data['folds'][0]
 holdout = data['folds'][1]
-# logistic_helper(data, 'class', eta = 0.5, iterations = 10)
 
-# w = ada.build(training, class_label, eta = 0.05, iterations = 1)
-# ada.test(holdout, w, class_label)
+# w_map = ada.build(training, class_label, eta = 0.05, iterations = 5)
+# accuracy_map = ada.test_multi_class_helper(holdout, w_map, class_label)
+# print(accuracy_map)
+
+# logistic_helper(data, 'class', eta = 0.5, iterations = 10)
+adaline_helper(data, class_label, eta = 0.005, multi = True, iterations = 10)
+
 print('\n================== IRIS DATA ================== ')
 data = dl.get_iris_data()
 # logistic_helper(data, 'class', eta = 0.01, iterations = 10)

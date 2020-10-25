@@ -62,18 +62,37 @@ class AdalineGD(object):
             
             print('\ny shape')
             print(y.shape)
+            print(y)
             print('\noutput shape')
             print(output.shape)
+            print(output)
             print('\nw[1:] shape')
             print(self.w_[1:].shape)
-            print('\nerror shape')
-            print(error.shape)
+            
             print('\nX.t shape')
             print(X.T.shape)
+            print(X.T)
             print()
+            print('\nerror shape')
+            print(error.shape)
+            print(error)
+
             # Update rule
+            print('\neta')
+            print(self.eta)
+            print('\ninner')
+            print(self.eta * X.T.dot(error))
+            print()
+
             self.w_[1:] += self.eta * X.T.dot(error)
+
+            print('\nupdated w shape')
+            print(self.w_[1:].shape)
+
             self.w_[0] += self.eta * error.sum()
+
+            print('\nw[0]')
+            print(self.w_[0])
             
         return self
 
@@ -102,7 +121,7 @@ y,levels = train['class'].factorize()
 adas = AdalineGD(n_iter=1, eta=0.01)
 model = adas.fit(x.to_numpy(), y)
 out = model.predict(x_test)
-print('\ny_test')
-print(y_test)
-print('\nout')
-print(out)
+# print('\ny_test')
+# print(y_test)
+# print('\nout')
+# print(out)

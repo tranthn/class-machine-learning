@@ -28,39 +28,56 @@ def one_vs_all(df, label, target_class = ''):
     df[label] = (df[label] == target_class).astype(int)
     return df
 
-def activation(x, w):
+def activation(x, w, bias):
     # x = feature matrix, dimensions = n x d
     # w = weights matrix, dimensions = d x 1
     # z = output, dimensions = n x 1
-    z = x.dot(w)
+    z = np.dot(x, w) + bias
     return z
 
-def adaline(x = None, y = None, w = None, eta = 0.05, target_class = '', iterations = 10):
+def adaline(x = None, y = None, w = None, eta = 0.05, iterations = 10):
+    bias = 0.005
+
     for i in range(iterations):
         # z, dimensions = n
-        z = activation(x, w)
+        z = activation(x, w, bias)
 
-        print('\ny shape')
-        print(y.shape)
-        print('\nz shape')
-        print(z.shape)
-        print('\nw shape')
-        print(w.shape)
+        # print('\ny shape')
+        # print(y.shape)
+        # print(y)
+        # print('\nz shape')
+        # print(z.shape)
+        # print(z)
 
         # y, dimensions = n 
-        # diff, dimensions = n
-        # diff = (y.to_numpy() - z)
-        diff = np.subtract(y, z)
+        # diff, dimensions = n        
+        diff = (y - z)
         error = (diff ** 2)
 
-        print('\nx.T shape')
-        print(x.T.shape)
-        print('\ndiff shape')
-        print(diff.shape)
+        # print('\nw shape')
+        # print(w.shape)
+        # print('\nx.T shape')
+        # print(x.T.shape)
+        # print(x.T)
+        # print('\ndiff shape')
+        # print(diff.shape)
+        # print(diff)
 
         # diff, dimensions = n
         # transpose x to line up dimensions (d x n)
-        # w = w + eta * 2 *  x.T.dot(diff)
+        # print('\neta')
+        # print(eta)
+        # print('\ninner')
+        # print(eta * x.T.dot(diff))
+        # print()
+        # print('\nerror')
+        # print(error.sum())
+        bias += eta * error.sum()
+
+        w = w + eta * x.T.dot(diff)
+        
+        # print('\nupdated w shape')
+        # print(w.shape)
 
     return w
 
@@ -83,39 +100,99 @@ def build(df = None, label = '', eta = 0.005, iterations = 5):
 
     #### calculate adaline with samples and weights ####
     # x = df without class column
-    x = df.copy().drop(columns = label)
+    x = df.copy().drop(columns = label).to_numpy()
     d = x.shape[1]
 
     # weight map
     w_map = {}
 
-    for target_class in classes:
-        # set weights 2-d frame, with dimensions d x 1
-        w = np.random.uniform(-.01, 0.01, (d, 1))
+    # for k = 2, we don't have do one versus all processing
+    # but we'll have to set to map structure for consistency
+    if (len(classes) == 2):
+         # set weights 2-d frame, with dimensions d x 1
+        w = np.random.uniform(-.01, 0.01, d)
 
-        # convert dataframe to target_class versus remainder
-        df_one_vs_all = one_vs_all(df.copy(), label, target_class)
-
-        # classes, one-hot encoded here so that main dataframe class is left alone
         # y, dimensions = n
-        y = df_one_vs_all[label].to_frame()
+        y = df[label]
 
         # get weights for this class combo
-        w = adaline(x, y, w, class_column, eta, iterations)
-        
-        # map the weights matrix to its target class
-        w_map[target_class] = w
+        w = adaline(x, y, w, eta, iterations)
+
+        # 1 main set of weights for binary classification
+        w_map['main'] = w
+
+    # for k > 2, we will process our classes to do one versus all (remaining) classes
+    elif (k > 2):
+        for target_class in classes:
+            # set weights 2-d frame, with dimensions d x 1
+            w = np.random.uniform(-.01, 0.01, d)
+
+            # convert dataframe to target_class versus remainder
+            df_one_vs_all = one_vs_all(df.copy(), label, target_class)
+
+            # y, dimensions = n
+            y = df_one_vs_all[label]
+
+            # get weights for this class combo
+            w = adaline(x, y, w, eta, iterations)
+            
+            # map the weights matrix to its target class
+            w_map[target_class] = w
 
     return w_map
 
+# calculate class prediction given data and weights
+#
+# arguments
+#   - x: data without class column
+#   - w: weights representing our model
+#
+# returns
+#   - class predictions flattened 1-d array
 def predict(x, w):
     # check if activation function  >= 0
     #  - return 1
     #  - otherwise return 0
-    out =  activation(x, w)
+    out =  activation(x, w, 0.05)
     return np.where(out > 0, 1, 0).flatten()
 
-def test(df, weight_map, label):
+# run weights with our test data
+#
+# arguments
+#   - df: dataframe (with all columns)
+#   - w: weights representing our model (for a given target class)
+#   - label: class label
+#
+# returns
+#   - returns accuracy of prediction with our given dataframe
+def test(df, w, label):
+    #### calculate adaline with samples and weights ####
+    # x = df without class column
+    n = df.shape[0]
+    x = df.copy().drop(columns = label)
+    y = df[label]
+
+    ### accuracy map
+    accuracy_map = {}
+
+    # predict classes with given weight array
+    predictions = predict(x, w)
+
+    # convert predictions to class label
+    comp = np.equal(y.to_numpy(), predictions)
+    corr = sum(comp)
+    return (corr / n)
+
+# wrapper to run test with weight map
+#
+# arguments
+#   - df: dataframe (with all columns)
+#   - weight_map: target class to weight array mapping
+#   - label: class label
+#
+# returns
+#   - returns accuracy map for each potential class for our dataframe
+def test_multi_class_helper(df, weight_map, label):
     n = df.shape[0]
 
     # get class options
@@ -132,18 +209,7 @@ def test(df, weight_map, label):
     # predict classes with given weight array
     for target in classes:
         w = weight_map[target]
-        predictions = predict(x, w)
-
-        print('\ny')
-        print(y)
-
-        print('\npredictions')
-        print(predictions)
-
-        # convert predictions to class label
-        comp = np.equal(y.to_numpy(), predictions)
-        corr = sum(comp)
-        print('target class', target)
-        print('correct\t', corr)
-        print('total\t', n)
-        accuracy_map[target] = (corr / n)
+        accuracy = test(df, w, label)
+        accuracy_map[target] = accuracy
+    
+    return accuracy_map
