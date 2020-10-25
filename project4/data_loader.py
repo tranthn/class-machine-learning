@@ -116,6 +116,7 @@ def get_glass_data():
 ########################################
 ## features are all continuous
 ## class: 3 options
+## has even distribution of classes in data set
 def get_iris_data():
     iris_fields = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
     std_fields = iris_fields[:-1]

@@ -20,11 +20,11 @@ def print_helper_classifier(perf, fold):
         print('fold #{0}, accuracy\t{1}'.format(i, pstr))
         avg += k
 
-    print('------\navg. % accuracy:\t\t{:.0%}'.format(avg / fold))
+    print('------\navg. % accuracy:\t{:.0%}'.format(avg / fold))
 
 # wrapper helpers to reduce code duplication for processing folds
 # optional execution of condensed or edit methods
-def classification_helper(data, label = None):
+def logistic_helper(data, label = None, eta = 0.005, iterations = 1):
     if label == None:
         label = class_label
 
@@ -32,35 +32,25 @@ def classification_helper(data, label = None):
 
     # tracker variables for performance/timing
     perf = []
-    pruned_perf = []
-    elapsed_time = 0
 
     # get starting attrs for building tree
     tune = data['tune']
     attrs = tune.drop(columns = [label]).columns.values
 
     for i in range(f):
-        print('\n========= F O L D #{0} ========='.format(i))
+        print('\n========= F O L D #{0} ========='.format(i + 1))
         folds = data['folds'].copy()
         holdout = folds[i]
         folds.pop(i) # remove holdout fold
         training = pd.concat(folds) # concat remaining folds to create training set
 
-        # build the model
-        # model = xyz(df = training, label = label, tree = None, features = attrs)
-        
-        # time model testing
-        start_time = time.time()
-        # result = abc.test_tree(model, holdout, label)
-        result = 'fake'
-        elapsed = time.time() - start_time
-        elapsed_time += elapsed
+        # build the logistic regression model
+        w = lr.build(training, class_label, eta, iterations)
+        accuracy = lr.test(holdout, w, class_label)
 
         # track results
-        perf.append(result)
-
-        print('accuracy:\t\t{:.0%}'.format(result))
-        print("runtime:\t\t{:.2f}s".format(elapsed))
+        perf.append(accuracy)
+        print('accuracy:\t{:.0%}'.format(accuracy))
 
     print('------------')
     print('\n====== PERFORMANCE SUMMARY ======')
@@ -70,28 +60,23 @@ def classification_helper(data, label = None):
 
 print('\n================== BREAST DATA ================== ')
 data = dl.get_breast_data()
-train = data['folds'][0]
-test = data['folds'][1]
-
-w = lr.build(train, class_label, iterations = 10)
-lr.test(test, w, class_label)
+# logistic_helper(data, 'class', eta = 0.05, iterations = 10)
 
 # w = ada.adaline(train, class_label, iterations = 1)
 # ada.test(test, w, class_label)
 
 print('\n================== GLASS DATA ================== ')
 data = dl.get_glass_data()
+# logistic_helper(data, 'class', eta = 0.5, iterations = 10)
 
 print('\n================== IRIS DATA ================== ')
 data = dl.get_iris_data()
-train = data['folds'][0]
-test = data['folds'][1]
-
-# w = lr.build(train, class_label, iterations = 2)
-# lr.test(test, w, class_label)
+# logistic_helper(data, 'class', eta = 0.01, iterations = 10)
 
 print('\n================== SOYBEAN DATA ================== ')
 data = dl.get_soy_data()
+# logistic_helper(data, 'class', eta = 0.05, iterations = 10)
 
 print('\n================== HOUSE VOTING DATA ================== ')
 data = dl.get_house_data()
+# logistic_helper(data, 'class', eta = 0.3, iterations = 10)

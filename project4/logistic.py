@@ -16,14 +16,14 @@ import math
 #       - y = sigmoid(o) # pass result through logistic function to predict class
 #       - calculate gradient to determine new weight update, using (real value - y)
 #   - apply weight update and go onto next iteration
-# stop at convergence (which is?)
+# stop at convergence or after number of iterations
 
 ##################################################
 
 # logistic regression for k > 2
 #
 # arguments
-#   - z
+#   - z: the dot product of x (dataframe without class column) and weights
 #
 # returns
 #   - returns array with exponential value applied over
@@ -34,6 +34,18 @@ def softmax(z):
     sfm = np.exp(z).T / denom
     return sfm.T
 
+# the main function for calculating gradient and loss
+#
+# arguments
+#   - x: dataframe without class column
+#   - w: weights, may be random weights or the updated weights passed by caller
+#   - k: # of class options
+#   - class_column: class column extracted from original dataframe
+#   - label: class label
+#
+# returns:
+#   - gradient: gradient descent matrix for updating weights
+#   - loss: the calculation of error
 def logistic_multi(x = None, w = None, k = 1, class_column = None, label = ''):
     n = x.shape[0] # number of samples
     d = x.shape[1] # number of features / columns
@@ -42,9 +54,6 @@ def logistic_multi(x = None, w = None, k = 1, class_column = None, label = ''):
     # y, dimensions = n x k
     y = pd.get_dummies(class_column, columns = [label])
 
-    print('\nweights (w)')
-    print(w)
-
     # x = feature matrix, dimensions = n x d
     # w = weights matrix, dimensions = d x k
     # pick axis = 1 for dot product along the column (k)
@@ -52,7 +61,7 @@ def logistic_multi(x = None, w = None, k = 1, class_column = None, label = ''):
     z = np.dot(x, w)
     probabilities = softmax(z)
  
-    ### gradient
+    ### gradient descent
     # x, dimensions = n x d
     # y, dimensions = n x k
     # probabilities, dimensions = n x k
@@ -64,39 +73,44 @@ def logistic_multi(x = None, w = None, k = 1, class_column = None, label = ''):
 
     return gradient, loss
 
-def build(df = None, label = '', iterations = 5):
-    n = df.shape[0]
-
+# wrapper to calculate and update weights for our model
+#
+# arguments
+#   - df: dataframe, contains all columns
+#   - label: class label
+#   - eta: the learning rate
+#   - iterations: number of runs to run gradient descent and update weights
+#
+# returns
+#   - w: final weights set for model
+def build(df = None, label = '', eta = 0.005, iterations = 5):
     # get classes and the k-value (# class options)
     class_column = df[[label]]
     df_byclass = class_column.groupby(by = [label], dropna = False)
     classes = list(df_byclass.groups.keys())
-    print('\nclasses')
-    print(classes)
     k = len(classes)
 
     #### calculate softmax with samples and weights ####
     # x = df without class column
     x = df.copy().drop(columns = label)
     d = x.shape[1]
-
-    print()
-    print('n = ', n)
-    print('d = ', d)
-    print('k = ', k)
     
     # set weights 2-d frame, with dimensions d x k
     w = np.random.uniform(-.01, 0.01, (d, k))
-    eta = 0.5
     for i in range(iterations):
         gradient, loss = logistic_multi(x, w, k, class_column, label)
         w = w - (eta * gradient)
-        print('\nloss')
-        print(loss)
-        print()
     
     return w
 
+# calculate class prediction given data and weights
+#
+# arguments
+#   - x: data without class column
+#   - w: weights representing our model
+#
+# returns
+#   - class predictions as 1-d array
 def predict(x, w):
     # dimensions = n x k
     z = np.dot(x, w)
@@ -106,6 +120,15 @@ def predict(x, w):
     predictions = np.argmax(probabilities, axis = 1)
     return predictions
 
+# run weights with our test data
+#
+# arguments
+#   - df: dataframe (with all columns)
+#   - w: weights representing our model
+#   - label: class label
+#
+# returns
+#   - returns accuracy of prediction with our given dataframe
 def test(df, w, label):
     n = df.shape[0]
 
@@ -117,12 +140,10 @@ def test(df, w, label):
 
     # predict classes with given weight array
     predictions = predict(x, w)
-    print('\ntest predictions')
 
     # convert classes to factors, to use with predictions
     vals, levels = pd.factorize(classes)
     predictions_with_class = levels.take(predictions)
     comp = np.equal(classes.to_numpy(), predictions_with_class.to_numpy())
     corr = sum(comp)
-    print('correct\t', corr)
-    print('total\t', n)
+    return (corr / n)
