@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import data_loader as dl
 import logistic as lr
-import adaline as ada
+from adaline import Adaline
 
 # field name that maps to the class column for data
 # all data sets used here will be "class", but is externalized
@@ -79,8 +79,9 @@ def adaline_helper(data, label = None, eta = 0.005, multi = False, iterations = 
 
         # build adaline model, depending on whether there are multiple classes (k > 2) or not
         if (multi):
-            w_map = ada.build(training, label, eta, iterations)
-            accuracy_map = ada.test_multi_class_helper(holdout, w_map, label)
+            ada = Adaline(label, eta, iterations)
+            w_map = ada.build(training)
+            accuracy_map = ada.test_multi_class_helper(holdout, w_map)
 
             # grab the accuracies (values) per class and sum them for total accuracy
             accuracy_sum = np.sum(list(accuracy_map.values()))
@@ -89,8 +90,9 @@ def adaline_helper(data, label = None, eta = 0.005, multi = False, iterations = 
             # for the multi-class scenario
             accuracy = accuracy_sum / (len(accuracy_map.keys()))
         else:
-            w_map = ada.build(training, label, eta, iterations)
-            accuracy = ada.test(holdout, w_map['main'], label)
+            ada = Adaline(label, eta, iterations)
+            w_map = ada.build(training)
+            accuracy = ada.test(holdout, w_map['main'])
 
         # track results
         perf.append(accuracy)
@@ -105,34 +107,30 @@ def adaline_helper(data, label = None, eta = 0.005, multi = False, iterations = 
 
 print('\n================== BREAST DATA ================== ')
 data = dl.get_breast_data()
-training = data['folds'][0]
-holdout = data['folds'][1]
-# logistic_helper(data, 'class', eta = 0.05, iterations = 10)
-# adaline_helper(data, class_label, eta = 0.05, iterations = 5)
 
-# w_map = ada.build(training, class_label, eta = 0.05, iterations = 1)
-# accuracy = ada.test(holdout, w_map['main'], class_label)
+# logistic_helper(data, 'class', eta = 0.05, iterations = 10)
+adaline_helper(data, class_label, eta = 0.0005, iterations = 10)
 
 print('\n================== GLASS DATA ================== ')
 data = dl.get_glass_data()
-training = data['folds'][0]
-holdout = data['folds'][1]
-
-# w_map = ada.build(training, class_label, eta = 0.05, iterations = 5)
-# accuracy_map = ada.test_multi_class_helper(holdout, w_map, class_label)
-# print(accuracy_map)
 
 # logistic_helper(data, 'class', eta = 0.5, iterations = 10)
 adaline_helper(data, class_label, eta = 0.005, multi = True, iterations = 10)
 
 print('\n================== IRIS DATA ================== ')
 data = dl.get_iris_data()
+
 # logistic_helper(data, 'class', eta = 0.01, iterations = 10)
+adaline_helper(data, class_label, eta = 0.5, multi = True, iterations = 10)
 
 print('\n================== SOYBEAN DATA ================== ')
 data = dl.get_soy_data()
+
 # logistic_helper(data, 'class', eta = 0.05, iterations = 10)
+adaline_helper(data, class_label, eta = 0.5, multi = True, iterations = 10)
 
 print('\n================== HOUSE VOTING DATA ================== ')
 data = dl.get_house_data()
 # logistic_helper(data, 'class', eta = 0.3, iterations = 10)
+
+adaline_helper(data, class_label, eta = 0.005, iterations = 10)
