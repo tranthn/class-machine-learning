@@ -37,6 +37,9 @@ def logistic_helper(data, label = None, eta = 0.005, iterations = 1):
     attrs = tune.drop(columns = [label]).columns.values
 
     print('\n======= LOGISTIC =======')
+    print('eta:\t\t', eta)
+    print('iterations:\t', iterations)
+    print()
     for i in range(f):
         print('\n>> FOLD #{0}'.format(i + 1))
         folds = data['folds'].copy()
@@ -71,6 +74,9 @@ def adaline_helper(data, label = None, eta = 0.005, multi = False, iterations = 
     attrs = tune.drop(columns = [label]).columns.values
 
     print('\n======== ADALINE ========')
+    print('eta:\t\t', eta)
+    print('iterations:\t', iterations)
+    print()
     for i in range(f):
         print('\n>> FOLD #{0}'.format(i + 1))
         folds = data['folds'].copy()
@@ -107,18 +113,21 @@ def adaline_helper(data, label = None, eta = 0.005, multi = False, iterations = 
 ################ classification data sets ################
 print('\n================== BREAST DATA ================== ')
 data = dl.get_breast_data()
-# logistic_helper(data, 'class', eta = 0.05, iterations = 10)
-# adaline_helper(data, class_label, eta = 0.0005, iterations = 10)
+logistic_helper(data, 'class', eta = 0.05, iterations = 10)
+print()
+adaline_helper(data, class_label, eta = 0.0005, iterations = 10)
 
 print('\n================== GLASS DATA ================== ')
 data = dl.get_glass_data()
-# logistic_helper(data, 'class', eta = 0.5, iterations = 10)
-# adaline_helper(data, class_label, eta = 0.05, multi = True, iterations = 5)
+logistic_helper(data, 'class', eta = 0.5, iterations = 10)
+print()
+adaline_helper(data, class_label, eta = 0.05, multi = True, iterations = 5)
 
 print('\n================== IRIS DATA ================== ')
 data = dl.get_iris_data()
-# logistic_helper(data, 'class', eta = 0.01, iterations = 10)
-# adaline_helper(data, class_label, eta = 0.005, multi = True, iterations = 10)
+logistic_helper(data, 'class', eta = 0.01, iterations = 10)
+print()
+adaline_helper(data, class_label, eta = 0.005, multi = True, iterations = 10)
 
 print('\n================== SOYBEAN DATA ================== ')
 data = dl.get_soy_data()
@@ -128,5 +137,6 @@ adaline_helper(data, class_label, eta = 0.01, multi = True, iterations = 10)
 
 print('\n================== HOUSE VOTING DATA ================== ')
 data = dl.get_house_data()
-# logistic_helper(data, 'class', eta = 0.3, iterations = 10)
-# adaline_helper(data, class_label, eta = 0.01, iterations = 10)
+logistic_helper(data, 'class', eta = 0.3, iterations = 10)
+print()
+adaline_helper(data, class_label, eta = 0.01, iterations = 10)

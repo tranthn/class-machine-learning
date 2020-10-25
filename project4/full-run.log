@@ -1,0 +1,380 @@
+
+================== BREAST DATA ================== 
+
+======= LOGISTIC =======
+eta:		 0.05
+iterations:	 10
+
+
+>> FOLD #1
+accuracy:	97%
+
+>> FOLD #2
+accuracy:	98%
+
+>> FOLD #3
+accuracy:	98%
+
+>> FOLD #4
+accuracy:	95%
+
+>> FOLD #5
+accuracy:	95%
+------------
+
+---- LOGISTIC SUMMARY ----
+fold #0, accuracy	97%
+fold #1, accuracy	98%
+fold #2, accuracy	98%
+fold #3, accuracy	95%
+fold #4, accuracy	95%
+------
+avg. % accuracy:	97%
+
+
+======== ADALINE ========
+eta:		 0.0005
+iterations:	 10
+
+
+>> FOLD #1
+accuracy:	60%
+
+>> FOLD #2
+accuracy:	67%
+
+>> FOLD #3
+accuracy:	59%
+
+>> FOLD #4
+accuracy:	61%
+
+>> FOLD #5
+accuracy:	68%
+------------
+
+---- ADALINE SUMMARY ----
+fold #0, accuracy	60%
+fold #1, accuracy	67%
+fold #2, accuracy	59%
+fold #3, accuracy	61%
+fold #4, accuracy	68%
+------
+avg. % accuracy:	63%
+
+================== GLASS DATA ================== 
+
+======= LOGISTIC =======
+eta:		 0.5
+iterations:	 10
+
+
+>> FOLD #1
+accuracy:	56%
+
+>> FOLD #2
+accuracy:	53%
+
+>> FOLD #3
+accuracy:	53%
+
+>> FOLD #4
+accuracy:	54%
+
+>> FOLD #5
+accuracy:	53%
+------------
+
+---- LOGISTIC SUMMARY ----
+fold #0, accuracy	56%
+fold #1, accuracy	53%
+fold #2, accuracy	53%
+fold #3, accuracy	54%
+fold #4, accuracy	53%
+------
+avg. % accuracy:	54%
+
+
+======== ADALINE ========
+eta:		 0.05
+iterations:	 5
+
+
+>> FOLD #1
+target class	1	33.33%
+target class	2	35.90%
+target class	3	7.69%
+target class	5	5.13%
+target class	6	5.13%
+target class	7	53.85%
+accuracy:	24%
+
+>> FOLD #2
+target class	1	68.42%
+target class	2	63.16%
+target class	3	92.11%
+target class	5	94.74%
+target class	6	94.74%
+target class	7	52.63%
+accuracy:	78%
+
+>> FOLD #3
+target class	1	34.21%
+target class	2	34.21%
+target class	3	7.89%
+target class	5	7.89%
+target class	6	2.63%
+target class	7	50.00%
+accuracy:	23%
+
+>> FOLD #4
+target class	1	69.23%
+target class	2	64.10%
+target class	3	92.31%
+target class	5	94.87%
+target class	6	94.87%
+target class	7	69.23%
+accuracy:	81%
+
+>> FOLD #5
+target class	1	65.79%
+target class	2	65.79%
+target class	3	92.11%
+target class	5	92.11%
+target class	6	97.37%
+target class	7	34.21%
+accuracy:	75%
+------------
+
+---- ADALINE SUMMARY ----
+fold #0, accuracy	24%
+fold #1, accuracy	78%
+fold #2, accuracy	23%
+fold #3, accuracy	81%
+fold #4, accuracy	75%
+------
+avg. % accuracy:	56%
+
+================== IRIS DATA ================== 
+
+======= LOGISTIC =======
+eta:		 0.01
+iterations:	 10
+
+
+>> FOLD #1
+accuracy:	81%
+
+>> FOLD #2
+accuracy:	78%
+
+>> FOLD #3
+accuracy:	85%
+
+>> FOLD #4
+accuracy:	81%
+
+>> FOLD #5
+accuracy:	74%
+------------
+
+---- LOGISTIC SUMMARY ----
+fold #0, accuracy	81%
+fold #1, accuracy	78%
+fold #2, accuracy	85%
+fold #3, accuracy	81%
+fold #4, accuracy	74%
+------
+avg. % accuracy:	80%
+
+
+======== ADALINE ========
+eta:		 0.005
+iterations:	 10
+
+
+>> FOLD #1
+target class	Iris-setosa	70.37%
+target class	Iris-versicolor	40.74%
+target class	Iris-virginica	66.67%
+accuracy:	59%
+
+>> FOLD #2
+target class	Iris-setosa	59.26%
+target class	Iris-versicolor	33.33%
+target class	Iris-virginica	59.26%
+accuracy:	51%
+
+>> FOLD #3
+target class	Iris-setosa	70.37%
+target class	Iris-versicolor	48.15%
+target class	Iris-virginica	55.56%
+accuracy:	58%
+
+>> FOLD #4
+target class	Iris-setosa	55.56%
+target class	Iris-versicolor	44.44%
+target class	Iris-virginica	62.96%
+accuracy:	54%
+
+>> FOLD #5
+target class	Iris-setosa	55.56%
+target class	Iris-versicolor	48.15%
+target class	Iris-virginica	55.56%
+accuracy:	53%
+------------
+
+---- ADALINE SUMMARY ----
+fold #0, accuracy	59%
+fold #1, accuracy	51%
+fold #2, accuracy	58%
+fold #3, accuracy	54%
+fold #4, accuracy	53%
+------
+avg. % accuracy:	55%
+
+================== SOYBEAN DATA ================== 
+
+======= LOGISTIC =======
+eta:		 0.05
+iterations:	 10
+
+
+>> FOLD #1
+accuracy:	78%
+
+>> FOLD #2
+accuracy:	89%
+
+>> FOLD #3
+accuracy:	78%
+
+>> FOLD #4
+accuracy:	78%
+
+>> FOLD #5
+accuracy:	100%
+------------
+
+---- LOGISTIC SUMMARY ----
+fold #0, accuracy	78%
+fold #1, accuracy	89%
+fold #2, accuracy	78%
+fold #3, accuracy	78%
+fold #4, accuracy	100%
+------
+avg. % accuracy:	84%
+
+
+======== ADALINE ========
+eta:		 0.01
+iterations:	 10
+
+
+>> FOLD #1
+target class	D1	77.78%
+target class	D2	77.78%
+target class	D3	77.78%
+target class	D4	66.67%
+accuracy:	75%
+
+>> FOLD #2
+target class	D1	77.78%
+target class	D2	77.78%
+target class	D3	77.78%
+target class	D4	66.67%
+accuracy:	75%
+
+>> FOLD #3
+target class	D1	77.78%
+target class	D2	77.78%
+target class	D3	77.78%
+target class	D4	66.67%
+accuracy:	75%
+
+>> FOLD #4
+target class	D1	77.78%
+target class	D2	77.78%
+target class	D3	77.78%
+target class	D4	66.67%
+accuracy:	75%
+
+>> FOLD #5
+target class	D1	83.33%
+target class	D2	83.33%
+target class	D3	83.33%
+target class	D4	50.00%
+accuracy:	75%
+------------
+
+---- ADALINE SUMMARY ----
+fold #0, accuracy	75%
+fold #1, accuracy	75%
+fold #2, accuracy	75%
+fold #3, accuracy	75%
+fold #4, accuracy	75%
+------
+avg. % accuracy:	75%
+
+================== HOUSE VOTING DATA ================== 
+
+======= LOGISTIC =======
+eta:		 0.3
+iterations:	 10
+
+
+>> FOLD #1
+accuracy:	95%
+
+>> FOLD #2
+accuracy:	88%
+
+>> FOLD #3
+accuracy:	87%
+
+>> FOLD #4
+accuracy:	90%
+
+>> FOLD #5
+accuracy:	92%
+------------
+
+---- LOGISTIC SUMMARY ----
+fold #0, accuracy	95%
+fold #1, accuracy	88%
+fold #2, accuracy	87%
+fold #3, accuracy	90%
+fold #4, accuracy	92%
+------
+avg. % accuracy:	91%
+
+
+======== ADALINE ========
+eta:		 0.01
+iterations:	 10
+
+
+>> FOLD #1
+accuracy:	62%
+
+>> FOLD #2
+accuracy:	62%
+
+>> FOLD #3
+accuracy:	62%
+
+>> FOLD #4
+accuracy:	62%
+
+>> FOLD #5
+accuracy:	61%
+------------
+
+---- ADALINE SUMMARY ----
+fold #0, accuracy	62%
+fold #1, accuracy	62%
+fold #2, accuracy	62%
+fold #3, accuracy	62%
+fold #4, accuracy	61%
+------
+avg. % accuracy:	61%
