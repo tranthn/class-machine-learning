@@ -207,7 +207,11 @@ class Adaline():
         # predict classes with given weight array
         for target in classes:
             w = weight_map[target]
-            accuracy = self.test(df, w)
+
+            # convert dataframe to target_class versus remainder
+            df_one_vs_all = self.one_vs_all(df.copy(), target)
+
+            accuracy = self.test(df_one_vs_all, w)
             accuracy_map[target] = accuracy
 
         return accuracy_map

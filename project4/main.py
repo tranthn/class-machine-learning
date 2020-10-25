@@ -102,7 +102,6 @@ def adaline_helper(data, label = None, eta = 0.005, multi = False, iterations = 
     print('\n====== PERFORMANCE SUMMARY ======')
     print_helper_classifier(perf, f)
 
-
 ################ classification data sets ################
 
 print('\n================== BREAST DATA ================== ')
@@ -131,6 +130,6 @@ adaline_helper(data, class_label, eta = 0.5, multi = True, iterations = 10)
 
 print('\n================== HOUSE VOTING DATA ================== ')
 data = dl.get_house_data()
-# logistic_helper(data, 'class', eta = 0.3, iterations = 10)
 
+# logistic_helper(data, 'class', eta = 0.3, iterations = 10)
 adaline_helper(data, class_label, eta = 0.005, iterations = 10)
