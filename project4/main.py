@@ -36,8 +36,9 @@ def logistic_helper(data, label = None, eta = 0.005, iterations = 1):
     tune = data['tune']
     attrs = tune.drop(columns = [label]).columns.values
 
+    print('\n======= LOGISTIC =======')
     for i in range(f):
-        print('\n========= F O L D #{0} ========='.format(i + 1))
+        print('\n>> FOLD #{0}'.format(i + 1))
         folds = data['folds'].copy()
         holdout = folds[i]
         folds.pop(i) # remove holdout fold
@@ -52,7 +53,7 @@ def logistic_helper(data, label = None, eta = 0.005, iterations = 1):
         print('accuracy:\t{:.0%}'.format(accuracy))
 
     print('------------')
-    print('\n====== PERFORMANCE SUMMARY ======')
+    print('\n---- LOGISTIC SUMMARY ----')
     print_helper_classifier(perf, f)
 
 # wrapper for adaline classification to process folds
@@ -69,8 +70,9 @@ def adaline_helper(data, label = None, eta = 0.005, multi = False, iterations = 
     tune = data['tune']
     attrs = tune.drop(columns = [label]).columns.values
 
+    print('\n======== ADALINE ========')
     for i in range(f):
-        print('\n========= F O L D #{0} ========='.format(i + 1))
+        print('\n>> FOLD #{0}'.format(i + 1))
         folds = data['folds'].copy()
         holdout = folds[i]
         folds.pop(i) # remove holdout fold
@@ -99,7 +101,7 @@ def adaline_helper(data, label = None, eta = 0.005, multi = False, iterations = 
         print('accuracy:\t{:.0%}'.format(accuracy))
 
     print('------------')
-    print('\n====== PERFORMANCE SUMMARY ======')
+    print('\n---- ADALINE SUMMARY ----')
     print_helper_classifier(perf, f)
 
 ################ classification data sets ################
@@ -120,8 +122,9 @@ data = dl.get_iris_data()
 
 print('\n================== SOYBEAN DATA ================== ')
 data = dl.get_soy_data()
-# logistic_helper(data, 'class', eta = 0.05, iterations = 10)
-# adaline_helper(data, class_label, eta = 0.01, multi = True, iterations = 10)
+logistic_helper(data, 'class', eta = 0.05, iterations = 10)
+print()
+adaline_helper(data, class_label, eta = 0.01, multi = True, iterations = 10)
 
 print('\n================== HOUSE VOTING DATA ================== ')
 data = dl.get_house_data()
