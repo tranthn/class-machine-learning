@@ -118,7 +118,7 @@ x_test = test.drop(columns = ['class'])
 y_test = test['class']
 y,levels = train['class'].factorize()
 
-adas = AdalineGD(n_iter=1, eta=0.01)
+adas = AdalineGD(n_iter=10, eta=0.01)
 model = adas.fit(x.to_numpy(), y)
 out = model.predict(x_test)
 # print('\ny_test')

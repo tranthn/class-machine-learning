@@ -34,56 +34,42 @@ class Adaline():
         df[self.label] = (df[self.label] == target_class).astype(int)
         return df
 
+    # compute dot product for dataframe and weights
+    #
+    # arguments:
+    #   - x: dataframe without class column, dimensions = n x d
+    #   - w: weights, dimensions = d x 1
+    #
+    # returns
+    #   - z: dot product of x * w plus bias value
     def activation(self, x, w):
-        # x = feature matrix, dimensions = n x d
-        # w = weights matrix, dimensions = d x 1
         # z = output, dimensions = n x 1
         z = np.dot(x, w) + self.bias
         return z
 
+    # the main function for calculating gradient and loss
+    #
+    # arguments
+    #   - x: dataframe without class column
+    #   - y: class column from dataframe
+    #   - w: weights, may be random weights or the updated weights passed by caller
+    #
+    # returns:
+    #   - w: final weights after all iterations
     def adaline(self, x = None, y = None, w = None):
         for i in range(self.iterations):
             # z, dimensions = n
             z = self.activation(x, w)
 
-            # print('\ny shape')
-            # print(y.shape)
-            # print(y)
-            # print('\nz shape')
-            # print(z.shape)
-            # print(z)
-
             # y, dimensions = n 
             # diff, dimensions = n        
             diff = (y - z)
-            error = (diff ** 2)
-
-            # print('\nw shape')
-            # print(w.shape)
-            # print('\nx.T shape')
-            # print(x.T.shape)
-            # print(x.T)
-            # print('\ndiff shape')
-            # print(diff.shape)
-            # print(diff)
+            error = (diff ** 2).sum() / 2
 
             # diff, dimensions = n
             # transpose x to line up dimensions (d x n)
-            # print('\neta')
-            # print(self.eta)
-            # print('\ninner')
-            # print(eta * x.T.dot(diff))
-            # print()
-            # print('\nerror')
-            # print(error.sum())
             self.bias += self.eta * diff.sum()
-            # print('\nself.bias')
-            # print(self.bias)
-
             w += self.eta * x.T.dot(diff)
-            
-            # print('\nupdated w shape')
-            # print(w.shape)
 
         return w
 
@@ -91,13 +77,10 @@ class Adaline():
     #
     # arguments
     #   - df: dataframe, contains all columns
-    #   - label: class label
-    #   - eta: the learning rate
-    #   - iterations: number of runs to run gradient descent and update weights
     #
     # returns
     #   - w: final weights set for model
-    def build(self, df = None, label = ''):
+    def build(self, df = None):
         # get classes and the k-value (# class options)
         class_column = df[[self.label]]
         df_byclass = df.groupby(by = [self.label], dropna = False)
@@ -210,8 +193,10 @@ class Adaline():
 
             # convert dataframe to target_class versus remainder
             df_one_vs_all = self.one_vs_all(df.copy(), target)
-
             accuracy = self.test(df_one_vs_all, w)
             accuracy_map[target] = accuracy
+
+            acc_str = '{:.2%}'.format(accuracy)
+            print('target class\t{0}\t{1}'.format(target, acc_str))
 
         return accuracy_map
