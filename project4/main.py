@@ -69,8 +69,12 @@ ada.test(holdout, w, class_label)
 
 print('\n================== GLASS DATA ================== ')
 data = dl.get_glass_data()
+training = data['folds'][0]
+holdout = data['folds'][1]
 # logistic_helper(data, 'class', eta = 0.5, iterations = 10)
 
+# w = ada.build(training, class_label, eta = 0.05, iterations = 1)
+# ada.test(holdout, w, class_label)
 print('\n================== IRIS DATA ================== ')
 data = dl.get_iris_data()
 # logistic_helper(data, 'class', eta = 0.01, iterations = 10)

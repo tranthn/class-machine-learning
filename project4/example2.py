@@ -8,6 +8,8 @@
 #
 # License: BSD 3 clause
 
+# source: https://github.com/rasbt/mlxtend/blob/master/mlxtend/classifier/softmax_regression.py
+
 import numpy as np
 from time import time
 from .._base import _BaseModel

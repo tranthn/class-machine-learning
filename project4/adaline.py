@@ -15,6 +15,8 @@ import math
 # eta = learning rate, d = desired (real) output
 # w <- w + eta (d - o) x
 #
+# w <- w + eta * sum [(d - o) * xi]
+#
 # gradient descent
 #   = 2 * (o - d) x
 
@@ -30,32 +32,35 @@ def activation(x, w):
     # x = feature matrix, dimensions = n x d
     # w = weights matrix, dimensions = d x 1
     # z = output, dimensions = n x 1
-    z = np.dot(x, w).flatten()
+    z = x.dot(w)
     return z
 
 def adaline(x = None, y = None, w = None, eta = 0.05, target_class = '', iterations = 10):
     for i in range(iterations):
         # z, dimensions = n
         z = activation(x, w)
-        print('\nz')
-        print(z)
-        print()
+
+        print('\ny shape')
+        print(y.shape)
+        print('\nz shape')
+        print(z.shape)
+        print('\nw shape')
+        print(w.shape)
 
         # y, dimensions = n 
         # diff, dimensions = n
-        diff = (y.to_numpy() - z)
+        # diff = (y.to_numpy() - z)
+        diff = np.subtract(y, z)
         error = (diff ** 2)
-        print('\ndiff')
-        print(diff)
-        print()
 
-        print('\nx.T')
-        print(x.T)
-        print()
+        print('\nx.T shape')
+        print(x.T.shape)
+        print('\ndiff shape')
+        print(diff.shape)
 
         # diff, dimensions = n
         # transpose x to line up dimensions (d x n)
-        w = w + eta * 2 * np.dot(x.T, diff)
+        # w = w + eta * 2 *  x.T.dot(diff)
 
     return w
 
@@ -93,9 +98,7 @@ def build(df = None, label = '', eta = 0.005, iterations = 5):
 
         # classes, one-hot encoded here so that main dataframe class is left alone
         # y, dimensions = n
-        y = df_one_vs_all[label]
-        print('\ny')
-        print(y)
+        y = df_one_vs_all[label].to_frame()
 
         # get weights for this class combo
         w = adaline(x, y, w, class_column, eta, iterations)
@@ -110,7 +113,7 @@ def predict(x, w):
     #  - return 1
     #  - otherwise return 0
     out =  activation(x, w)
-    return np.where(out > 0, 1, 0)
+    return np.where(out > 0, 1, 0).flatten()
 
 def test(df, weight_map, label):
     n = df.shape[0]
@@ -121,6 +124,7 @@ def test(df, weight_map, label):
     #### calculate adaline with samples and weights ####
     # x = df without class column
     x = df.copy().drop(columns = label)
+    y = df[label]
 
     ### accuracy map
     accuracy_map = {}
@@ -130,8 +134,14 @@ def test(df, weight_map, label):
         w = weight_map[target]
         predictions = predict(x, w)
 
+        print('\ny')
+        print(y)
+
+        print('\npredictions')
+        print(predictions)
+
         # convert predictions to class label
-        comp = np.equal(classes.to_numpy(), predictions)
+        comp = np.equal(y.to_numpy(), predictions)
         corr = sum(comp)
         print('target class', target)
         print('correct\t', corr)
