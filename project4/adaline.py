@@ -106,7 +106,5 @@ def test(df, w, label):
     # convert predictions to class label
     comp = np.equal(classes.to_numpy(), predictions)
     corr = sum(comp)
-    print('\ncomp')
-    print(comp)
     print('correct\t', corr)
     print('total\t', n)

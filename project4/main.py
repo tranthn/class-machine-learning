@@ -73,10 +73,11 @@ data = dl.get_breast_data()
 train = data['folds'][0]
 test = data['folds'][1]
 
-w = lr.logistic_multi(train, class_label)
+w = lr.build(train, class_label, iterations = 10)
 lr.test(test, w, class_label)
-w = ada.adaline(train, class_label, iterations = 1)
-ada.test(test, w, class_label)
+
+# w = ada.adaline(train, class_label, iterations = 1)
+# ada.test(test, w, class_label)
 
 print('\n================== GLASS DATA ================== ')
 data = dl.get_glass_data()
@@ -86,7 +87,7 @@ data = dl.get_iris_data()
 train = data['folds'][0]
 test = data['folds'][1]
 
-# w = lr.logistic_multi(train, class_label)
+# w = lr.build(train, class_label, iterations = 2)
 # lr.test(test, w, class_label)
 
 print('\n================== SOYBEAN DATA ================== ')

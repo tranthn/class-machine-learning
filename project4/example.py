@@ -30,24 +30,24 @@ def getLoss(w, x, y, lam):
     y_mat = oneHotIt(y) #Next we convert the integer class coding into a one-hot representation
     scores = np.dot(x,w) #Then we compute raw class scores given our input and current weights
   
-    print('\ny_mat')
-    print(y_mat) # dimensions = n x k
-    print('\nscores')
-    print(scores) # dimensions = n x k
-    print(w)
-    print('\nx')
-    print(x)
-    print()
+    # print('\ny_mat')
+    # print(y_mat) # dimensions = n x k
+    # print('\nscores')
+    # print(scores) # dimensions = n x k
+    # print(w)
+    # print('\nx')
+    # print(x)
+    # print()
   
     prob = softmax(scores) # next we perform a softmax on these scores to get their probabilities
     
-    print('\nprob')
-    print(prob) # dimensions = n x k
+    # print('\nprob')
+    # print(prob) # dimensions = n x k
     
     loss = (-1 / m) * np.sum(y_mat * np.log(prob)) + (lam/2)*np.sum(w*w) #We then find the loss of the probabilities
     
-    print('\nloss')
-    print(loss)
+    # print('\nloss')
+    # print(loss)
     
     grad = (-1 / m) * np.dot(x.T,(y_mat - prob)) + lam*w #And compute the gradient for that loss
     return loss,grad
@@ -72,16 +72,17 @@ y = df[label]
 # dimensions = d x k
 w = np.zeros([x.shape[1], len(np.unique(y))])
 lam = 1
-iterations = 1
-learningRate = 1e-5
+iterations = 10
+learningRate = 0.05
 losses = []
 for i in range(0,iterations):
     loss,grad = getLoss(w, x, y, lam)
-    print('\ngrad')
-    print(grad)
     print()
     losses.append(loss)
-    w = w - (learningRate * grad)
+    inner = (learningRate * grad)
+    print('\nloss')
+    print(loss)
+    w = w - inner
 
 print('\nweights')
 print(w)

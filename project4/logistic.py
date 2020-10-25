@@ -34,73 +34,67 @@ def softmax(z):
     sfm = np.exp(z).T / denom
     return sfm.T
 
-def logistic_multi(df = None, label = ''):
-    n = df.shape[0]
-
-    # get classes and the k-value (# class options)
-    df_byclass = df.groupby(by = [label], dropna = False)
-    classes = list(df_byclass.groups.keys())
-    k = len(classes)
-    k1 = k - 1 # for convenience
-
-    #### calculate softmax with samples and weights ####
-    # x = df without class column
-    x = df.copy().drop(columns = label)
-    d = x.shape[1]
-
-    print('n = ', n)
-    print('d = ', d)
-    print('k = ', k)
-    print()
-
-    # set weights 2-d frame, with dimensions d x k
-    w = np.random.uniform(-.01, 0.01, (d, k))
-    print('\nstarting weights (w)')
-    print(w)
+def logistic_multi(x = None, w = None, k = 1, class_column = None, label = ''):
+    n = x.shape[0] # number of samples
+    d = x.shape[1] # number of features / columns
 
     # classes, one-hot encoded here so that main dataframe class is left alone
     # y, dimensions = n x k
-    y = pd.get_dummies(df[[label]], columns = [label])
+    y = pd.get_dummies(class_column, columns = [label])
+
+    print('\nweights (w)')
+    print(w)
 
     # x = feature matrix, dimensions = n x d
     # w = weights matrix, dimensions = d x k
     # pick axis = 1 for dot product along the column (k)
     # z = output, dimensions = n x k
     z = np.dot(x, w)
-    print('\nz (net input, x * w)')
-    print(z)
     probabilities = softmax(z)
  
-    #### calculate weight changes ####
     ### gradient
-    # (real-value r_t - yi) times x
     # x, dimensions = n x d
-    # x.T, dimensions =  d x n
     # y, dimensions = n x k
     # probabilities, dimensions = n x k
-    # gradient, dimensions = d x k
-    gradient = np.dot(x.T, np.subtract(y, probabilities))
-    print('\ngradient')
-    print(gradient)
+    # (real-value r_t - yi) times x
+    gradient = (-1 / n) * np.dot(x.T, np.subtract(y, probabilities)) + w
 
-    print('\n==== cost function ====')
+    ### loss calculation 
+    loss = -np.sum(y * np.log(probabilities)) + np.sum(w * w)
 
-    ### cost function example
-    # example 1
-    regularization = 1
-    cross_entropy = (-1 / n) * np.sum(y * np.log(probabilities)) + (regularization / 2) * np.sum(w * w)
-    cost = 0.5 * np.mean(cross_entropy)
-    print('\nloss')
-    print(cross_entropy)
-    print('\ncost')
-    print(cost)
+    return gradient, loss
+
+def build(df = None, label = '', iterations = 5):
+    n = df.shape[0]
+
+    # get classes and the k-value (# class options)
+    class_column = df[[label]]
+    df_byclass = class_column.groupby(by = [label], dropna = False)
+    classes = list(df_byclass.groups.keys())
+    print('\nclasses')
+    print(classes)
+    k = len(classes)
+
+    #### calculate softmax with samples and weights ####
+    # x = df without class column
+    x = df.copy().drop(columns = label)
+    d = x.shape[1]
+
     print()
-
-    ### weight changes
-    # learning rate
-    eta = 0.05
-    w = w + (eta * gradient)
-
+    print('n = ', n)
+    print('d = ', d)
+    print('k = ', k)
+    
+    # set weights 2-d frame, with dimensions d x k
+    w = np.random.uniform(-.01, 0.01, (d, k))
+    eta = 0.5
+    for i in range(iterations):
+        gradient, loss = logistic_multi(x, w, k, class_column, label)
+        w = w - (eta * gradient)
+        print('\nloss')
+        print(loss)
+        print()
+    
     return w
 
 def predict(x, w):
