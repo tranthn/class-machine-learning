@@ -60,10 +60,12 @@ def logistic_helper(data, label = None, eta = 0.005, iterations = 1):
 
 print('\n================== BREAST DATA ================== ')
 data = dl.get_breast_data()
+training = data['folds'][0]
+holdout = data['folds'][1]
 # logistic_helper(data, 'class', eta = 0.05, iterations = 10)
 
-# w = ada.adaline(train, class_label, iterations = 1)
-# ada.test(test, w, class_label)
+w = ada.build(training, class_label, eta = 0.05, iterations = 1)
+ada.test(holdout, w, class_label)
 
 print('\n================== GLASS DATA ================== ')
 data = dl.get_glass_data()
