@@ -3,6 +3,7 @@ import sys
 import numpy as np
 import pandas as pd
 import data_loader as dl
+import neural_net as nn
 
 # field name that maps to the class column for data
 # all data sets used here will be "class", but is externalized

@@ -133,7 +133,6 @@ def get_glass_data():
     gdf2 = standardize(gdf2, std_fields)
 
     data_sets = stratify_data(gdf2, 'class')
-
     return data_sets
 
 ########################################
@@ -156,8 +155,11 @@ def get_soy_data():
 ## regression predictor: rings
 def get_abalone_data():
     abalone_fields = ['sex', 'length', 'diameter', 'height', 'whole_weight', 'shucked_weight', 'viscera_weight', 'shell_weight', 'rings']
+    std_fields = abalone_fields[1:-1]
     abalone_df = read_csv(abalone, abalone_fields)
     abalone_df = pd.get_dummies(abalone_df, columns = ['sex'])
+    abalone_df = standardize(abalone_df, std_fields)
+
     data_sets = stratify_regression_data(abalone_df, 'rings')
     return data_sets
 
@@ -166,17 +168,25 @@ def get_abalone_data():
 ## result indicator field [DO NOT USE IN MODEL]: erp
 def get_machine_data():
     machine_fields = ['vendor_name', 'model_name', 'myct', 'mmin', 'mmax', 'cach', 'chmin', 'chmax', 'prp', 'erp']
-    bin_fields = machine_fields[:-1]
+    std_fields = machine_fields[2:-2]
+
     machine_df = read_csv(machine, machine_fields)
     machine_df = machine_df.drop(columns = ['erp', 'model_name'])
     machine_df2 = pd.get_dummies(machine_df, columns = ['vendor_name'])
+    machine_df2 = standardize(machine_df2, std_fields)
+
     data_sets = stratify_regression_data(machine_df2, 'prp')
     return data_sets
 
 ########################################
 ## regression predictor: area [of fire]
 def get_forest_fires_data():
+    fire_fields = ['X', 'Y', 'month', 'day', 'FFMC', 'DMC', 'DC', 'ISI', 'temp', 'RH', 'wind', 'rain', 'area']
+    std_fields = fire_fields[4:-1]
+
     fire_df = read_csv_with_header(forestfires)
     fire_df = pd.get_dummies(fire_df, columns = ['month', 'day'])
+    fire_df = standardize(fire_df, std_fields)
+
     data_sets = stratify_regression_data(fire_df, 'area')
     return data_sets
