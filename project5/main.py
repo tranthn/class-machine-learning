@@ -3,7 +3,7 @@ import sys
 import numpy as np
 import pandas as pd
 import data_loader as dl
-import neural_net as nn
+from neural_net import NeuralNet
 
 # field name that maps to the class column for data
 # all data sets used here will be "class", but is externalized
@@ -88,25 +88,32 @@ def regression_helper(data, label = None):
 ########################################
 print('\n============== BREAST DATA ============== ')
 data = dl.get_breast_data()
-print(data['tune'])
+df = data['tune']
+print(df)
+print()
+
+nn = NeuralNet(df = df, label = 'class', eta = 0.05, iterations = 10,
+            num_hidden_nodes = 2, num_hidden_layers = 1, num_output_nodes = 2)
+
+nn.pretty_print()
 
 print('\n============== GLASS DATA ============== ')
-data = dl.get_glass_data()
-print(data['tune'])
+# data = dl.get_glass_data()
+# print(data['tune'])
 
 print('\n============== SOYBEAN DATA ============== ')
-data = dl.get_soy_data()
-print(data['tune'])
+# data = dl.get_soy_data()
+# print(data['tune'])
 
 ################# regression data sets #################
 print('\n============== ABALONE DATA ============== ')
-data = dl.get_abalone_data()
-print(data['tune'])
+# data = dl.get_abalone_data()
+# print(data['tune'])
 
 print('\n============== MACHINE DATA ============== ')
-data = dl.get_machine_data()
-print(data['tune'])
+# data = dl.get_machine_data()
+# print(data['tune'])
 
 print('\n============== FOREST FIRE DATA ============== ')
-data = dl.get_forest_fires_data()
-print(data['tune'])
+# data = dl.get_forest_fires_data()
+# print(data['tune'])
