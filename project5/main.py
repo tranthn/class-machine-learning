@@ -89,12 +89,12 @@ def regression_helper(data, label = None):
 print('\n============== BREAST DATA ============== ')
 data = dl.get_breast_data()
 df = data['tune']
-print(df)
-print()
 
 nn = NeuralNet(df = df, label = 'class', eta = 0.05, iterations = 10,
             num_hidden_nodes = 2, num_hidden_layers = 1, num_output_nodes = 2)
 
+nn.build()
+print('-------------------------------------------')
 nn.pretty_print()
 
 print('\n============== GLASS DATA ============== ')
