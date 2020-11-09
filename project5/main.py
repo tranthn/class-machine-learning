@@ -94,7 +94,7 @@ nn = NeuralNet(df = df, label = 'class', eta = 0.05, iterations = 1, layer_struc
 nn.build()
 
 # print('-------------------------------------------')
-# nn.pretty_print()
+nn.pretty_print()
 
 print('\n============== GLASS DATA ============== ')
 # data = dl.get_glass_data()

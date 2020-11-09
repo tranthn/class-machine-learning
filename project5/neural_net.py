@@ -48,8 +48,11 @@ class NeuralNet():
         d = x.shape[1]
 
         # set x (data frame without label) and y (class labels)
+        # classes, one-hot encoded here so that main dataframe class is left alone
         self.x = x
-        self.y = df[self.label]
+        class_column = df[self.label]
+        self.y = pd.get_dummies(class_column, columns = [label])
+        print(self.y)
 
         # create network layers and weights
         for l in range(self.num_layers):
@@ -61,9 +64,12 @@ class NeuralNet():
             print('layer l', l)
             print('d', d)
             for n in range(self.layer_structure[l]):
+                node = { 'weights': None, 'y': None }
+
                 # weight dimensions = d (feature #) + 1 for bias
                 w = np.random.uniform(0, 0.1, d + 1)
-                layer.append({'weights': w})
+                node['weights'] = w
+                layer.append(node)
 
             self.network['layers'].append(layer)
 
@@ -81,11 +87,16 @@ class NeuralNet():
 
         print('LAYERS')
         print('---------')
-        for l in self.network['layers']:
+        for layer in self.network['layers']:
             print('layer')
-            for w in l:
-                print(w)
-            print()
+            for node in layer:
+                print('weights', node['weights'].shape)
+                print(node['weights'])
+                print()
+                print('output', node['y'].shape)
+                print(node['y'])
+                print()
+            print('----')
 
         print('\nOUTPUTS')
         print('---------')
@@ -105,7 +116,7 @@ class NeuralNet():
         - z: dot product of x * w plus bias value
     """
     def activation(self, x, wts):
-        # z = output, dimensions = n x 1
+        # z = output, dimensions = n x 1 or just (n, )
         w = wts[:-1]
         bias = wts[-1]
         z = np.dot(x, w) + bias
@@ -133,7 +144,7 @@ class NeuralNet():
             - output of derivactive function
     """
     def sigmoid_derivative(self, input):
-        o = sigmoid(input)
+        o = self.sigmoid(input)
         dS = o * (1 - o)
         return dS
 
@@ -153,39 +164,77 @@ class NeuralNet():
             for j in range(len(l)):
                 node = l[j]
                 print('\nnode', j)
+
                 # w dimensions: d + 1
                 w = node['weights']
                 print('w', w.shape)
+                print('x', x.shape)
+                
+                # sum of z becomes the input (or x) that we plug into sigmoid function
                 z = self.activation(x, w)
+                print('z ', z.shape)
                 output = self.sigmoid(z)
+                node['y'] = output
 
                 # next input column dimensions must align to next layer
                 next_input.append(output)
-                print('z ', z.shape)
-                print('output', output.shape)
-            
+
             # check that we still have layers to process
             # if we have 2 layers, indices = 0, 1
             # 0 is between input and hidden layer 1
             # 1 is between hidden layer 1 and output
-            if (i < (self.num_layers - 1)):
-                # reshape raw input to match current layer's # nodes
-                n_nodes = self.layer_structure[i]
-                next_input = np.reshape(next_input, (n, n_nodes))
-                print('\nnext layer input', next_input.shape)
-                x = next_input
+            # reshape raw input to match current layer's # nodes
 
-            print()
+            # if (i < (self.num_layers - 1)):
+            n_nodes = self.layer_structure[i]
+            next_input = np.reshape(next_input, (n, n_nodes))
+            print('\nnext layer input', next_input.shape)
+            x = next_input
 
-    def backpropagate(self, input):
-        # blah
+        return x
+
+    def backpropagate(self):
+        layers = self.network['layers']
+        errors = []
+        for i in reversed(range(self.num_layers)):
+            l = layers[i]
+
+            # if we're on last layer, then we will use the original
+            # class values for y, otherwise we use output from nodes
+            if (i == (self.num_layers - 1)):
+                y = self.y
+                for j in range(len(l)):
+                    node = l[j]
+                    print('node.y', node['y'].shape)
+                    print('self.y', y.shape)
+
+                    ## comparing y with multiple columsn to node[y] which has 1 column
+                    ## TODO fix this
+                    diff = (y - node['y'])
+                    errors.append(diff)
+
+            # this is not the last layer, so we can look forward
+            # to next layer to calculate the error
+            else:
+                for j in range(len(l)):
+                    error = 0
+                    next_layer = self.network['layers'][i + 1]
+
+                    # look to next layer
+                    for node in next_layer:
+                        error += node['weights'][j] * node['delta']
+                    
+                    errors.append(error)
+
+            for j in range(len(l)):
+                node = l[j]
+
+                # get error for this node
+                node['delta'] = errors[j] * self.sigmoid_derivative(node['y'])
+
         return None
 
-    def calculate_loss(self, w, z): 
-        y = self.y
-
-        # # y, dimensions = n 
-        # # diff, dimensions = n        
+    def calculate_loss(self, y, z):
         diff = (y - z)
 
         # sum of squared errors (or residuals)
@@ -219,8 +268,7 @@ class NeuralNet():
 
         # # diff, dimensions = n
         # # transpose x to line up dimensions (d x n)
-        # F += self.eta * diff.sum()
-        # w += self.eta * x.T.dot(diff)
+
         return None
 
     def build(self):
@@ -235,14 +283,19 @@ class NeuralNet():
         self.initialize()
 
         for i in range(self.iterations):
-            # run initial network with our weights and input
-            self.forward_feed()
+            # run network forward to generate outputs
+            output = self.forward_feed()
+            print('feed output', output.shape)
+            print()
 
-            # calculate loss
-            
-            # backpropagate the loss
-            
+            # calculate SSE with this network
+            sse = self.calculate_loss(self.y, output)
+
+            # backpropagate
+            self.backpropagate()
+
             # update weights
+            # self.update_weights()
 
 ####################################################################################
 
