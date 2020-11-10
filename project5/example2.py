@@ -105,8 +105,8 @@ def forward_propagate(network, row):
 		for neuron in layer:
 			activation = activate(neuron['weights'], inputs)
 			neuron['output'] = transfer(activation)
-			print('activation', activation)
-			print('neuron.output', neuron['output'])
+			# print('activation', activation)
+			# print('neuron.output', neuron['output'])
 			new_inputs.append(neuron['output'])
 		inputs = new_inputs
 	return inputs
@@ -143,7 +143,9 @@ def backward_propagate_error(network, expected):
 			for j in range(len(layer)):
 				# print('j', j)
 				neuron = layer[j]
-				errors.append(expected[j] - neuron['output'])
+				error = expected[j] - neuron['output']
+				print('error', error)
+				errors.append(error)
 		# print()
 
 		# once we generate errors above, then we will set the "delta" per neuron
