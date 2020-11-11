@@ -123,7 +123,7 @@ def get_breast_data():
 
 ########################################
 ## features are all continuous 
-## class: 6 options
+## class: 6 options, 9 features
 def get_glass_data():
     glass_fields = ['id','ri','na','mg', 'al','si','k','ca','ba','fe','class']
     std_fields = glass_fields[1:-1]
@@ -137,7 +137,7 @@ def get_glass_data():
 
 ########################################
 ## attribute values are either multi-categorical or binary (assuming no missing)
-## class: 4 options
+## class: 4 options, 35 columns (73 dummied)
 def get_soy_data():
     soybean_fields = ['date','plant-stand','precip','temp','hail','crop-hist','area-damaged','severity',
                     'seed-tmt','germination','plant-growth','leaves','leafspots-halo','leafspots-marg',

@@ -87,31 +87,38 @@ def regression_helper(data, label = None):
 
 ########################################
 print('\n============== BREAST DATA ============== ')
-# d = 9
+# d = 9, k = 2
 data = dl.get_breast_data()
 df = data['tune']
-nn = NeuralNet(df = df, label = 'class', eta = 0.25, iterations = 10, layer_structure = [4, 2])
+nn = NeuralNet(df = df, label = 'class', eta = 0.01, iterations = 500, layer_structure = [6, 2])
 nn.build()
-# print('-------------------------------------------')
-# nn.pretty_print()
+nn.test(data['folds'][0])
 
 print('\n============== GLASS DATA ============== ')
-# data = dl.get_glass_data()
-# print(data['tune'])
+# d = 9, k = 6
+data = dl.get_glass_data()
+df = data['tune']
+nn = NeuralNet(df = df, label = 'class', eta = 0.01, iterations = 1000, layer_structure = [8, 6])
+nn.build()
+nn.test(data['folds'][0])
 
 print('\n============== SOYBEAN DATA ============== ')
-# data = dl.get_soy_data()
-# print(data['tune'])
+# d = 73 (dummied columns), k = 4
+data = dl.get_soy_data()
+df = data['tune']
+nn = NeuralNet(df = df, label = 'class', eta = 0.01, iterations = 1000, layer_structure = [50, 4])
+nn.build()
+nn.test(data['folds'][0])
 
 ################# regression data sets #################
 print('\n============== ABALONE DATA ============== ')
 # data = dl.get_abalone_data()
-# print(data['tune'])
+# df = data['tune']
 
 print('\n============== MACHINE DATA ============== ')
 # data = dl.get_machine_data()
-# print(data['tune'])
+# df = data['tune']
 
 print('\n============== FOREST FIRE DATA ============== ')
 # data = dl.get_forest_fires_data()
-# print(data['tune'])
+# df = data['tune']

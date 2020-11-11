@@ -149,12 +149,8 @@ class NeuralNet():
 
     # run our data instances x through existing network
     def forward_feed(self, x):
-        n = self.x.shape[0]
+        n = x.shape[0]
         layers = self.network['layers']
-        # print('\nFORWARD FEED')
-        # print('n ', x.shape[0])
-        # print('d ', x.shape[1])
-        # print()
 
         for i in range(self.num_layers):
             l = layers[i]
@@ -173,7 +169,6 @@ class NeuralNet():
                 # next input column dimensions must align to next layer
                 next_input.append(output)
 
-            # check that we still have layers to process
             # if we have 2 layers, indices = 0, 1
             # 0 is between input and hidden layer 1
             # 1 is between hidden layer 1 and output
@@ -213,7 +208,7 @@ class NeuralNet():
                     # look to next layer
                     for node in next_layer:
                         error += node['weights'][j] * node['delta']
-                    
+
                     errors.append(error)
 
             for j in range(len(l)):
@@ -223,11 +218,9 @@ class NeuralNet():
                 node['delta'] = errors[j] * self.sigmoid_derivative(node['y'])
 
     def calculate_loss(self, y, z):
-        diff = (y - z)
-
         # sum of squared errors (or residuals)
+        diff = (y - z)
         sse = (diff ** 2).sum()
-        print('sse', sse)
 
         return sse
 
@@ -307,9 +300,10 @@ class NeuralNet():
         returns
         - class predictions flattened 1-d array
     """
-    def predict(self, x, w):
-        out = self.activation(x, w)
-        return np.where(out > 0, 1, 0).flatten()
+    def predict(self, x):
+        out = self.forward_feed(x)
+        predictions = np.argmax(out, axis = 1)
+        return predictions
 
     """
         run weights with our test data
@@ -321,20 +315,24 @@ class NeuralNet():
         returns
         - returns accuracy of prediction with our given dataframe
     """
-    def test(self, df, w):
+    def test(self, df):
         #### calculate model with samples and weights ####
         # x = df without class column
         n = df.shape[0]
-        x = df.copy().drop(columns = self.label)
+        classes = df[self.label]
+        x = df.copy().drop(columns = self.label).to_numpy()
         y = df[self.label]
 
         ### accuracy map
         accuracy_map = {}
 
         # predict classes with given weight array
-        predictions = self.predict(x, w)
+        predictions = self.predict(x)
 
-        # convert predictions to class label
-        comp = np.equal(y.to_numpy(), predictions)
+        # convert classes to factors, to use with predictions
+        vals, levels = pd.factorize(classes)
+        predictions_with_class = levels.take(predictions)
+        comp = np.equal(classes.to_numpy(), predictions_with_class.to_numpy())
         corr = sum(comp)
+        print('accuracy: {:.2%}'.format(corr / n))
         return (corr / n)

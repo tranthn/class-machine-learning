@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import numpy as np
 
+# source: https://medium.com/@a.mirzaei69/implement-a-neural-network-from-scratch-with-python-numpy-backpropagation-e82b70caa9bb
+
 class NeuralNetwork(object):
     def __init__(self, layers=[2, 10, 1], activations=['sigmoid', 'sigmoid']):
         assert(len(layers) == len(activations)+1)

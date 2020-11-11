@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import numpy as np
 
+# source: https://www.kdnuggets.com/2018/10/simple-neural-network-python.html
+
 class NeuralNetwork():
     
     def __init__(self):

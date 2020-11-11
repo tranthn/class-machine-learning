@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# source: https://machinelearningmastery.com/implement-backpropagation-algorithm-scratch-python/
+
 # Backprop on the Seeds Dataset
 from random import seed
 from random import randrange
@@ -144,7 +146,6 @@ def backward_propagate_error(network, expected):
 				# print('j', j)
 				neuron = layer[j]
 				error = expected[j] - neuron['output']
-				print('error', error)
 				errors.append(error)
 		# print()
 
@@ -178,6 +179,7 @@ def train_network(network, train, l_rate, n_epoch, n_outputs):
 			print('\nexpected')
 			print(expected)
 			sum_error += sum([(expected[i] - outputs[i]) ** 2 for i in range(len(expected))])
+			print('\nsum error', sum_error)
 			backward_propagate_error(network, expected)
 			update_weights(network, row, l_rate)
 		
