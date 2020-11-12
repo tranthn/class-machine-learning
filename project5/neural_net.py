@@ -179,7 +179,7 @@ class NeuralNet():
             for j in range(len(l)):
                 node = l[j]
                 w = node['weights']
-                
+ 
                 # sum of z becomes the input (or x) that we plug into activation function
                 z = self.get_dot(x, w)
                 output = activation(z)
