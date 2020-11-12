@@ -1,20 +1,18 @@
 #!/usr/bin/env python3
-import sys
 import numpy as np
 import pandas as pd
-import math
 
-##################################################
-bias = 0.01
-
+# Neural Network that handles both classification and regression scenarios
 class NeuralNet():
-    def __init__(self, df = None, label = '', eta = 0.05, iterations = 1,
-                    layer_structure = [1, 2]):
+    def __init__(self, df = None, label = '', eta = 0.05,
+                    iterations = 1, layer_structure = [1, 2],
+                    regression = False):
 
         self.df = df
         self.label = label
         self.eta = eta
         self.iterations = iterations
+        self.regression = regression
 
         # boundary sizes for our network structure
         # layer structure is array of ints
@@ -50,8 +48,13 @@ class NeuralNet():
         # set x (data frame without label) and y (class labels)
         # classes, one-hot encoded here so that main dataframe class is left alone
         self.x = x
-        class_column = df[self.label]
-        self.y = pd.get_dummies(class_column, columns = [label]).to_numpy()
+        class_column = df[label]
+
+        # set y based on regression versus classification
+        if not self.regression:
+            self.y = pd.get_dummies(class_column, columns = [label]).to_numpy()
+        else:
+            self.y = class_column.to_numpy()
 
         # create network layers and weights
         for l in range(self.num_layers):
@@ -60,13 +63,9 @@ class NeuralNet():
                 # dimension for weights must be based off number of nodes in prior layer
                 d = self.layer_structure[l - 1]
 
-            print('layer l', l)
-            print('d', d)
             for n in range(self.layer_structure[l]):
                 node = { 'weights': None, 'y': None }
-
-                # weight dimensions = d (feature #) + 1 for bias
-                w = np.random.uniform(0, 0.1, d + 1)
+                w = np.random.uniform(0, 0.1, d + 1) # + 1 for bias
                 node['weights'] = w
                 layer.append(node)
 
@@ -108,13 +107,13 @@ class NeuralNet():
         compute dot product for dataframe and weights
         
         arguments:
-        - x: dataframe without class column, dimensions = n x d
-        - w: weights, dimensions = d x 1
+            - x: dataframe without class column, dimensions = n x d
+            - w: weights, dimensions = d x 1
         
         returns
-        - z: dot product of x * w plus bias value
+            - z: dot product of x * w plus bias value
     """
-    def activation(self, x, wts):
+    def get_dot(self, x, wts):
         # z = output, dimensions = n x 1 or just (n, )
         w = wts[:-1]
         bias = wts[-1]
@@ -122,19 +121,19 @@ class NeuralNet():
         return z
 
     """
-        sigmoid function
+        activation function
 
         arguments:
             - input: the instance values modified with weights
 
         returns
-            - output of sigmoid function
+            - output of activation function
     """
     def sigmoid(self, input):
         return 1 / (1 + np.exp(-input))
 
     """
-        derivative of sigmoid function, for use with gradient descent
+        derivative of activation function, for use with gradient descent
 
         arguments:
             - input: the instance values modified with weights
@@ -147,31 +146,48 @@ class NeuralNet():
         dS = o * (1 - o)
         return dS
 
+    # identity function for linear output
+    def identity(self, input):
+        return input
+
+    # helper to determine which activation function to use
+    def get_activation_fn(self, i):
+        # check if last layer and regression, so we'll use linear
+        if (i == (self.num_layers - 1) and self.regression):
+            return self.identity
+        else:
+            return self.sigmoid
+
+    # helper to determine which derivative function to use
+    def get_activation_derivative_fn(self, i):
+        # check if last layer and regression, so we'll use linear
+        if (i < (self.num_layers - 1) and self.regression):
+            return lambda x: 1
+        else:
+            return self.sigmoid_derivative
+
     # run our data instances x through existing network
     def forward_feed(self, x):
         n = x.shape[0]
         layers = self.network['layers']
 
         for i in range(self.num_layers):
+            activation = self.get_activation_fn(i)
             l = layers[i]
             next_input = []
+
             for j in range(len(l)):
                 node = l[j]
-
-                # w dimensions: d + 1
                 w = node['weights']
                 
-                # sum of z becomes the input (or x) that we plug into sigmoid function
-                z = self.activation(x, w)
-                output = self.sigmoid(z)
+                # sum of z becomes the input (or x) that we plug into activation function
+                z = self.get_dot(x, w)
+                output = activation(z)
                 node['y'] = output
 
                 # next input column dimensions must align to next layer
                 next_input.append(output)
 
-            # if we have 2 layers, indices = 0, 1
-            # 0 is between input and hidden layer 1
-            # 1 is between hidden layer 1 and output
             # reshape raw input to match current layer's # nodes
             n_nodes = self.layer_structure[i]
             next_input = np.reshape(next_input, (n, n_nodes))
@@ -179,33 +195,39 @@ class NeuralNet():
 
         return x
 
+    """
+        calculate the error from network, in reverse layer order
+            - calculates error per node in each layer
+            - uses node errors and derivative to set node delta
+            - node delta will be used to update weights
+    """
     def backpropagate(self):
         layers = self.network['layers']
         errors = []
         for i in reversed(range(self.num_layers)):
+            derivative = self.get_activation_derivative_fn(i)
             l = layers[i]
 
-            # if we're on last layer, then we will use the original
-            # class values for y, otherwise we use output from nodes
             if (i == (self.num_layers - 1)):
                 for j in range(len(l)):
                     node = l[j]
 
-                    # since self.y has dimensions n x k, the # of output nodes = k
-                    # so if we're looking at one output node at a time
-                    # we need to grab 1 column of y at a time
-                    y = self.y[:,j]
+                    # for classification, self.y has dimensions n x k
+                    # the # of output nodes = k, process one node / column at a time
+                    if not self.regression:
+                        y = self.y[:,j]
+                    else:
+                        y = self.y
+
                     diff = (y - node['y'])
                     errors.append(diff)
 
-            # this is not the last layer, so we can look forward
-            # to next layer to calculate the error
+            # not the last layer, so we can look forward to next layer
             else:
                 for j in range(len(l)):
                     error = 0
                     next_layer = self.network['layers'][i + 1]
 
-                    # look to next layer
                     for node in next_layer:
                         error += node['weights'][j] * node['delta']
 
@@ -215,31 +237,34 @@ class NeuralNet():
                 node = l[j]
 
                 # get error for this node
-                node['delta'] = errors[j] * self.sigmoid_derivative(node['y'])
+                node['delta'] = errors[j] * derivative(node['y'])
 
     def calculate_loss(self, y, z):
-        # sum of squared errors (or residuals)
-        diff = (y - z)
-        sse = (diff ** 2).sum()
+        # use MSE for regression and SSE for classification
+        if self.regression:
+            loss = np.mean((np.subtract(y, z)) ** 2)
+        else:
+            diff = (y - z)
+            loss = (diff ** 2).sum()
 
-        return sse
+        return loss
 
     """
         the main function for calculating gradient and loss
         
         arguments
-        - x: dataframe without class column
-        - y: class column from dataframe
-        - w: weights, may be random weights or the updated weights passed by caller
+            - x: dataframe without class column
+            - y: class column from dataframe
+            - w: weights, may be random weights or the updated weights passed by caller
         
         returns:
-        - w: final weights after all iterations
+            - w: final weights after all iterations
     """
     def update_weights(self):
         layers = self.network['layers']
         eta = self.eta
-        
-        # dimensions are [n x k], rotate for consistent alignment
+
+        # dimensions are [n x d], rotate for consistent alignment
         x = self.x.T
 
         for i in range(self.num_layers):
@@ -247,23 +272,26 @@ class NeuralNet():
             if i > 0:
                 prev_layer = layers[i - 1]
                 x = [node['y'] for node in prev_layer]
-                # x's dimensions are [k x n]
                 x = np.array(x)
 
             for j in range(len(l)):
                 node = l[j]
 
-                # update main weights
-                # node['delta'] dimensions are (n, )
+                # update main weights, node['delta'] dimensions are (n, )
+                # node['delta'] = errors[j] * self.activation_derivative(node['y'])
                 gradient = np.dot(x, node['delta'])
                 node['weights'][:-1] += eta * gradient
 
-                # update bias values
-                # delta shape is (n, )
+                # update bias values, delta shape is (n, )
                 # bias value is singular, so we'll sum delta to adjust
                 step = eta * node['delta'].sum()
                 node['weights'][-1] += step
 
+    """
+        main entry point to build train neural network
+            - initializes neural network structure
+            - runs forward feed, backprop, and weight updates
+    """
     def build(self):
         # network base structure
         self.network = {
@@ -276,16 +304,9 @@ class NeuralNet():
         self.initialize()
 
         for i in range(self.iterations):
-            # run network forward to generate outputs
             output = self.forward_feed(self.x)
-
-            # calculate SSE with this network
-            sse = self.calculate_loss(self.y, output)
-
-            # backpropagate
+            loss = self.calculate_loss(self.y, output)
             self.backpropagate()
-
-            # update weights
             self.update_weights()
 
 ####################################################################################
@@ -294,45 +315,58 @@ class NeuralNet():
         calculate class prediction given data and weights
         
         arguments
-        - x: data without class column
-        - w: weights representing our model
+            - x: data without class column
+            - w: weights representing our model
         
         returns
-        - class predictions flattened 1-d array
+            - class predictions flattened 1-d array
     """
     def predict(self, x):
         out = self.forward_feed(x)
-        predictions = np.argmax(out, axis = 1)
-        return predictions
+        return out
 
     """
         run weights with our test data
         
         arguments
-        - df: dataframe (with all columns)
-        - w: weights representing our model (for a given target class)
+            - df: dataframe (with all columns)
+            - w: weights representing our model (for a given target class)
         
         returns
-        - returns accuracy of prediction with our given dataframe
+            - returns accuracy of prediction with our given dataframe
     """
     def test(self, df):
-        #### calculate model with samples and weights ####
-        # x = df without class column
+        if (self.regression):
+            results = self._test_regression(df)
+        else:
+            results = self._test_classification(df)
+        
+        return results
+
+    # helper to run classification test set
+    def _test_classification(self, df):
         n = df.shape[0]
         classes = df[self.label]
         x = df.copy().drop(columns = self.label).to_numpy()
         y = df[self.label]
 
-        ### accuracy map
-        accuracy_map = {}
-
-        # predict classes with given weight array
-        predictions = self.predict(x)
+        output = self.predict(x)
+        predictions = np.argmax(output, axis = 1)
 
         # convert classes to factors, to use with predictions
         vals, levels = pd.factorize(classes)
         predictions_with_class = levels.take(predictions)
-        comp = np.equal(classes.to_numpy(), predictions_with_class.to_numpy())
-        corr = sum(comp)
-        print('accuracy: {:.2%}'.format(corr / n))
+        corr = np.equal(classes.to_numpy(), predictions_with_class).sum()
+        print('\nclassification accuracy: {:.2%}'.format(corr / n))
         return (corr / n)
+
+    # helper to run regression test set
+    def _test_regression(self, df):
+        n = df.shape[0]
+        actual = df[self.label]
+        x = df.copy().drop(columns = self.label).to_numpy()
+        y = df[self.label].to_numpy()
+
+        output = self.predict(x)
+        loss = self.calculate_loss(y, output)
+        print('\nregression loss: {:.2g}'.format(loss))

@@ -37,6 +37,7 @@ class NeuralNetwork(object):
             # Perform BackPropagation
             for i in reversed(range(len(deltas)-1)):
                 deltas[i] = self.weights[i+1].T.dot(deltas[i+1]) * (self.getDerivitiveActivationFunction(self.activations[i])(z_s[i]))
+                print(deltas[i][0])
 
             batch_size = y.shape[1]
             db = [d.dot(np.ones((batch_size, 1)))/float(batch_size) for d in deltas]
@@ -50,12 +51,8 @@ class NeuralNetwork(object):
         for e in range(epochs): 
             i=0
             while(i<len(y)):
-                print('batch_size', batch_size)
-                print('y', len(y))
                 x_batch = x[i:i+batch_size]
                 y_batch = y[i:i+batch_size]
-                print('\nx_batch')
-                print(x_batch)
                 i = i+batch_size
                 z_s, a_s = self.feedforward(x_batch)
                 dw, db = self.backpropagation(y_batch, z_s, a_s)
@@ -81,15 +78,10 @@ class NeuralNetwork(object):
 ########################################################################
 if __name__=='__main__':
     import matplotlib.pyplot as plt
-    nn = NeuralNetwork([1, 100, 1], activations = ['sigmoid', 'sigmoid'])
+    nn = NeuralNetwork([1, 100, 1], activations = ['sigmoid', 'linear'])
     X = 2 * np.pi * np.random.rand(100).reshape(1, -1)
     y = np.sin(X)
-    print('X')
-    print(X)
-    print('y')
-    print(y)
-    print('----')
-    nn.train(X, y, epochs = 1, batch_size = 64, lr = .1)
+    nn.train(X, y, epochs = 3, batch_size = 64, lr = .1)
     _, a_s = nn.feedforward(X)
 
     # plt.scatter(X.flatten(), y.flatten())
