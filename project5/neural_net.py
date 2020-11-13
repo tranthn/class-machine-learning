@@ -406,7 +406,6 @@ class NeuralNet():
         vals, levels = pd.factorize(classes)
         predictions_with_class = levels.take(predictions)
         corr = np.equal(classes.to_numpy(), predictions_with_class).sum()
-        print('\nclassification accuracy: {:.2%}'.format(corr / n))
         return (corr / n)
 
     # helper to run regression test set
@@ -422,4 +421,4 @@ class NeuralNet():
             predictions.append(output) 
 
         loss = self.calculate_loss(y, predictions)
-        print('\nregression loss: {:.2g}'.format(loss))
+        return loss

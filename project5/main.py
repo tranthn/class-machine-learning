@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import sys
+import time
 import numpy as np
 import pandas as pd
 import data_loader as dl
@@ -14,12 +15,11 @@ class_label = 'class'
 def print_helper_classifier(perf, fold):
     avg = 0
     for i, k in enumerate(perf):
-        p = k['incorrect'] / k['total']
-        pstr = "{:.0%}".format(p)
-        print('fold #{0}, misclassified\t{1}'.format(i, pstr))
-        avg += p
+        pstr = "{:.0%}".format(k)
+        print('fold #{0}, accuracy\t{1}'.format(i, pstr))
+        avg += k
 
-    print('------\navg. % misclassified:\t{:.0%}'.format(avg / fold))
+    print('------\navg. % accuracy:\t{:.0%}'.format(avg / fold))
 
 def print_helper_regressor(perf, fold):
     avg = 0
@@ -30,9 +30,8 @@ def print_helper_regressor(perf, fold):
 
     print('------\navg. MSE:\t{0:.3g}'.format(avg / fold))
 
-# wrapper helpers to reduce code duplication for running knn
-# optional execution of condensed or edit methods
-def classification_helper(data, label = None):
+# wrapper helper to run neural network training and test with all folds
+def neural_net_helper(data, label = None, eta = 0.01, iterations = 100, layer_structure = [], regression = False):
     if label == None:
         label = class_label
 
@@ -40,8 +39,9 @@ def classification_helper(data, label = None):
     tune = data['tune']
     perf = []
 
+    start_time = time.time()
     for i in range(f):
-        print('\n======== F O L D #{0} ========'.format(i))
+        # print('\n======== F O L D #{0} ========'.format(i))
 
         all_folds = data['folds'].copy()
         holdout = all_folds[i]
@@ -49,88 +49,79 @@ def classification_helper(data, label = None):
         folds.pop(i)
         training = pd.concat(folds)
 
-        # running classifer knn algorithms, edited and condensed methods are optional
-        # model = blah
-        result = ''
+        nn = NeuralNet(training, label, eta, iterations, layer_structure, regression)
+        nn.build()
+        result = nn.test(holdout)
         perf.append(result)
 
-    print('-------')
+    elapsed = time.time() - start_time
     print('\n======== AVG. SUMMARY OF PERFORMANCE ========')
-    print_helper_classifier(perf, f)
 
-## regression wrapper helper
-def regression_helper(data, label = None):
-    if label == None:
-        label = class_label
+    if regression:
+        print_helper_regressor(perf, f)
+    else:
+        print_helper_classifier(perf, f)
 
-    f = 5 # fold-value
-    tune = data['tune']
-    perf = []
-
-    for i in range(f):
-        print('\n======== F O L D #{0} ========'.format(i))
-
-        all_folds = data['folds'].copy()
-        holdout = all_folds[i]
-        folds = all_folds
-        folds.pop(i)
-        training = pd.concat(folds)
-
-        # running classifer knn algorithms, edited and condensed methods are optional
-        # model = blah
-        result = ''
-        perf.append(result)
-
-    print('-------')
-    print('\n======== AVG. SUMMARY OF PERFORMANCE ========')
-    print_helper_regressor(perf, f)
+    print('total execution time:\t{:.2f}s'.format(elapsed))
 
 ########################################
 print('\n============== BREAST DATA ============== ')
 # d = 9, k = 2
 data = dl.get_breast_data()
-df = data['tune']
-# nn = NeuralNet(df = df, label = 'class', eta = 0.01, iterations = 500, layer_structure = [6, 2])
-# nn.build()
-# nn.test(data['folds'][0])
+# print('------------ 0-layer ------------')
+# neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [2])
+# print('------------ 1-layer ------------')
+# neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [6, 2])
+# print('------------ 2-layer ------------')
+# neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [6, 4, 2])
 
 print('\n============== GLASS DATA ============== ')
 # d = 9, k = 6
 data = dl.get_glass_data()
-df = data['tune']
-# nn = NeuralNet(df = df, label = 'class', eta = 0.01, iterations = 500, layer_structure = [8, 6])
-# nn.build()
-# nn.test(data['folds'][0])
+# print('------------ 0-layer ------------')
+# neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [6])
+# print('------------ 1-layer ------------')
+# neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [8, 6])
+# print('------------ 2-layer ------------')
+# neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [4, 4, 6])
 
 print('\n============== SOYBEAN DATA ============== ')
 # d = 73 (includes dummied columns), k = 4
 data = dl.get_soy_data()
-df = data['tune']
-# nn = NeuralNet(df = df, label = 'class', eta = 0.01, iterations = 500, layer_structure = [50, 4])
-# nn.build()
-# nn.test(data['folds'][0])
+# print('------------ 0-layer ------------')
+# neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 10, layer_structure = [50, 4])
+# print('------------ 1-layer ------------')
+# neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 10, layer_structure = [50, 4])
+# print('------------ 2-layer ------------')
+# neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 10, layer_structure = [50, 4])
 
 ################# regression data sets #################
 print('\n============== ABALONE DATA ============== ')
-# d = 11 (2 dummies)
+# d = 11 (2 dummies), regression predictor: rings
 data = dl.get_abalone_data()
-df = data['tune']
-# nn = NeuralNet(df = df, label = 'rings', eta = 0.01, iterations = 500, layer_structure = [8, 1], regression = True)
-# nn.build()
-# nn.test(data['folds'][0])
+# print('------------ 0-layer ------------')
+# neural_net_helper(data = data, label = 'rings', eta = 0.01, iterations = 10, layer_structure = [1], regression = True)
+# print('------------ 1-layer ------------')
+# neural_net_helper(data = data, label = 'rings', eta = 0.01, iterations = 10, layer_structure = [8, 1], regression = True)
+# print('------------ 2-layer ------------')
+# neural_net_helper(data = data, label = 'rings', eta = 0.01, iterations = 10, layer_structure = [8, 6, 1], regression = True)
 
 print('\n============== MACHINE DATA ============== ')
-# d = 37 (includes dummied columns)
+# d = 37 (includes dummied columns), regression predictor: prp
 data = dl.get_machine_data()
-df = data['tune']
-# nn = NeuralNet(df = df, label = 'prp', eta = 0.01, iterations = 50, layer_structure = [6, 1], regression = True)
-# nn.build()
-# nn.test(data['folds'][0])
+print('------------ 0-layer ------------')
+neural_net_helper(data = data, label = 'prp', eta = 0.01, iterations = 10, layer_structure = [1], regression = True)
+print('------------ 1-layer ------------')
+neural_net_helper(data = data, label = 'prp', eta = 0.01, iterations = 10, layer_structure = [20, 1], regression = True)
+print('------------ 2-layer ------------')
+neural_net_helper(data = data, label = 'prp', eta = 0.01, iterations = 10, layer_structure = [20, 6, 1], regression = True)
 
 print('\n============== FOREST FIRE DATA ============== ')
-# d = 30 (includes dummied columns)
+# d = 30 (includes dummied columns), regression predictor: area [of fire]
 data = dl.get_forest_fires_data()
-df = data['tune']
-nn = NeuralNet(df = df, label = 'area', eta = 0.01, iterations = 500, layer_structure = [20, 1], regression = True)
-nn.build()
-nn.test(data['folds'][0])
+# print('------------ 0-layer ------------')
+# neural_net_helper(data = data, label = 'area', eta = 0.01, iterations = 10, layer_structure = [1], regression = True)
+# print('------------ 1-layer ------------')
+# neural_net_helper(data = data, label = 'area', eta = 0.01, iterations = 10, layer_structure = [20, 1], regression = True)
+# print('------------ 2-layer ------------')
+# neural_net_helper(data = data, label = 'area', eta = 0.01, iterations = 10, layer_structure = [20, 10, 1], regression = True)
