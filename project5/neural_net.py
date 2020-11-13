@@ -236,11 +236,9 @@ class NeuralNet():
                     # for classification, self.y has dimensions n x k
                     # the # of output nodes = k, process one node / column at a time
                     if not self.regression:
-                        y = self.y[:,j]
+                        y = self.y[index,:]
                     else:
                         y = self.y
-
-                    y = self.y[index,:]
 
                     diff = y[j] - node['y']
 
@@ -397,10 +395,10 @@ class NeuralNet():
     def _test_classification(self, df):
         n = df.shape[0]
         classes = df[self.label]
-        df_x = df.copy().drop(columns = self.label).to_numpy()
+        df_x = df.copy().drop(columns = self.label)
 
         predictions = []
-        for i, x in enumerate(df_x):
+        for _, x in df_x.iterrows():
             output = self.predict(x)
             predictions.append(np.argmax(output))
 
@@ -415,9 +413,13 @@ class NeuralNet():
     def _test_regression(self, df):
         n = df.shape[0]
         actual = df[self.label]
-        x = df.copy().drop(columns = self.label).to_numpy()
+        df_x = df.copy().drop(columns = self.label)
         y = df[self.label].to_numpy()
 
-        output = self.predict(x)
-        loss = self.calculate_loss(y, output)
+        predictions = []
+        for _, x in df_x.iterrows():
+            output = self.predict(x)
+            predictions.append(output) 
+
+        loss = self.calculate_loss(y, predictions)
         print('\nregression loss: {:.2g}'.format(loss))
