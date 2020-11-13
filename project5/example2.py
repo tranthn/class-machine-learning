@@ -9,6 +9,15 @@ from random import random
 from csv import reader
 from math import exp
 
+global print_delta
+print_delta = True
+global print_weights
+print_weights = True
+global print_loss
+print_loss = True
+global print_output
+print_output = True
+
 # Load a CSV file
 def load_csv(filename):
 	dataset = list()
@@ -119,6 +128,8 @@ def transfer_derivative(output):
 
 # Backpropagate error and store in neurons
 def backward_propagate_error(network, expected):
+	global print_delta
+
 	# we're going in reverse order
 	for i in reversed(range(len(network))):
 		layer = network[i]
@@ -155,6 +166,10 @@ def backward_propagate_error(network, expected):
 			neuron = layer[j]
 			neuron['delta'] = errors[j] * transfer_derivative(neuron['output'])
 
+			if print_delta:
+				print('delta', neuron['delta'])
+				print_delta = False
+
 # Update network weights with error
 def update_weights(network, row, l_rate):
 	for i in range(len(network)):
@@ -168,18 +183,39 @@ def update_weights(network, row, l_rate):
 
 # Train a network for a fixed number of epochs
 def train_network(network, train, l_rate, n_epoch, n_outputs):
+	global print_delta
+	global print_weights
+	global print_loss
+	global print_output
+
 	for epoch in range(n_epoch):
 		sum_error = 0
+
+		print_delta = True
+		print_weights = True
+		print_loss = True
+		print_output = True
+
 		for row in train:
 			outputs = forward_propagate(network, row)
-			print('\noutputs')
-			print(outputs)
+			
+			if print_output:
+				print(outputs)
+				print_output = False
+				print()
+
+			# weird way to do one-hot encoding for the 3 class options (values 1-3)
 			expected = [0 for i in range(n_outputs)]
 			expected[row[-1]] = 1
-			print('\nexpected')
-			print(expected)
+
 			sum_error += sum([(expected[i] - outputs[i]) ** 2 for i in range(len(expected))])
-			print('\nsum error', sum_error)
+
+			# print('\noutputs')
+			# print(outputs)
+			# print('\nexpected')
+			# print(expected)
+			# print('\nsum error', sum_error)
+			
 			backward_propagate_error(network, expected)
 			update_weights(network, row, l_rate)
 		

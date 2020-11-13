@@ -90,7 +90,7 @@ print('\n============== BREAST DATA ============== ')
 # d = 9, k = 2
 data = dl.get_breast_data()
 df = data['tune']
-nn = NeuralNet(df = df, label = 'class', eta = 0.01, iterations = 500, layer_structure = [6, 2])
+nn = NeuralNet(df = df, label = 'class', eta = 0.01, iterations = 2, layer_structure = [6, 2])
 nn.build()
 nn.test(data['folds'][0])
 
@@ -98,39 +98,39 @@ print('\n============== GLASS DATA ============== ')
 # d = 9, k = 6
 data = dl.get_glass_data()
 df = data['tune']
-nn = NeuralNet(df = df, label = 'class', eta = 0.01, iterations = 1000, layer_structure = [8, 6])
-nn.build()
-nn.test(data['folds'][0])
+# nn = NeuralNet(df = df, label = 'class', eta = 0.01, iterations = 1000, layer_structure = [8, 6])
+# nn.build()
+# nn.test(data['folds'][0])
 
 print('\n============== SOYBEAN DATA ============== ')
 # d = 73 (includes dummied columns), k = 4
 data = dl.get_soy_data()
 df = data['tune']
-nn = NeuralNet(df = df, label = 'class', eta = 0.01, iterations = 1000, layer_structure = [50, 4])
-nn.build()
-nn.test(data['folds'][0])
+# nn = NeuralNet(df = df, label = 'class', eta = 0.01, iterations = 1000, layer_structure = [50, 4])
+# nn.build()
+# nn.test(data['folds'][0])
 
 ################# regression data sets #################
 print('\n============== ABALONE DATA ============== ')
 # d = 11 (2 dummies)
 data = dl.get_abalone_data()
 df = data['tune']
-nn = NeuralNet(df = df, label = 'rings', eta = 0.01, iterations = 50, layer_structure = [6, 1], regression = True)
-nn.build()
-nn.test(data['folds'][0])
+# nn = NeuralNet(df = df, label = 'rings', eta = 0.01, iterations = 50, layer_structure = [6, 1], regression = True)
+# nn.build()
+# nn.test(data['folds'][0])
 
 print('\n============== MACHINE DATA ============== ')
 # d = 37 (includes dummied columns)
 data = dl.get_machine_data()
 df = data['tune']
-nn = NeuralNet(df = df, label = 'prp', eta = 0.01, iterations = 50, layer_structure = [6, 1], regression = True)
-nn.build()
-nn.test(data['folds'][0])
+# nn = NeuralNet(df = df, label = 'prp', eta = 0.01, iterations = 50, layer_structure = [6, 1], regression = True)
+# nn.build()
+# nn.test(data['folds'][0])
 
 print('\n============== FOREST FIRE DATA ============== ')
 # d = 30 (includes dummied columns)
 data = dl.get_forest_fires_data()
 df = data['tune']
-nn = NeuralNet(df = df, label = 'area', eta = 0.01, iterations = 50, layer_structure = [6, 1], regression = True)
-nn.build()
-nn.test(data['folds'][0])
+# nn = NeuralNet(df = df, label = 'area', eta = 0.01, iterations = 50, layer_structure = [6, 1], regression = True)
+# nn.build()
+# nn.test(data['folds'][0])

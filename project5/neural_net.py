@@ -2,6 +2,21 @@
 import numpy as np
 import pandas as pd
 
+global print_delta
+print_delta = False
+
+global print_weights
+print_weights = False
+
+global print_loss
+print_loss = False
+
+global print_output
+print_output = False
+
+global print_diff
+print_diff = False
+
 # Neural Network that handles both classification and regression scenarios
 class NeuralNet():
     def __init__(self, df = None, label = '', eta = 0.05,
@@ -168,6 +183,8 @@ class NeuralNet():
 
     # run our data instances x through existing network
     def forward_feed(self, x):
+        global print_output
+
         n = x.shape[0]
         layers = self.network['layers']
 
@@ -188,7 +205,7 @@ class NeuralNet():
                 # next input column dimensions must align to next layer
                 next_input.append(output)
 
-            # reshape raw input to match current layer's # nodes
+            # reshape raw input to match current layer's # nodes)
             n_nodes = self.layer_structure[i]
             next_input = np.reshape(next_input, (n, n_nodes))
             x = next_input
@@ -202,12 +219,16 @@ class NeuralNet():
             - node delta will be used to update weights
     """
     def backpropagate(self):
+        global print_delta
+        global print_diff
+
         layers = self.network['layers']
-        errors = []
         for i in reversed(range(self.num_layers)):
             derivative = self.get_activation_derivative_fn(i)
             l = layers[i]
+            errors = []
 
+            # this is the last layer, aka output layer
             if (i == (self.num_layers - 1)):
                 for j in range(len(l)):
                     node = l[j]
@@ -219,8 +240,16 @@ class NeuralNet():
                     else:
                         y = self.y
 
-                    diff = (y - node['y'])
+                    diff = y - node['y']
+
                     errors.append(diff)
+
+                    if print_diff:
+                        print('y', y)
+                        print('node.y', node['y'])
+                        print('diff', diff)
+                        print()
+                print_diff = False
 
             # not the last layer, so we can look forward to next layer
             else:
@@ -238,8 +267,14 @@ class NeuralNet():
 
                 # get error for this node
                 node['delta'] = errors[j] * derivative(node['y'])
+                if print_delta and i == self.num_layers - 1:
+                    print('node.delta', node['delta'])
+                    print()
+
+            print_delta = False
 
     def calculate_loss(self, y, z):
+        global print_loss
         # use MSE for regression and SSE for classification
         if self.regression:
             loss = np.mean((np.subtract(y, z)) ** 2)
@@ -247,6 +282,8 @@ class NeuralNet():
             diff = (y - z)
             loss = (diff ** 2).sum()
 
+        if print_loss:
+            print('loss', loss)
         return loss
 
     """
@@ -261,6 +298,7 @@ class NeuralNet():
             - w: final weights after all iterations
     """
     def update_weights(self):
+        global print_weights
         layers = self.network['layers']
         eta = self.eta
 
@@ -280,7 +318,12 @@ class NeuralNet():
                 # update main weights, node['delta'] dimensions are (n, )
                 # node['delta'] = errors[j] * self.activation_derivative(node['y'])
                 gradient = np.dot(x, node['delta'])
+                print('node.delta', node['delta'].shape)
                 node['weights'][:-1] += eta * gradient
+                
+                if print_weights:
+                    print('weights', node['weights'][0])
+                    print_weights = False
 
                 # update bias values, delta shape is (n, )
                 # bias value is singular, so we'll sum delta to adjust
@@ -293,6 +336,12 @@ class NeuralNet():
             - runs forward feed, backprop, and weight updates
     """
     def build(self):
+        global print_delta
+        global print_weights
+        global print_loss
+        global print_output
+        global print_diff
+
         # network base structure
         self.network = {
             'input': None,
@@ -304,10 +353,19 @@ class NeuralNet():
         self.initialize()
 
         for i in range(self.iterations):
+            # print_delta = True
+            # print_weights = True
+            # print_loss = True
+            # print_output = True
+            # print_diff = True
+            # print_outp = True
+
+            print('ITERATION ', i)
             output = self.forward_feed(self.x)
             loss = self.calculate_loss(self.y, output)
             self.backpropagate()
             self.update_weights()
+            print('================\n')
 
 ####################################################################################
 
