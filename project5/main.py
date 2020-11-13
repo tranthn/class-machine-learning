@@ -90,7 +90,7 @@ print('\n============== BREAST DATA ============== ')
 # d = 9, k = 2
 data = dl.get_breast_data()
 df = data['tune']
-nn = NeuralNet(df = df, label = 'class', eta = 0.01, iterations = 2, layer_structure = [6, 2])
+nn = NeuralNet(df = df, label = 'class', eta = 0.01, iterations = 100, layer_structure = [6, 2])
 nn.build()
 nn.test(data['folds'][0])
 

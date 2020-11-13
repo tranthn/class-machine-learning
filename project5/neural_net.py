@@ -206,8 +206,8 @@ class NeuralNet():
                 next_input.append(output)
 
             # reshape raw input to match current layer's # nodes)
-            n_nodes = self.layer_structure[i]
-            next_input = np.reshape(next_input, (n, n_nodes))
+            # n_nodes = self.layer_structure[i]
+            # next_input = np.reshape(next_input, (n, n_nodes))
             x = next_input
 
         return x
@@ -218,7 +218,7 @@ class NeuralNet():
             - uses node errors and derivative to set node delta
             - node delta will be used to update weights
     """
-    def backpropagate(self):
+    def backpropagate(self, index):
         global print_delta
         global print_diff
 
@@ -240,7 +240,9 @@ class NeuralNet():
                     else:
                         y = self.y
 
-                    diff = y - node['y']
+                    y = self.y[index,:]
+
+                    diff = y[j] - node['y']
 
                     errors.append(diff)
 
@@ -297,13 +299,10 @@ class NeuralNet():
         returns:
             - w: final weights after all iterations
     """
-    def update_weights(self):
+    def update_weights(self, x):
         global print_weights
         layers = self.network['layers']
         eta = self.eta
-
-        # dimensions are [n x d], rotate for consistent alignment
-        x = self.x.T
 
         for i in range(self.num_layers):
             l = layers[i]
@@ -314,20 +313,14 @@ class NeuralNet():
 
             for j in range(len(l)):
                 node = l[j]
-
-                # update main weights, node['delta'] dimensions are (n, )
-                # node['delta'] = errors[j] * self.activation_derivative(node['y'])
-                gradient = np.dot(x, node['delta'])
-                print('node.delta', node['delta'].shape)
-                node['weights'][:-1] += eta * gradient
+                for f in range(len(x)):
+                    gradient = x[f] * node['delta']
+                    # print('gradient', gradient)
+                    node['weights'][f] += eta * gradient
                 
-                if print_weights:
-                    print('weights', node['weights'][0])
-                    print_weights = False
-
                 # update bias values, delta shape is (n, )
                 # bias value is singular, so we'll sum delta to adjust
-                step = eta * node['delta'].sum()
+                step = eta * node['delta']
                 node['weights'][-1] += step
 
     """
@@ -360,12 +353,11 @@ class NeuralNet():
             # print_diff = True
             # print_outp = True
 
-            print('ITERATION ', i)
-            output = self.forward_feed(self.x)
-            loss = self.calculate_loss(self.y, output)
-            self.backpropagate()
-            self.update_weights()
-            print('================\n')
+            for i, x in enumerate(self.x):
+                output = self.forward_feed(x)
+                # loss = self.calculate_loss(self.y, output)
+                self.backpropagate(i)
+                self.update_weights(x)
 
 ####################################################################################
 
@@ -405,11 +397,12 @@ class NeuralNet():
     def _test_classification(self, df):
         n = df.shape[0]
         classes = df[self.label]
-        x = df.copy().drop(columns = self.label).to_numpy()
-        y = df[self.label]
+        df_x = df.copy().drop(columns = self.label).to_numpy()
 
-        output = self.predict(x)
-        predictions = np.argmax(output, axis = 1)
+        predictions = []
+        for i, x in enumerate(df_x):
+            output = self.predict(x)
+            predictions.append(np.argmax(output))
 
         # convert classes to factors, to use with predictions
         vals, levels = pd.factorize(classes)
