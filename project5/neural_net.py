@@ -2,6 +2,9 @@
 import numpy as np
 import pandas as pd
 
+global print_forward
+print_forward = False
+
 global print_delta
 print_delta = False
 
@@ -92,7 +95,7 @@ class NeuralNet():
         helper to print network structure in readable format
     """
     def pretty_print(self):
-        print('NEURAL NETWORK')
+        print('\nNEURAL NETWORK')
         print('# layers (hidden/output)\t', self.num_layers)
         print('# hidden nodes\t\t\t', self.layer_structure[0:-1])
         print('# output nodes\t\t\t', self.layer_structure[-1])
@@ -103,11 +106,8 @@ class NeuralNet():
         for layer in self.network['layers']:
             print('layer')
             for node in layer:
-                print('weights', node['weights'].shape)
-                print(node['weights'])
-                print()
-                print('output', node['y'].shape)
-                print(node['y'])
+                print('weights', node['weights'])
+                print('output', node['y'])
                 print()
             print('----')
 
@@ -183,7 +183,7 @@ class NeuralNet():
 
     # run our data instances x through existing network
     def forward_feed(self, x):
-        global print_output
+        global print_forward
 
         n = x.shape[0]
         layers = self.network['layers']
@@ -193,6 +193,7 @@ class NeuralNet():
             l = layers[i]
             next_input = []
 
+            # iterate over nodes within layer
             for j in range(len(l)):
                 node = l[j]
                 w = node['weights']
@@ -202,13 +203,24 @@ class NeuralNet():
                 output = activation(z)
                 node['y'] = output
 
-                # next input column dimensions must align to next layer
+                if print_forward:
+                    print('\nforward feed')
+                    print('i', i)
+                    print('j', j)
+                    print('x', x.shape)
+                    print('w', w.shape)
+                    print('z', z)
+                    print('output', output)
+                    print_forward = False
+
                 next_input.append(output)
 
-            # reshape raw input to match current layer's # nodes)
-            # n_nodes = self.layer_structure[i]
-            # next_input = np.reshape(next_input, (n, n_nodes))
             x = next_input
+
+            # if last layer and regression, we want to sum the nodes for final output node
+            # if (i == (self.num_layers - 1) and self.regression):
+                # print('regression x, last layer', x)
+                # return x.sum()
 
         return x
 
@@ -245,14 +257,14 @@ class NeuralNet():
                     errors.append(diff)
 
                     if print_diff:
-                        print('y', y)
+                        print('\nbackprop')
+                        print('y', y[j])
                         print('node.y', node['y'])
                         print('diff', diff)
-                        print()
-                print_diff = False
 
             # not the last layer, so we can look forward to next layer
             else:
+                # iterate through inner layer nodes
                 for j in range(len(l)):
                     error = 0
                     next_layer = self.network['layers'][i + 1]
@@ -267,11 +279,11 @@ class NeuralNet():
 
                 # get error for this node
                 node['delta'] = errors[j] * derivative(node['y'])
-                if print_delta and i == self.num_layers - 1:
-                    print('node.delta', node['delta'])
-                    print()
+                # if print_delta and i == self.num_layers - 1:
+                #     print('last layer node.delta', node['delta'])
 
-            print_delta = False
+        print_diff = False
+        print_delta = False
 
     def calculate_loss(self, y, z):
         global print_loss
@@ -282,8 +294,6 @@ class NeuralNet():
             diff = (y - z)
             loss = (diff ** 2).sum()
 
-        if print_loss:
-            print('loss', loss)
         return loss
 
     """
@@ -327,12 +337,6 @@ class NeuralNet():
             - runs forward feed, backprop, and weight updates
     """
     def build(self):
-        global print_delta
-        global print_weights
-        global print_loss
-        global print_output
-        global print_diff
-
         # network base structure
         self.network = {
             'input': None,
@@ -344,16 +348,8 @@ class NeuralNet():
         self.initialize()
 
         for i in range(self.iterations):
-            # print_delta = True
-            # print_weights = True
-            # print_loss = True
-            # print_output = True
-            # print_diff = True
-            # print_outp = True
-
             for i, x in enumerate(self.x):
                 output = self.forward_feed(x)
-                # loss = self.calculate_loss(self.y, output)
                 self.backpropagate(i)
                 self.update_weights(x)
 

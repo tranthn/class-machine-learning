@@ -155,7 +155,7 @@ def get_soy_data():
 ## regression predictor: rings
 def get_abalone_data():
     abalone_fields = ['sex', 'length', 'diameter', 'height', 'whole_weight', 'shucked_weight', 'viscera_weight', 'shell_weight', 'rings']
-    std_fields = abalone_fields[1:-1]
+    std_fields = abalone_fields[1:]
     abalone_df = read_csv(abalone, abalone_fields)
     abalone_df = pd.get_dummies(abalone_df, columns = ['sex'])
     abalone_df = standardize(abalone_df, std_fields)
@@ -168,7 +168,7 @@ def get_abalone_data():
 ## result indicator field [DO NOT USE IN MODEL]: erp
 def get_machine_data():
     machine_fields = ['vendor_name', 'model_name', 'myct', 'mmin', 'mmax', 'cach', 'chmin', 'chmax', 'prp', 'erp']
-    std_fields = machine_fields[2:-2]
+    std_fields = machine_fields[2:-1]
 
     machine_df = read_csv(machine, machine_fields)
     machine_df = machine_df.drop(columns = ['erp', 'model_name'])
@@ -182,7 +182,7 @@ def get_machine_data():
 ## regression predictor: area [of fire]
 def get_forest_fires_data():
     fire_fields = ['X', 'Y', 'month', 'day', 'FFMC', 'DMC', 'DC', 'ISI', 'temp', 'RH', 'wind', 'rain', 'area']
-    std_fields = fire_fields[4:-1]
+    std_fields = fire_fields[4:]
 
     fire_df = read_csv_with_header(forestfires)
     fire_df = pd.get_dummies(fire_df, columns = ['month', 'day'])
