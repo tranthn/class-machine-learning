@@ -79,31 +79,31 @@ print('\n============== BREAST DATA ============== ')
 # d = 9, k = 2
 data = dl.get_breast_data()
 print('----------------- 0-layer -----------------')
-neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [2])
-print('----------------- 1-layer -----------------')
-neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [6, 2])
-print('----------------- 2-layer -----------------')
-neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [2, 2, 2])
+# neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [2])
+# print('----------------- 1-layer -----------------')
+# neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [6, 2])
+# print('----------------- 2-layer -----------------')
+# neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [2, 2, 2])
 
 print('\n============== GLASS DATA ============== ')
 # d = 9, k = 6
 data = dl.get_glass_data()
-print('----------------- 0-layer -----------------')
-neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 300, layer_structure = [6])
-print('----------------- 1-layer -----------------')
-neural_net_helper(data = data, label = 'class', eta = 0.05, iterations = 200, layer_structure = [6, 6])
-print('----------------- 2-layer -----------------')
-neural_net_helper(data = data, label = 'class', eta = 0.1, iterations = 100, layer_structure = [4, 2, 6])
+# print('----------------- 0-layer -----------------')
+# neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 300, layer_structure = [6])
+# print('----------------- 1-layer -----------------')
+# neural_net_helper(data = data, label = 'class', eta = 0.05, iterations = 200, layer_structure = [6, 6])
+# print('----------------- 2-layer -----------------')
+# neural_net_helper(data = data, label = 'class', eta = 0.1, iterations = 100, layer_structure = [4, 2, 6])
 
 print('\n============== SOYBEAN DATA ============== ')
 # d = 73 (includes dummied columns), k = 4
 data = dl.get_soy_data()
-print('----------------- 0-layer -----------------')
-neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [4])
-print('----------------- 1-layer -----------------')
-neural_net_helper(data = data, label = 'class', eta = 0.1, iterations = 100, layer_structure = [15, 4])
-print('----------------- 2-layer -----------------')
-neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [10, 5, 4])
+# print('----------------- 0-layer -----------------')
+# neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [4])
+# print('----------------- 1-layer -----------------')
+# neural_net_helper(data = data, label = 'class', eta = 0.1, iterations = 100, layer_structure = [15, 4])
+# print('----------------- 2-layer -----------------')
+# neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [10, 5, 4])
 
 ################# regression data sets #################
 print('\n============== ABALONE DATA ============== ')
@@ -123,19 +123,24 @@ print('\n============== MACHINE DATA ============== ')
 # d = 37 (includes dummied columns), regression predictor: prp
 data = dl.get_machine_data()
 # print('----------------- 0-layer -----------------')
-# print(data['folds'])
-# neural_net_helper(data = data, label = 'prp', eta = 0.01, iterations = 10, layer_structure = [1], regression = True)
+# neural_net_helper(data = data, label = 'prp', eta = 0.01, iterations = 10, 
+#                     layer_structure = [1], regression = True)
 # print('----------------- 1-layer -----------------')
-# neural_net_helper(data = data, label = 'prp', eta = 0.01, iterations = 10, layer_structure = [20, 1], regression = True)
+# neural_net_helper(data = data, label = 'prp', eta = 0.1, iterations = 10, 
+#                     layer_structure = [5, 1], regression = True)
 # print('----------------- 2-layer -----------------')
-# neural_net_helper(data = data, label = 'prp', eta = 0.01, iterations = 10, layer_structure = [20, 6, 1], regression = True)
+# neural_net_helper(data = data, label = 'prp', eta = 0.2, iterations = 10, 
+#                     layer_structure = [20, 6, 1], regression = True)
 
 print('\n============== FOREST FIRE DATA ============== ')
 # d = 30 (includes dummied columns), regression predictor: area [of fire]
 data = dl.get_forest_fires_data()
 # print('----------------- 0-layer -----------------')
-# neural_net_helper(data = data, label = 'area', eta = 0.01, iterations = 10, layer_structure = [1], regression = True)
-# print('----------------- 1-layer -----------------')
-# neural_net_helper(data = data, label = 'area', eta = 0.01, iterations = 10, layer_structure = [20, 1], regression = True)
-# print('----------------- 2-layer -----------------')
-# neural_net_helper(data = data, label = 'area', eta = 0.01, iterations = 10, layer_structure = [20, 10, 1], regression = True)
+neural_net_helper(data = data, label = 'area', eta = 0.01, iterations = 1,
+                 layer_structure = [1], regression = True, tuning = True)
+print('----------------- 1-layer -----------------')
+# neural_net_helper(data = data, label = 'area', eta = 0.01, iterations = 10,
+#                 layer_structure = [10, 1], regression = True, tuning = True)
+print('----------------- 2-layer -----------------')
+# neural_net_helper(data = data, label = 'area', eta = 0.01, iterations = 10, 
+#                 layer_structure = [20, 10, 1], regression = True, tuning = True)

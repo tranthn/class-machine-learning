@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 global print_forward
-print_forward = False
+print_forward = True
 
 global print_delta
 print_delta = False
@@ -176,8 +176,8 @@ class NeuralNet():
 
     # helper to determine which derivative function to use
     def get_activation_derivative_fn(self, i):
-        # check if last layer and regression, so we'll use linear
-        if (i < (self.num_layers - 1) and self.regression):
+        # check if last layer and regression, so we'll return constant for derivative
+        if (i == (self.num_layers - 1) and self.regression):
             return lambda x: 1
         else:
             return self.sigmoid_derivative
@@ -208,11 +208,10 @@ class NeuralNet():
                     print('\nforward feed')
                     print('i', i)
                     print('j', j)
-                    print('x', x.shape)
-                    print('w', w.shape)
-                    print('z', z)
+                    print('x', x[0])
+                    print('w', w[0])
                     print('output', output)
-                    print_forward = False
+                    # print_forward = False
 
                 next_input.append(output)
 
@@ -280,8 +279,6 @@ class NeuralNet():
 
                 # get error for this node
                 node['delta'] = errors[j] * derivative(node['y'])
-                if print_delta and i == self.num_layers - 1:
-                    print('\nlast layer node.delta', node['delta'])
 
         print_diff = False
         print_delta = False
@@ -290,7 +287,8 @@ class NeuralNet():
         global print_loss
         # use MSE for regression and SSE for classification
         if self.regression:
-            loss = np.mean((np.subtract(y, z)) ** 2)
+            diff = np.subtract(y, z)
+            loss = np.mean((diff) ** 2)
         else:
             diff = (y - z)
             loss = (diff ** 2).sum()
@@ -324,7 +322,6 @@ class NeuralNet():
                 node = l[j]
                 for f in range(len(x)):
                     gradient = x[f] * node['delta']
-                    # print('gradient', gradient)
                     node['weights'][f] += eta * gradient
                 
                 # update bias values, delta shape is (n, )
@@ -338,6 +335,8 @@ class NeuralNet():
             - runs forward feed, backprop, and weight updates
     """
     def build(self):
+        global print_forward
+
         # network base structure
         self.network = {
             'input': None,
@@ -349,6 +348,8 @@ class NeuralNet():
         self.initialize()
 
         for i in range(self.iterations):
+            print_forward = True
+
             for i, x in enumerate(self.x):
                 output = self.forward_feed(x)
                 self.backpropagate(i)
