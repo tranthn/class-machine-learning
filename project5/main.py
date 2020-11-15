@@ -45,8 +45,7 @@ def neural_net_helper(data, label = None, eta = 0.01, iterations = 100,
     for i in range(f):
         # set variable to determine if extra printing is required for network
         # since we're doing cross-validation, print for first fold only
-        if i == 0: print_on = True
-        else: print_on = False
+        print_on = False
 
         all_folds = data['folds'].copy()
 
@@ -97,7 +96,7 @@ def neural_net_helper(data, label = None, eta = 0.01, iterations = 100,
 # print('----------------- 2-layer -----------------')
 # neural_net_helper(data = data, label = 'class', eta = 0.1, iterations = 100, layer_structure = [4, 2, 6])
 
-# print('\n============== SOYBEAN DATA ============== ')
+print('\n============== SOYBEAN DATA ============== ')
 data = dl.get_soy_data()
 print('\n----------------- 0-layer -----------------')
 neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [4])
