@@ -10,7 +10,7 @@ fold #3, accuracy	96%
 fold #4, accuracy	93%
 ------
 avg. % accuracy:	97%
-total execution time:	10.86s
+total execution time:	10.58s
 ----------------- 1-layer -----------------
 
 ======== avg. summary of performance ========
@@ -21,53 +21,53 @@ fold #3, accuracy	96%
 fold #4, accuracy	95%
 ------
 avg. % accuracy:	97%
-total execution time:	37.23s
+total execution time:	34.57s
 ----------------- 2-layer -----------------
 
 ======== avg. summary of performance ========
 fold #0, accuracy	97%
-fold #1, accuracy	98%
+fold #1, accuracy	99%
 fold #2, accuracy	98%
 fold #3, accuracy	95%
 fold #4, accuracy	96%
 ------
 avg. % accuracy:	97%
-total execution time:	52.91s
+total execution time:	55.20s
 
 ============== GLASS DATA ============== 
 ----------------- 0-layer -----------------
 
 ======== avg. summary of performance ========
-fold #0, accuracy	56%
-fold #1, accuracy	71%
-fold #2, accuracy	55%
-fold #3, accuracy	69%
-fold #4, accuracy	61%
+fold #0, accuracy	59%
+fold #1, accuracy	68%
+fold #2, accuracy	63%
+fold #3, accuracy	67%
+fold #4, accuracy	63%
 ------
-avg. % accuracy:	62%
-total execution time:	9.88s
+avg. % accuracy:	64%
+total execution time:	26.78s
 ----------------- 1-layer -----------------
 
 ======== avg. summary of performance ========
-fold #0, accuracy	62%
-fold #1, accuracy	58%
-fold #2, accuracy	55%
-fold #3, accuracy	62%
+fold #0, accuracy	69%
+fold #1, accuracy	68%
+fold #2, accuracy	50%
+fold #3, accuracy	64%
 fold #4, accuracy	63%
 ------
-avg. % accuracy:	60%
-total execution time:	21.67s
+avg. % accuracy:	63%
+total execution time:	33.21s
 ----------------- 2-layer -----------------
 
 ======== avg. summary of performance ========
-fold #0, accuracy	36%
-fold #1, accuracy	37%
-fold #2, accuracy	34%
-fold #3, accuracy	36%
-fold #4, accuracy	34%
+fold #0, accuracy	44%
+fold #1, accuracy	45%
+fold #2, accuracy	42%
+fold #3, accuracy	44%
+fold #4, accuracy	39%
 ------
-avg. % accuracy:	35%
-total execution time:	18.38s
+avg. % accuracy:	43%
+total execution time:	25.43s
 
 ============== SOYBEAN DATA ============== 
 ----------------- 0-layer -----------------
@@ -80,18 +80,18 @@ fold #3, accuracy	100%
 fold #4, accuracy	100%
 ------
 avg. % accuracy:	100%
-total execution time:	15.09s
+total execution time:	15.61s
 ----------------- 1-layer -----------------
 
 ======== avg. summary of performance ========
-fold #0, accuracy	33%
-fold #1, accuracy	33%
-fold #2, accuracy	33%
-fold #3, accuracy	33%
-fold #4, accuracy	50%
+fold #0, accuracy	100%
+fold #1, accuracy	100%
+fold #2, accuracy	100%
+fold #3, accuracy	100%
+fold #4, accuracy	100%
 ------
-avg. % accuracy:	37%
-total execution time:	157.62s
+avg. % accuracy:	100%
+total execution time:	58.75s
 ----------------- 2-layer -----------------
 
 ======== avg. summary of performance ========
@@ -102,7 +102,7 @@ fold #3, accuracy	33%
 fold #4, accuracy	50%
 ------
 avg. % accuracy:	37%
-total execution time:	79.84s
+total execution time:	80.17s
 
 ============== ABALONE DATA ============== 
 

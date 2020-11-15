@@ -279,8 +279,8 @@ class NeuralNet():
 
                 # get error for this node
                 node['delta'] = errors[j] * derivative(node['y'])
-                # if print_delta and i == self.num_layers - 1:
-                #     print('last layer node.delta', node['delta'])
+                if print_delta and i == self.num_layers - 1:
+                    print('\nlast layer node.delta', node['delta'])
 
         print_diff = False
         print_delta = False
@@ -396,11 +396,15 @@ class NeuralNet():
         predictions = []
         for _, x in df_x.iterrows():
             output = self.predict(x)
-            predictions.append(np.argmax(output))
+            idx = np.argmax(output)
+            predictions.append(idx)
 
         # convert classes to factors, to use with predictions
         vals, levels = pd.factorize(classes)
         predictions_with_class = levels.take(predictions)
+        # print('actual\t', classes.to_numpy())
+        # print('predictions\t', predictions_with_class)
+        # print()
         corr = np.equal(classes.to_numpy(), predictions_with_class).sum()
         return (corr / n)
 

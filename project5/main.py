@@ -31,7 +31,9 @@ def print_helper_regressor(perf, fold):
     print('------\navg. MSE:\t{0:.5g}'.format(avg / fold))
 
 # wrapper helper to run neural network training and test with all folds
-def neural_net_helper(data, label = None, eta = 0.01, iterations = 100, layer_structure = [], regression = False):
+def neural_net_helper(data, label = None, eta = 0.01, iterations = 100, 
+                    layer_structure = [], regression = False, tuning = False):
+
     if label == None:
         label = class_label
 
@@ -44,7 +46,12 @@ def neural_net_helper(data, label = None, eta = 0.01, iterations = 100, layer_st
         # print('\n======== F O L D #{0} ========'.format(i))
 
         all_folds = data['folds'].copy()
-        holdout = all_folds[i]
+
+        if not tuning:
+            holdout = all_folds[i]
+        else:
+            holdout = tune
+
         folds = all_folds
         folds.pop(i)
         training = pd.concat(folds)
@@ -79,11 +86,11 @@ print('\n============== GLASS DATA ============== ')
 # d = 9, k = 6
 data = dl.get_glass_data()
 print('----------------- 0-layer -----------------')
-neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [6])
+neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 300, layer_structure = [6])
 print('----------------- 1-layer -----------------')
-neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [8, 6])
+neural_net_helper(data = data, label = 'class', eta = 0.05, iterations = 200, layer_structure = [6, 6])
 print('----------------- 2-layer -----------------')
-neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [4, 4, 6])
+neural_net_helper(data = data, label = 'class', eta = 0.1, iterations = 100, layer_structure = [8, 4, 6])
 
 print('\n============== SOYBEAN DATA ============== ')
 # d = 73 (includes dummied columns), k = 4
@@ -91,7 +98,7 @@ data = dl.get_soy_data()
 print('----------------- 0-layer -----------------')
 neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [4])
 print('----------------- 1-layer -----------------')
-neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [40, 4])
+neural_net_helper(data = data, label = 'class', eta = 0.1, iterations = 100, layer_structure = [15, 4])
 print('----------------- 2-layer -----------------')
 neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [20, 10, 4])
 
