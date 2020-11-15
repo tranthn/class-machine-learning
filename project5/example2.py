@@ -115,6 +115,7 @@ def forward_propagate(network, row):
 		new_inputs = []
 		for neuron in layer:
 			activation = activate(neuron['weights'], inputs)
+			print('activation', activation)
 			neuron['output'] = transfer(activation)
 			# print('activation', activation)
 			# print('neuron.output', neuron['output'])

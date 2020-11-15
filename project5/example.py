@@ -16,32 +16,32 @@ class NeuralNetwork(object):
 
     def feedforward(self, x):
         # return the feedforward value for x
-        a = np.copy(x)
-        z_s = []
-        a_s = [a]
+        input = np.copy(x)
+        z = []
+        output = [input]
         for i in range(len(self.weights)):
             activation_function = self.getActivationFunction(self.activations[i])
-            z_s.append(self.weights[i].dot(a) + self.biases[i])
-            a = activation_function(z_s[-1])
-            a_s.append(a)
-        return (z_s, a_s)
+            z.append(self.weights[i].dot(input) + self.biases[i])
+            out = activation_function(z[-1])
+            input = out
+            output.append(out)
+        return (z, output)
 
-    def backpropagation(self, y, z_s, a_s):
+    def backpropagation(self, y, z, output):
             dw = []  # dC/dW
             db = []  # dC/dB
             # delta = dC/dZ  known as error for each layer
             deltas = [None] * len(self.weights)
             # insert the last layer error
-            deltas[-1] = ((y-a_s[-1]) * (self.getDerivitiveActivationFunction(self.activations[-1]))(z_s[-1]))
+            deltas[-1] = ((y-output[-1]) * (self.getDerivitiveActivationFunction(self.activations[-1]))(z[-1]))
             
             # Perform BackPropagation
             for i in reversed(range(len(deltas)-1)):
-                deltas[i] = self.weights[i+1].T.dot(deltas[i+1]) * (self.getDerivitiveActivationFunction(self.activations[i])(z_s[i]))
-                print(deltas[i][0])
+                deltas[i] = self.weights[i+1].T.dot(deltas[i+1]) * (self.getDerivitiveActivationFunction(self.activations[i])(z[i]))
 
             batch_size = y.shape[1]
             db = [d.dot(np.ones((batch_size, 1)))/float(batch_size) for d in deltas]
-            dw = [d.dot(a_s[i].T)/float(batch_size) for i, d in enumerate(deltas)]
+            dw = [d.dot(output[i].T)/float(batch_size) for i, d in enumerate(deltas)]
             
             # return the derivitives respect to weight matrix and biases
             return dw, db
@@ -54,11 +54,14 @@ class NeuralNetwork(object):
                 x_batch = x[i:i+batch_size]
                 y_batch = y[i:i+batch_size]
                 i = i+batch_size
-                z_s, a_s = self.feedforward(x_batch)
-                dw, db = self.backpropagation(y_batch, z_s, a_s)
-                self.weights = [w+lr*dweight for w,dweight in  zip(self.weights, dw)]
-                self.biases = [w+lr*dbias for w,dbias in  zip(self.biases, db)]
-                # print("loss = {}".format(np.linalg.norm(a_s[-1]-y_batch) ))
+                z, output = self.feedforward(x_batch)
+                dw, db = self.backpropagation(y_batch, z, output)
+                print('weights1', self.weights)
+                self.weights = [w + lr * dweight for w, dweight in  zip(self.weights, dw)]
+                print('weights2', self.weights)
+                print()
+                self.biases = [w + lr * dbias for w, dbias in  zip(self.biases, db)]
+                # print("loss = {}".format(np.linalg.norm(output[-1]-y_batch) ))
 
     @staticmethod
     def getActivationFunction(name):
@@ -82,8 +85,8 @@ if __name__=='__main__':
     X = 2 * np.pi * np.random.rand(100).reshape(1, -1)
     y = np.sin(X)
     nn.train(X, y, epochs = 3, batch_size = 64, lr = .1)
-    _, a_s = nn.feedforward(X)
+    _, output = nn.feedforward(X)
 
     # plt.scatter(X.flatten(), y.flatten())
-    # plt.scatter(X.flatten(), a_s[-1].flatten())
+    # plt.scatter(X.flatten(), output[-1].flatten())
     # plt.show()
