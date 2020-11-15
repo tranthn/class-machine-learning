@@ -38,7 +38,6 @@ class NeuralNetwork(object):
             # Perform BackPropagation
             for i in reversed(range(len(deltas)-1)):
                 deltas[i] = self.weights[i+1].T.dot(deltas[i+1]) * (self.getDerivitiveActivationFunction(self.activations[i])(z[i]))
-                print(deltas[i][0])
 
             batch_size = y.shape[1]
             db = [d.dot(np.ones((batch_size, 1)))/float(batch_size) for d in deltas]
@@ -57,7 +56,10 @@ class NeuralNetwork(object):
                 i = i+batch_size
                 z, output = self.feedforward(x_batch)
                 dw, db = self.backpropagation(y_batch, z, output)
+                print('weights1', self.weights)
                 self.weights = [w + lr * dweight for w, dweight in  zip(self.weights, dw)]
+                print('weights2', self.weights)
+                print()
                 self.biases = [w + lr * dbias for w, dbias in  zip(self.biases, db)]
                 # print("loss = {}".format(np.linalg.norm(output[-1]-y_batch) ))
 

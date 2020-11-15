@@ -109,38 +109,38 @@ data = dl.get_soy_data()
 print('\n============== ABALONE DATA ============== ')
 # d = 11 (2 dummies), regression predictor: rings
 data = dl.get_abalone_data()
-# print('----------------- 0-layer -----------------')
-# neural_net_helper(data = data, label = 'rings', eta = 0.01, iterations = 10, 
-#                     layer_structure = [1], regression = True, tuning = True)
-# print('----------------- 1-layer -----------------')
-# neural_net_helper(data = data, label = 'rings', eta = 0.01, iterations = 10, 
-#                     layer_structure = [8, 1], regression = True, tuning = True)
-# print('----------------- 2-layer -----------------')
-# neural_net_helper(data = data, label = 'rings', eta = 0.01, iterations = 10, 
-#                     layer_structure = [8, 6, 1], regression = True, tuning = True)
+print('----------------- 0-layer -----------------')
+neural_net_helper(data = data, label = 'rings', eta = 0.01, iterations = 10, 
+                    layer_structure = [1], regression = True)
+print('----------------- 1-layer -----------------')
+neural_net_helper(data = data, label = 'rings', eta = 0.01, iterations = 10, 
+                    layer_structure = [8, 1], regression = True)
+print('----------------- 2-layer -----------------')
+neural_net_helper(data = data, label = 'rings', eta = 0.01, iterations = 10, 
+                    layer_structure = [6, 2, 1], regression = True)
 
 print('\n============== MACHINE DATA ============== ')
 # d = 37 (includes dummied columns), regression predictor: prp
 data = dl.get_machine_data()
-# print('----------------- 0-layer -----------------')
-# neural_net_helper(data = data, label = 'prp', eta = 0.01, iterations = 10, 
-#                     layer_structure = [1], regression = True)
-# print('----------------- 1-layer -----------------')
-# neural_net_helper(data = data, label = 'prp', eta = 0.1, iterations = 10, 
-#                     layer_structure = [5, 1], regression = True)
-# print('----------------- 2-layer -----------------')
-# neural_net_helper(data = data, label = 'prp', eta = 0.2, iterations = 10, 
-#                     layer_structure = [20, 6, 1], regression = True)
+print('----------------- 0-layer -----------------')
+neural_net_helper(data = data, label = 'prp', eta = 0.01, iterations = 10, 
+                    layer_structure = [1], regression = True)
+print('----------------- 1-layer -----------------')
+neural_net_helper(data = data, label = 'prp', eta = 0.1, iterations = 10, 
+                    layer_structure = [5, 1], regression = True)
+print('----------------- 2-layer -----------------')
+neural_net_helper(data = data, label = 'prp', eta = 0.2, iterations = 10, 
+                    layer_structure = [20, 6, 1], regression = True)
 
 print('\n============== FOREST FIRE DATA ============== ')
 # d = 30 (includes dummied columns), regression predictor: area [of fire]
 data = dl.get_forest_fires_data()
 # print('----------------- 0-layer -----------------')
-# neural_net_helper(data = data, label = 'area', eta = 0.01, iterations = 1,
-#                  layer_structure = [1], regression = True, tuning = True)
-# print('----------------- 1-layer -----------------')
-# neural_net_helper(data = data, label = 'area', eta = 0.01, iterations = 10,
-#                 layer_structure = [10, 1], regression = True, tuning = True)
-# print('----------------- 2-layer -----------------')
-# neural_net_helper(data = data, label = 'area', eta = 0.01, iterations = 10, 
-#                 layer_structure = [20, 10, 1], regression = True, tuning = True)
+neural_net_helper(data = data, label = 'area', eta = 0.1, iterations = 10,
+                 layer_structure = [1], regression = True)
+print('----------------- 1-layer -----------------')
+neural_net_helper(data = data, label = 'area', eta = 0.1, iterations = 10,
+                layer_structure = [10, 1], regression = True)
+print('----------------- 2-layer -----------------')
+neural_net_helper(data = data, label = 'area', eta = 0.01, iterations = 10, 
+                layer_structure = [20, 10, 1], regression = True)

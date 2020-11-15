@@ -235,7 +235,7 @@ class NeuralNet():
                     print('x', x)
                     print('w', w)
                     print('output', output)
-                    # print_forward = False
+                    print('---')
 
                 next_input.append(output)
 
@@ -355,9 +355,15 @@ class NeuralNet():
             for j in range(len(l)):
                 node = l[j]
                 for f in range(len(x)):
-                    gradient = x[f] * node['delta']
+
+                    # gradient for regression is modified to prevent exploding gradient values
+                    if self.regression:
+                        gradient = (1 / self.df.shape[0]) * x[f] * node['delta']
+                    else:
+                        gradient = x[f] * node['delta']
+
                     node['weights'][f] += eta * gradient
-                
+
                 # update bias values, delta shape is (n, )
                 # bias value is singular, so we'll sum delta to adjust
                 step = eta * node['delta']
@@ -473,6 +479,11 @@ class NeuralNet():
         for _, x in df_x.iterrows():
             output = self.predict(x)
             predictions.append(output) 
+
+        if self.print_on:
+            print('test regression')
+            print('expected', y)
+            print('predicted', predictions)
 
         loss = self.calculate_loss(y, predictions)
         return loss
