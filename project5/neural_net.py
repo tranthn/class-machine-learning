@@ -127,6 +127,7 @@ class NeuralNet():
             layer = self.network['layers'][i]
             for j in range(len(layer)):
                 node = layer[j]
+                print('node', j)
                 print('weights', node['weights'])
                 print('output', node['y'])
                 print()
@@ -238,6 +239,7 @@ class NeuralNet():
                     print()
                     print('\tw', w)
                     print()
+                    print('\tz', z)
                     print('\toutput', output)
                     print('----->')
 
@@ -355,6 +357,7 @@ class NeuralNet():
     """
     def update_weights(self, x):
         global print_gradient
+        global print_weights
         layers = self.network['layers']
         eta = self.eta
 
@@ -367,7 +370,13 @@ class NeuralNet():
 
             for j in range(len(l)):
                 node = l[j]
+
+                if print_weights:
+                    print('\nweights before update:', node['weights'])
+
+                gradients = []
                 for f in range(len(x)):
+                    
 
                     # gradient for regression is modified to prevent exploding gradient values
                     if self.regression:
@@ -375,16 +384,19 @@ class NeuralNet():
                     else:
                         gradient = x[f] * node['delta']
 
-                    if print_gradient:
-                        print('gradient', gradient)
-                        print_gradient = False
-
+                    gradients.append(gradient)
                     node['weights'][f] += eta * gradient
 
                 # update bias values, delta shape is (n, )
                 # bias value is singular, so we'll sum delta to adjust
                 step = eta * node['delta']
                 node['weights'][-1] += step
+
+                if print_weights and print_gradient:
+                    print('\ngradients', gradients)
+                    print('\nweights after update:', node['weights'])
+                    print_weights = False
+                    print_gradient = False
 
     """
         main entry point to build train neural network
@@ -398,6 +410,7 @@ class NeuralNet():
         global print_loss
         global print_output
         global print_diff
+        global print_gradient
         
         if self.print_on:
             print_forward = True
@@ -406,6 +419,7 @@ class NeuralNet():
             print_loss = True
             print_output = True
             print_diff = True
+            print_gradient = True
 
         # network base structure
         self.network = {
