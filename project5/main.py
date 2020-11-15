@@ -43,7 +43,10 @@ def neural_net_helper(data, label = None, eta = 0.01, iterations = 100,
 
     start_time = time.time()
     for i in range(f):
-        # print('\n======== F O L D #{0} ========'.format(i))
+        # set variable to determine if extra printing is required for network
+        # since we're doing cross-validation, print for first fold only
+        if i == 0: print_on = True
+        else: print_on = False
 
         all_folds = data['folds'].copy()
 
@@ -56,7 +59,7 @@ def neural_net_helper(data, label = None, eta = 0.01, iterations = 100,
         folds.pop(i)
         training = pd.concat(folds)
 
-        nn = NeuralNet(training, label, eta, iterations, layer_structure, regression)
+        nn = NeuralNet(training, label, eta, iterations, layer_structure, regression, print_on)
         nn.build()
         result = nn.test(holdout)
         perf.append(result)
@@ -80,7 +83,7 @@ neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, la
 print('----------------- 1-layer -----------------')
 neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [6, 2])
 print('----------------- 2-layer -----------------')
-neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [6, 4, 2])
+neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [2, 2, 2])
 
 print('\n============== GLASS DATA ============== ')
 # d = 9, k = 6
@@ -90,7 +93,7 @@ neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 300, la
 print('----------------- 1-layer -----------------')
 neural_net_helper(data = data, label = 'class', eta = 0.05, iterations = 200, layer_structure = [6, 6])
 print('----------------- 2-layer -----------------')
-neural_net_helper(data = data, label = 'class', eta = 0.1, iterations = 100, layer_structure = [8, 4, 6])
+neural_net_helper(data = data, label = 'class', eta = 0.1, iterations = 100, layer_structure = [4, 2, 6])
 
 print('\n============== SOYBEAN DATA ============== ')
 # d = 73 (includes dummied columns), k = 4
@@ -100,23 +103,26 @@ neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, la
 print('----------------- 1-layer -----------------')
 neural_net_helper(data = data, label = 'class', eta = 0.1, iterations = 100, layer_structure = [15, 4])
 print('----------------- 2-layer -----------------')
-neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [20, 10, 4])
+neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [10, 5, 4])
 
 ################# regression data sets #################
 print('\n============== ABALONE DATA ============== ')
 # d = 11 (2 dummies), regression predictor: rings
 data = dl.get_abalone_data()
 # print('----------------- 0-layer -----------------')
-# neural_net_helper(data = data, label = 'rings', eta = 0.01, iterations = 10, layer_structure = [1], regression = True)
+# neural_net_helper(data = data, label = 'rings', eta = 0.01, iterations = 10, 
+#                     layer_structure = [1], regression = True, tuning = True)
 # print('----------------- 1-layer -----------------')
-# neural_net_helper(data = data, label = 'rings', eta = 0.01, iterations = 10, layer_structure = [8, 1], regression = True)
+# neural_net_helper(data = data, label = 'rings', eta = 0.01, iterations = 10, 
+#                     layer_structure = [8, 1], regression = True, tuning = True)
 # print('----------------- 2-layer -----------------')
-# neural_net_helper(data = data, label = 'rings', eta = 0.01, iterations = 10, layer_structure = [8, 6, 1], regression = True)
+# neural_net_helper(data = data, label = 'rings', eta = 0.01, iterations = 10, 
+#                     layer_structure = [8, 6, 1], regression = True, tuning = True)
 
 print('\n============== MACHINE DATA ============== ')
 # d = 37 (includes dummied columns), regression predictor: prp
 data = dl.get_machine_data()
-print('----------------- 0-layer -----------------')
+# print('----------------- 0-layer -----------------')
 # print(data['folds'])
 # neural_net_helper(data = data, label = 'prp', eta = 0.01, iterations = 10, layer_structure = [1], regression = True)
 # print('----------------- 1-layer -----------------')

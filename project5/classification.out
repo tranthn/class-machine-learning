@@ -1,6 +1,15 @@
 
 ============== BREAST DATA ============== 
 ----------------- 0-layer -----------------
+actual	 [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ 1 1 1 1 1 1 1 1 1 1 1 1]
+predictions	 Int64Index([0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            ...
+            1, 1, 1, 1, 1, 1, 0, 1, 1, 1],
+           dtype='int64', length=123)
+
 
 ======== avg. summary of performance ========
 fold #0, accuracy	98%
@@ -10,8 +19,17 @@ fold #3, accuracy	96%
 fold #4, accuracy	93%
 ------
 avg. % accuracy:	97%
-total execution time:	10.58s
+total execution time:	10.18s
 ----------------- 1-layer -----------------
+actual	 [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ 1 1 1 1 1 1 1 1 1 1 1 1]
+predictions	 Int64Index([0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
+            ...
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+           dtype='int64', length=123)
+
 
 ======== avg. summary of performance ========
 fold #0, accuracy	97%
@@ -21,21 +39,36 @@ fold #3, accuracy	96%
 fold #4, accuracy	95%
 ------
 avg. % accuracy:	97%
-total execution time:	34.57s
+total execution time:	34.97s
 ----------------- 2-layer -----------------
+actual	 [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ 1 1 1 1 1 1 1 1 1 1 1 1]
+predictions	 Int64Index([0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
+            ...
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+           dtype='int64', length=123)
+
 
 ======== avg. summary of performance ========
 fold #0, accuracy	97%
-fold #1, accuracy	99%
+fold #1, accuracy	98%
 fold #2, accuracy	98%
 fold #3, accuracy	95%
-fold #4, accuracy	96%
+fold #4, accuracy	95%
 ------
 avg. % accuracy:	97%
-total execution time:	55.20s
+total execution time:	25.32s
 
 ============== GLASS DATA ============== 
 ----------------- 0-layer -----------------
+actual	 [1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 3 3 5 5 6 6 7 7 7
+ 7 7]
+predictions	 Int64Index([1, 1, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 6, 2, 5, 2, 1, 5, 2, 1,
+            2, 1, 2, 1, 2, 2, 1, 1, 2, 2, 6, 6, 7, 7, 7, 5, 7],
+           dtype='int64')
+
 
 ======== avg. summary of performance ========
 fold #0, accuracy	59%
@@ -45,32 +78,47 @@ fold #3, accuracy	67%
 fold #4, accuracy	63%
 ------
 avg. % accuracy:	64%
-total execution time:	26.78s
+total execution time:	25.80s
 ----------------- 1-layer -----------------
+actual	 [1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 3 3 5 5 6 6 7 7 7
+ 7 7]
+predictions	 Int64Index([1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 7, 2, 5, 2, 1, 1, 2, 1,
+            2, 1, 5, 1, 2, 2, 1, 1, 1, 5, 7, 7, 7, 7, 7, 5, 7],
+           dtype='int64')
+
 
 ======== avg. summary of performance ========
-fold #0, accuracy	69%
-fold #1, accuracy	68%
-fold #2, accuracy	50%
-fold #3, accuracy	64%
-fold #4, accuracy	63%
+fold #0, accuracy	56%
+fold #1, accuracy	55%
+fold #2, accuracy	55%
+fold #3, accuracy	67%
+fold #4, accuracy	66%
 ------
-avg. % accuracy:	63%
-total execution time:	33.21s
+avg. % accuracy:	60%
+total execution time:	34.42s
 ----------------- 2-layer -----------------
+actual	 [1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 3 3 5 5 6 6 7 7 7
+ 7 7]
+predictions	 Int64Index([2, 2, 2, 2, 2, 7, 2, 2, 2, 2, 2, 2, 2, 2, 7, 7, 2, 2, 2, 2, 2, 2,
+            2, 2, 7, 2, 2, 2, 2, 2, 2, 7, 7, 7, 7, 7, 7, 7, 7],
+           dtype='int64')
+
 
 ======== avg. summary of performance ========
-fold #0, accuracy	44%
+fold #0, accuracy	41%
 fold #1, accuracy	45%
-fold #2, accuracy	42%
+fold #2, accuracy	45%
 fold #3, accuracy	44%
-fold #4, accuracy	39%
+fold #4, accuracy	42%
 ------
 avg. % accuracy:	43%
-total execution time:	25.43s
+total execution time:	14.95s
 
 ============== SOYBEAN DATA ============== 
 ----------------- 0-layer -----------------
+actual	 ['D1' 'D1' 'D2' 'D2' 'D3' 'D3' 'D4' 'D4' 'D4']
+predictions	 Index(['D1', 'D1', 'D2', 'D2', 'D3', 'D3', 'D4', 'D4', 'D4'], dtype='object')
+
 
 ======== avg. summary of performance ========
 fold #0, accuracy	100%
@@ -80,8 +128,11 @@ fold #3, accuracy	100%
 fold #4, accuracy	100%
 ------
 avg. % accuracy:	100%
-total execution time:	15.61s
+total execution time:	16.36s
 ----------------- 1-layer -----------------
+actual	 ['D1' 'D1' 'D2' 'D2' 'D3' 'D3' 'D4' 'D4' 'D4']
+predictions	 Index(['D1', 'D1', 'D2', 'D2', 'D3', 'D3', 'D4', 'D4', 'D4'], dtype='object')
+
 
 ======== avg. summary of performance ========
 fold #0, accuracy	100%
@@ -91,8 +142,11 @@ fold #3, accuracy	100%
 fold #4, accuracy	100%
 ------
 avg. % accuracy:	100%
-total execution time:	58.75s
+total execution time:	61.67s
 ----------------- 2-layer -----------------
+actual	 ['D1' 'D1' 'D2' 'D2' 'D3' 'D3' 'D4' 'D4' 'D4']
+predictions	 Index(['D4', 'D4', 'D4', 'D4', 'D4', 'D4', 'D4', 'D4', 'D4'], dtype='object')
+
 
 ======== avg. summary of performance ========
 fold #0, accuracy	33%
@@ -102,11 +156,4 @@ fold #3, accuracy	33%
 fold #4, accuracy	50%
 ------
 avg. % accuracy:	37%
-total execution time:	80.17s
-
-============== ABALONE DATA ============== 
-
-============== MACHINE DATA ============== 
------------------ 0-layer -----------------
-
-============== FOREST FIRE DATA ============== 
+total execution time:	42.02s

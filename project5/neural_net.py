@@ -24,13 +24,14 @@ print_diff = False
 class NeuralNet():
     def __init__(self, df = None, label = '', eta = 0.05,
                     iterations = 1, layer_structure = [1, 2],
-                    regression = False):
+                    regression = False, print_on = False):
 
         self.df = df
         self.label = label
         self.eta = eta
         self.iterations = iterations
         self.regression = regression
+        self.print_on = print_on
 
         # boundary sizes for our network structure
         # layer structure is array of ints
@@ -402,9 +403,12 @@ class NeuralNet():
         # convert classes to factors, to use with predictions
         vals, levels = pd.factorize(classes)
         predictions_with_class = levels.take(predictions)
-        # print('actual\t', classes.to_numpy())
-        # print('predictions\t', predictions_with_class)
-        # print()
+        
+        if self.print_on:
+            print('actual\t', classes.to_numpy())
+            print('predictions\t', predictions_with_class)
+            print()
+
         corr = np.equal(classes.to_numpy(), predictions_with_class).sum()
         return (corr / n)
 
