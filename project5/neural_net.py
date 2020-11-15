@@ -10,6 +10,8 @@ global print_delta
 print_delta = False
 global print_weights
 print_weights = False
+global print_gradient
+print_gradient = False
 global print_loss
 print_loss = False
 global print_output
@@ -114,22 +116,21 @@ class NeuralNet():
         print('# layers (hidden/output)\t', self.num_layers)
         print('# hidden nodes\t\t\t', self.layer_structure[0:-1])
         print('# output nodes\t\t\t', self.layer_structure[-1])
+        print('# input (n x d)\t\t', self.x.shape)
         print()
 
         print('LAYERS')
         print('---------')
-        for layer in self.network['layers']:
-            print('layer')
-            for node in layer:
+        for i in range(self.num_layers):
+            print('layer', i)
+            print('-----')
+            layer = self.network['layers'][i]
+            for j in range(len(layer)):
+                node = layer[j]
                 print('weights', node['weights'])
                 print('output', node['y'])
                 print()
             print('----')
-
-        print('\nOUTPUTS')
-        print('---------')
-        for o in self.network['outputs']:
-            print(o)
 
 ####################################################################################
 
@@ -229,18 +230,22 @@ class NeuralNet():
                 node['y'] = output
 
                 if print_forward:
-                    print('\nforward feed')
-                    print('i', i)
-                    print('j', j)
-                    print('x', x)
-                    print('w', w)
-                    print('output', output)
-                    print('---')
+                    print('----->')
+                    print('forward feed')
+                    print('\ti', i)
+                    print('\tj', j)
+                    print('\tx', x.shape, x)
+                    print()
+                    print('\tw', w.shape, w)
+                    print()
+                    print('\toutput', output)
+                    print('----->')
 
                 next_input.append(output)
 
             x = next_input
 
+        print_forward = False
         return x
 
     """
@@ -281,10 +286,12 @@ class NeuralNet():
                     errors.append(diff)
 
                     if print_diff:
-                        print('\nbackprop')
-                        print('y', y[j])
-                        print('node.y', node['y'])
-                        print('diff', diff)
+                        print('\n<----- backprop')
+                        print('layer {0}'.format(i))
+                        print('\ty', y[j])
+                        print('\tnode.y', node['y'])
+                        print('\tdiff', diff)
+                        print('<-----')
 
             # not the last layer, so we can look forward to next layer
             else:
@@ -304,8 +311,14 @@ class NeuralNet():
                 node = l[j]
                 node['delta'] = errors[j] * derivative(node['y'])
 
-        print_diff = False
+                if print_delta:
+                    print('layer {0}, node {1}, delta value: {2}'.format(i, j, node['delta']))
+
+            if print_delta:
+                print()
+    
         print_delta = False
+        print_diff = False
 
     """
         calculates the loss between expected and neural network output
@@ -341,7 +354,7 @@ class NeuralNet():
         returns: None
     """
     def update_weights(self, x):
-        global print_weights
+        global print_gradient
         layers = self.network['layers']
         eta = self.eta
 
@@ -362,6 +375,10 @@ class NeuralNet():
                     else:
                         gradient = x[f] * node['delta']
 
+                    if print_gradient:
+                        print('gradient', gradient)
+                        print_gradient = False
+
                     node['weights'][f] += eta * gradient
 
                 # update bias values, delta shape is (n, )
@@ -376,6 +393,19 @@ class NeuralNet():
     """
     def build(self):
         global print_forward
+        global print_delta
+        global print_weights
+        global print_loss
+        global print_output
+        global print_diff
+        
+        if self.print_on:
+            print_forward = True
+            print_delta = True
+            print_weights = True
+            print_loss = True
+            print_output = True
+            print_diff = True
 
         # network base structure
         self.network = {
@@ -388,8 +418,6 @@ class NeuralNet():
         self.initialize()
 
         for i in range(self.iterations):
-            # print_forward = True
-
             for i, x in enumerate(self.x):
                 output = self.forward_feed(x)
                 self.backpropagate(i)
@@ -453,8 +481,9 @@ class NeuralNet():
         predictions_with_class = levels.take(predictions)
         
         if self.print_on:
-            print('actual\t', classes.to_numpy())
-            print('predictions\t', predictions_with_class)
+            print()
+            print('actual\t\t', classes.to_numpy())
+            print('predictions\t', predictions_with_class.to_numpy())
             print()
 
         corr = np.equal(classes.to_numpy(), predictions_with_class).sum()
