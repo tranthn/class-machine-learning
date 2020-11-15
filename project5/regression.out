@@ -1,10 +1,3 @@
-
-============== BREAST DATA ============== 
-
-============== GLASS DATA ============== 
-
-============== SOYBEAN DATA ============== 
-
 ============== ABALONE DATA ============== 
 ----------------- 0-layer -----------------
 test regression
@@ -143,7 +136,7 @@ fold #2, MSE	9.4132
 fold #3, MSE	9.2888
 fold #4, MSE	9.466
 ------
-avg. MSE:	9.0019
+avg. MSE:	    9.0019
 total execution time:	4.28s
 ----------------- 1-layer -----------------
 test regression
@@ -282,7 +275,7 @@ fold #2, MSE	8.7457
 fold #3, MSE	8.7977
 fold #4, MSE	8.7502
 ------
-avg. MSE:	8.4325
+avg. MSE:	    8.4325
 total execution time:	37.24s
 ----------------- 2-layer -----------------
 test regression
@@ -421,7 +414,7 @@ fold #2, MSE	8.6722
 fold #3, MSE	8.7047
 fold #4, MSE	8.6269
 ------
-avg. MSE:	8.3341
+avg. MSE:   	8.3341
 total execution time:	35.92s
 
 ============== MACHINE DATA ============== 
@@ -446,7 +439,7 @@ fold #2, MSE	2.1188
 fold #3, MSE	0.83803
 fold #4, MSE	1.0858
 ------
-avg. MSE:	1.5207
+avg. MSE:	    1.5207
 total execution time:	0.54s
 ----------------- 1-layer -----------------
 test regression
@@ -492,10 +485,11 @@ fold #2, MSE	2.0889
 fold #3, MSE	0.80189
 fold #4, MSE	1.0485
 ------
-avg. MSE:	1.4859
+avg. MSE:	    1.4859
 total execution time:	13.39s
 
 ============== FOREST FIRE DATA ============== 
+----------------- 0-layer -----------------
 test regression
 expected [-0.20182432 -0.20182432 -0.20182432 -0.20182432 -0.20182432 -0.20182432
  -0.20182432 -0.20182432 -0.20182432 -0.20182432 -0.20182432 -0.20182432
@@ -522,7 +516,7 @@ fold #2, MSE	0.24271
 fold #3, MSE	0.34371
 fold #4, MSE	3.3074
 ------
-avg. MSE:	0.85355
+avg. MSE:	    0.85355
 total execution time:	1.10s
 ----------------- 1-layer -----------------
 test regression
@@ -551,7 +545,7 @@ fold #2, MSE	0.23954
 fold #3, MSE	0.34819
 fold #4, MSE	3.3113
 ------
-avg. MSE:	0.85152
+avg. MSE:	    0.85152
 total execution time:	11.44s
 ----------------- 2-layer -----------------
 test regression
@@ -580,5 +574,5 @@ fold #2, MSE	0.23611
 fold #3, MSE	0.34297
 fold #4, MSE	3.3101
 ------
-avg. MSE:	0.84808
+avg. MSE:	    0.84808
 total execution time:	31.54s
