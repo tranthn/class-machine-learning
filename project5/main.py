@@ -78,7 +78,7 @@ def neural_net_helper(data, label = None, eta = 0.01, iterations = 100,
 print('\n============== BREAST DATA ============== ')
 # d = 9, k = 2
 data = dl.get_breast_data()
-print('----------------- 0-layer -----------------')
+# print('----------------- 0-layer -----------------')
 # neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [2])
 # print('----------------- 1-layer -----------------')
 # neural_net_helper(data = data, label = 'class', eta = 0.01, iterations = 100, layer_structure = [6, 2])
@@ -136,11 +136,11 @@ print('\n============== FOREST FIRE DATA ============== ')
 # d = 30 (includes dummied columns), regression predictor: area [of fire]
 data = dl.get_forest_fires_data()
 # print('----------------- 0-layer -----------------')
-neural_net_helper(data = data, label = 'area', eta = 0.01, iterations = 1,
-                 layer_structure = [1], regression = True, tuning = True)
-print('----------------- 1-layer -----------------')
+# neural_net_helper(data = data, label = 'area', eta = 0.01, iterations = 1,
+#                  layer_structure = [1], regression = True, tuning = True)
+# print('----------------- 1-layer -----------------')
 # neural_net_helper(data = data, label = 'area', eta = 0.01, iterations = 10,
 #                 layer_structure = [10, 1], regression = True, tuning = True)
-print('----------------- 2-layer -----------------')
+# print('----------------- 2-layer -----------------')
 # neural_net_helper(data = data, label = 'area', eta = 0.01, iterations = 10, 
 #                 layer_structure = [20, 10, 1], regression = True, tuning = True)
