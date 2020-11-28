@@ -27,26 +27,26 @@ class TrackSimulator():
         return (-1, -1)
 
     def pretty_print(self):
+        one_spacer = ' '
+        two_spacer = '  '
+        three_spacer = '   '
         r = 0
 
         # print column headers, with spacers to handle single vs. double-digit numbers
-        print('\t  ', end = '')
+        print('\t   ', end = '')
         for i in range(0, self.track.shape[1]):
-            spacer = ' '
-            if (i < 10):
-                spacer = '  '
-            
-            print('{0}{1}'.format(i, spacer), end = '')
+            spacer = one_spacer if i > 9 else two_spacer
+            cprint('{0}{1}'.format(i, spacer), 'red', end = '')
 
         for coords, value in np.ndenumerate(self.track):
-
             # print row headers
             if (coords == (0, 0) or r < coords[0]):
+                spacer = one_spacer if coords[0] > 9 else two_spacer
                 print()
-                print('\t{0} '.format(coords[0]), end = '')
+                cprint('\t{0}{1}'.format(coords[0], spacer), 'red', end = '')
 
             # if we're on current position or on path, print with color for visual indication
-            spacer = '  ' 
+            spacer = one_spacer if coords[0] > 9 else two_spacer 
             if (self.position == coords or (coords[0], coords[1]) in self.path):
                 cprint(value + spacer, 'green', end = '')
             else:
@@ -61,14 +61,27 @@ class TrackSimulator():
     def initialize_track(self):
         self.position = self._find_coordinate('S')
 
-    def move(self, x, y):
-        self.position[0] += x
-        self.position[1] += y
+    def move(self, velocity):
+        p1 = self.position[0]
+        p2 = self.position[1]
+
+        self.position = (velocity[0] + p1, velocity[1] + p2)
+
+        # should check if it collides into wall, but assume predetermined path for now
+        self.path.append(self.position)
 
     def accelerate(self, x, y):
         self.velocity[0] += x
         self.velocity[1] += y
 
-    ## helper that runs through with predetermined test path
+    ## helper that runs through with predetermined test path to finish line
+    ## track is initialized on a start position already
     def test_run(self):
-        return None
+        moves = [
+            (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1),
+            (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1),  (0, 1), (0, 1),
+            (-1, 0), (-1, 0), (-1, 0), (-1, 0),  (-1, 0)
+        ]
+
+        for m in moves:
+            self.move(m)
