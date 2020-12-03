@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-import sys
 import numpy as np
-from random import randint
+import random
 from termcolor import colored, cprint
 
 """
@@ -71,8 +70,7 @@ class TrackSimulator():
         rows = self.track.shape[0]
         cols = self.track.shape[1]
 
-        print('r, c\t\t', r, c)
-        print('rows,cols\t', rows, cols)
+        print('new r,c:', r, c)
 
         # check for out of bounds coordinates
         if (r < 0 or c < 0 or r >= rows or c >= cols):
@@ -94,23 +92,28 @@ class TrackSimulator():
         position = (v[0] + p1, v[1] + p2)
         if (self.boundary_check(position)):
             self.position = position
+            self.path.append(self.position)
         else:
             cprint('offtrack', 'magenta')
+            # TODO two handling strategies
+            # 1 - move to x,y closest to crash point
+            # 2 - move to start
 
         print()
-        # should check if it collides into wall, but assume predetermined path for now
-        self.path.append(self.position)
 
     def accelerate(self, rise, run):
-        roll = randint(0, 100)
-        # if (roll > 20):  
-        self.velocity[0] += rise
-        self.velocity[1] += run
+        percent = round(random.random() * 100, 0)
+        if (percent > 20):  
+            self.velocity[0] += rise
+            self.velocity[1] += run
+            cprint('accelerate success', 'green')
+        else:
+            cprint('accelerate failed', 'red')
 
     ## helper that runs through with predetermined test path to finish line
     ## track is initialized on a start position already
     def test_run(self):
         self.velocity = [0, 1]
-        for i in range(5):
+        for i in range(10):
             self.accelerate(0, 1) # rise, run
             self.move()
