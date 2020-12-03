@@ -7,9 +7,21 @@ from simulator import TrackSimulator
 
 ################################################################################
 
-ltrack = dl.load_l()
-# print(ltrack.shape)
-simulator = TrackSimulator(track = ltrack)
+# l-track
+track = dl.load_l()
+simulator = TrackSimulator(track = track)
 simulator.initialize_track()
 simulator.test_run()
+simulator.pretty_print()
+
+# r-track
+track = dl.load_r()
+simulator = TrackSimulator(track = track)
+simulator.initialize_track()
+simulator.pretty_print()
+
+# o-track
+track = dl.load_o()
+simulator = TrackSimulator(track = track)
+simulator.initialize_track()
 simulator.pretty_print()

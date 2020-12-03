@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import numpy as np
+from random import randint
 from termcolor import colored, cprint
 
 """
@@ -13,6 +14,8 @@ from termcolor import colored, cprint
 class TrackSimulator():
     def __init__(self, track = None, start_pos = (0, 0), start_velocity = (0, 0)):
         self.track = track
+
+        # position = r, c - r = row, c = column to match dataframe/matrix representation
         self.position = start_pos
         self.velocity = start_velocity
 
@@ -45,8 +48,9 @@ class TrackSimulator():
                 print()
                 cprint('\t{0}{1}'.format(coords[0], spacer), 'red', end = '')
 
+            spacer = two_spacer 
+
             # if we're on current position or on path, print with color for visual indication
-            spacer = one_spacer if coords[0] > 9 else two_spacer 
             if (self.position == coords or (coords[0], coords[1]) in self.path):
                 cprint(value + spacer, 'green', end = '')
             else:
@@ -61,27 +65,52 @@ class TrackSimulator():
     def initialize_track(self):
         self.position = self._find_coordinate('S')
 
-    def move(self, velocity):
+    def boundary_check(self, position):
+        r = position[0]
+        c = position[1]
+        rows = self.track.shape[0]
+        cols = self.track.shape[1]
+
+        print('r, c\t\t', r, c)
+        print('rows,cols\t', rows, cols)
+
+        # check for out of bounds coordinates
+        if (r < 0 or c < 0 or r >= rows or c >= cols):
+            cprint('out of bounds', 'magenta')
+            return False
+
+        # reverse y, x since y indicates row position, while x indicates column position
+        elif (self.track[r, c] == '#'):
+            cprint('hit a wall', 'magenta')
+            return False
+        else:
+            return True
+
+    def move(self):
+        v = self.velocity
         p1 = self.position[0]
         p2 = self.position[1]
 
-        self.position = (velocity[0] + p1, velocity[1] + p2)
+        position = (v[0] + p1, v[1] + p2)
+        if (self.boundary_check(position)):
+            self.position = position
+        else:
+            cprint('offtrack', 'magenta')
 
+        print()
         # should check if it collides into wall, but assume predetermined path for now
         self.path.append(self.position)
 
-    def accelerate(self, x, y):
-        self.velocity[0] += x
-        self.velocity[1] += y
+    def accelerate(self, rise, run):
+        roll = randint(0, 100)
+        # if (roll > 20):  
+        self.velocity[0] += rise
+        self.velocity[1] += run
 
     ## helper that runs through with predetermined test path to finish line
     ## track is initialized on a start position already
     def test_run(self):
-        moves = [
-            (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1),
-            (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1),  (0, 1), (0, 1),
-            (-1, 0), (-1, 0), (-1, 0), (-1, 0),  (-1, 0)
-        ]
-
-        for m in moves:
-            self.move(m)
+        self.velocity = [0, 1]
+        for i in range(5):
+            self.accelerate(0, 1) # rise, run
+            self.move()

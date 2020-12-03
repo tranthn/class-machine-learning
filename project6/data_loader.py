@@ -4,7 +4,7 @@ import csv
 import numpy as np
 
 ltrack = './data/L-track.txt'
-qtrack = './data/Q-track.txt'
+otrack = './data/O-track.txt'
 rtrack = './data/R-track.txt'
 
 """
@@ -42,8 +42,8 @@ def load_l():
     tracks = load_file(ltrack)
     return tracks
 
-def load_q():
-    tracks = load_file(qtrack)
+def load_o():
+    tracks = load_file(otrack)
     return tracks
 
 def load_r():

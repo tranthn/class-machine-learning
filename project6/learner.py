@@ -16,9 +16,20 @@ class Learner():
     def value_iteration(self):
         return None
     
+    # updates based on the immediately experienced / preceding Q-value
+    def sarsa(self):
+        return None
+
+################################################################################
+
+class QLearner():
+    def __init__(self, track = None):
+        # TrackSimulator object
+        self.track = track
+    
     # model free, we do not know state transition probabilities or rewards
     # goal is to learn value-function Q
-    # uses epsilon to determine how greedy (= 0) or optimal (increased)
+    # uses epsilon to determine how greedy (= 0) or optimal (> 0)
     #
     # agent is run in environment as trial, state-action pairs collected
     #   - Q_t(s, a): estimate value for (s, a) pair
@@ -28,9 +39,6 @@ class Learner():
     #
     # updates based on what would have been optimal according to current estimate of our Q function
     # selects next option using softmax to pick optimal choice
-    def q_learning(self):
-        return None
-    
-    # updates based on the immediately experienced / preceding Q-value
-    def sarsa(self):
+    def initialize_table(self):
+        dims = self.track.shape
         return None
