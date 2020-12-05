@@ -12,10 +12,11 @@ from learner import QLearner
 track = dl.load_l()
 simulator = TrackSimulator(track = track)
 simulator.initialize_track()
+simulator.test_run()
 simulator.pretty_print()
 
-learner = QLearner(track)
-learner.initialize_table()
+# learner = QLearner(track)
+# learner.initialize_table()
 
 # r-track
 track = dl.load_r()

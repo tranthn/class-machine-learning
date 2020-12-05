@@ -10,13 +10,17 @@ from termcolor import colored, cprint
     – # – This square is off the racetrack (i.e., a wall).
 """
 
+MIN_VELOCITY = -5
+MAX_VELOCITY = 5
+
 class TrackSimulator():
-    def __init__(self, track = None, start_pos = (0, 0), start_velocity = (0, 0)):
+    def __init__(self, track = None):
         self.track = track
 
-        # position = r, c - r = row, c = column to match dataframe/matrix representation
-        self.position = start_pos
-        self.velocity = start_velocity
+        # position = r, c 
+        # r = row, c = column to match dataframe/matrix representation
+        self.position = (0,0)
+        self.velocity = (0,0)
 
         # array of coordinates to indicate path taken (for printing)
         self.path = []
@@ -51,7 +55,7 @@ class TrackSimulator():
 
             # if we're on current position or on path, print with color for visual indication
             if (self.position == coords or (coords[0], coords[1]) in self.path):
-                cprint(value + spacer, 'green', end = '')
+                cprint('X' + spacer, 'green', end = '')
             else:
                 print(value + spacer, end = '')
 
@@ -59,18 +63,29 @@ class TrackSimulator():
         
         print('\n')
     
-
 ####################################################################################
+####################################################################################
+
+    # sets initial start position at first S cell found
     def initialize_track(self):
         self.position = self._find_coordinate('S')
+        self.start_pos = self.position
 
+    # helper that returns all open positions within racetrack
+    def get_all_track_points(self):
+        open_track = []
+        for coords, value in np.ndenumerate(self.track):
+            if (value == '.'):
+                open_track.append(coords)
+
+        return open_track
+
+    # checks if given position hits a wall or goes out of bounds
     def boundary_check(self, position):
         r = position[0]
         c = position[1]
         rows = self.track.shape[0]
         cols = self.track.shape[1]
-
-        print('new r,c:', r, c)
 
         # check for out of bounds coordinates
         if (r < 0 or c < 0 or r >= rows or c >= cols):
@@ -84,31 +99,70 @@ class TrackSimulator():
         else:
             return True
 
-    def move(self):
+    """
+        two handling strategies
+            1 - move to x,y closest to crash point
+            2 - move to start
+    """
+    def get_restart_position(self, crash_site, goto_start = False):
+        if not goto_start:
+            # TODO implement actual logic that grabs closest open point, TBD if we can clip through wall
+            # track_pts = self.get_all_track_points()
+            # print(track_pts)
+            return self.position
+        else:
+            return self.start_pos
+
+    # gives next position based off current position and velocity
+    def get_next_position(self):
         v = self.velocity
         p1 = self.position[0]
         p2 = self.position[1]
+        position = (self.velocity[0] + self.position[0],
+                    self.velocity[1] + self.position[1])
 
-        position = (v[0] + p1, v[1] + p2)
+        return position
+
+    """
+        Attempts to accelerate, i.e. adjust the velocity.
+        Has 80% of succeeding and adjusts velocity within [-5, 5] limit
+
+        arguments:
+            - rise: the y-value or which row we adjust to within the 2d track array
+            - run: the x-value or which column we adjust to within the 2d track array
+    """
+    def accelerate(self, rise, run):
+        percent = round(random.random() * 100, 0)
+        if (percent > 20):  
+            vr = self.velocity[0] + rise
+            vc = self.velocity[1] + run
+
+            # ensure velocity doesn't go below min velocity or above max velocity
+            cprint('accelerate success', 'green')
+            print('v1', self.velocity)
+            self.velocity[0] = max(vr, MIN_VELOCITY) if (vr < 0) else min(vr, MAX_VELOCITY)
+            self.velocity[1] = max(vc, MIN_VELOCITY) if (vc < 0) else min(vc, MAX_VELOCITY)
+            print('v2', self.velocity)
+        else:
+            cprint('accelerate failed', 'red')
+            print('v1', self.velocity)
+
+    # method tries to adjust position, checking boundaries first
+    # if new position goes off track, we will restart position
+    def move(self):
+        cprint('move', 'green')
+        print('pos1', self.position)
+        position = self.get_next_position()
+        print('pos2', position)
         if (self.boundary_check(position)):
             self.position = position
             self.path.append(self.position)
         else:
-            cprint('offtrack', 'magenta')
-            # TODO two handling strategies
-            # 1 - move to x,y closest to crash point
-            # 2 - move to start
+            cprint('restart', 'yellow')
+            self.velocity = [0,0]
+            self.position = self.get_restart_position(position)
 
         print()
-
-    def accelerate(self, rise, run):
-        percent = round(random.random() * 100, 0)
-        if (percent > 20):  
-            self.velocity[0] += rise
-            self.velocity[1] += run
-            cprint('accelerate success', 'green')
-        else:
-            cprint('accelerate failed', 'red')
 
     ## helper that runs through with predetermined test path to finish line
     ## track is initialized on a start position already
