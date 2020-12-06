@@ -8,14 +8,6 @@ class Learner():
         self.algo = learning_algorithm
         self.track = track
 
-    # sequence of V_t using Q_t(s, a)
-    #   - Q is auxillary function, represents estimate of value of action *a* taken on state *s*
-    #   - values of Q_t and V_t updated as we go along, until we drop below error threshold
-    #
-    # value iteration is essentially a form of dynamic programming
-    def value_iteration(self):
-        return None
-    
     # updates based on the immediately experienced / preceding Q-value
     def sarsa(self):
         return None
@@ -51,7 +43,7 @@ class QLearner():
             r = coords[0]
         
         print('\n')
-    
+
     # model free, we do not know state transition probabilities or rewards
     # goal is to learn value-function Q
     # uses epsilon to determine how greedy (= 0) or optimal (> 0)

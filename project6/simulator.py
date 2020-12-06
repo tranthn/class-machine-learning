@@ -32,6 +32,12 @@ class TrackSimulator():
                 return coords
         return (-1, -1)
 
+    def nrows(self):
+        return self.track.shape[0]
+
+    def ncols(self):
+        return self.track.shape[1]
+
     def pretty_print(self):
         one_spacer = ' '
         two_spacer = '  '
@@ -72,13 +78,13 @@ class TrackSimulator():
         self.start_pos = self.position
 
     # helper that returns all open positions within racetrack
-    def get_all_track_points(self):
-        open_track = []
+    def get_all_points_of(self, target = ''):
+        targets = []
         for coords, value in np.ndenumerate(self.track):
-            if (value == '.'):
-                open_track.append(coords)
+            if (value == target):
+                targets.append(coords)
 
-        return open_track
+        return targets
 
     # checks if given position hits a wall or goes out of bounds
     def boundary_check(self, position):
@@ -107,7 +113,7 @@ class TrackSimulator():
     def get_restart_position(self, crash_site, goto_start = False):
         if not goto_start:
             # TODO implement actual logic that grabs closest open point, TBD if we can clip through wall
-            # track_pts = self.get_all_track_points()
+            # track_pts = self.get_all_points_of('.')
             # print(track_pts)
             return self.position
         else:

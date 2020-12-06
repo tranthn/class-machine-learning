@@ -3,6 +3,7 @@ import sys
 import csv
 import numpy as np
 
+tiny = './data/tiny-track.txt'
 ltrack = './data/L-track.txt'
 otrack = './data/O-track.txt'
 rtrack = './data/R-track.txt'
@@ -38,14 +39,18 @@ def load_file(filpepath):
 
     return track
 
+def load_tinytrack():
+    track = load_file(tiny)
+    return track
+
 def load_l():
-    tracks = load_file(ltrack)
-    return tracks
+    track = load_file(ltrack)
+    return track
 
 def load_o():
-    tracks = load_file(otrack)
-    return tracks
+    track = load_file(otrack)
+    return track
 
 def load_r():
-    tracks = load_file(rtrack)
-    return tracks
+    track = load_file(rtrack)
+    return track
