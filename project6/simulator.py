@@ -10,12 +10,12 @@ from termcolor import colored, cprint
     – # – This square is off the racetrack (i.e., a wall).
 """
 
-MIN_VELOCITY = -5
-MAX_VELOCITY = 5
-
 class TrackSimulator():
-    def __init__(self, track = None):
+    def __init__(self, track = None, min_velocity = -5, max_velocity = 5):
         self.track = track
+
+        self.min_velocity = min_velocity
+        self.max_velocity = max_velocity
 
         # position = r, c 
         # r = row, c = column to match dataframe/matrix representation
@@ -95,12 +95,12 @@ class TrackSimulator():
 
         # check for out of bounds coordinates
         if (r < 0 or c < 0 or r >= rows or c >= cols):
-            cprint('out of bounds', 'magenta')
+            # cprint('out of bounds', 'magenta')
             return False
 
         # reverse y, x since y indicates row position, while x indicates column position
         elif (self.track[r, c] == '#'):
-            cprint('hit a wall', 'magenta')
+            # cprint('hit a wall', 'magenta')
             return False
         else:
             return True
@@ -144,31 +144,34 @@ class TrackSimulator():
             vc = self.velocity[1] + run
 
             # ensure velocity doesn't go below min velocity or above max velocity
-            cprint('accelerate success', 'green')
-            print('v1', self.velocity)
-            self.velocity[0] = max(vr, MIN_VELOCITY) if (vr < 0) else min(vr, MAX_VELOCITY)
-            self.velocity[1] = max(vc, MIN_VELOCITY) if (vc < 0) else min(vc, MAX_VELOCITY)
-            print('v2', self.velocity)
-        else:
-            cprint('accelerate failed', 'red')
-            print('v1', self.velocity)
+            self.velocity[0] = max(vr, self.min_velocity) if (vr < 0) else min(vr, self.max_velocity)
+            self.velocity[1] = max(vc, self.min_velocity) if (vc < 0) else min(vc, self.max_velocity)
+        #     print('v2', self.velocity)
+        # else:
+            # cprint('accelerate failed', 'red')
+            # print('v1', self.velocity)
+        
+        return self.velocity
 
     # method tries to adjust position, checking boundaries first
     # if new position goes off track, we will restart position
     def move(self):
-        cprint('move', 'green')
-        print('pos1', self.position)
         position = self.get_next_position()
-        print('pos2', position)
         if (self.boundary_check(position)):
-            self.position = position
-            self.path.append(self.position)
+            self.temp_position = position
         else:
-            cprint('restart', 'yellow')
+            # cprint('restart', 'yellow')
             self.velocity = [0,0]
-            self.position = self.get_restart_position(position)
+            self.temp_position = self.get_restart_position(position)
 
-        print()
+        return self.temp_position
+
+    # sets position officially
+    def finalize_move(self):
+        # cprint('finalize move', 'green')
+        # print('pos1', self.position)
+        self.position = self.temp_position
+        self.path.append(self.position)
 
     ## helper that runs through with predetermined test path to finish line
     ## track is initialized on a start position already
