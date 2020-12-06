@@ -112,9 +112,52 @@ class TrackSimulator():
     """
     def get_restart_position(self, crash_site, goto_start = False):
         if not goto_start:
-            # TODO implement actual logic that grabs closest open point, TBD if we can clip through wall
-            # track_pts = self.get_all_points_of('.')
-            # print(track_pts)
+            track_pts = self.get_all_points_of('.')
+            start_pts = self.get_all_points_of('S')
+            open_track = track_pts.append(start_pts)
+
+            nrows = self.nrows()
+            ncols = self.ncols()
+            vr = self.velocity[0]
+            vc = self.velocity[1]
+            cr = crash_site[0]
+            cc = crash_site[1]
+
+            search_radius = max(nrows, ncols)
+            # cprint('crash {0}'.format(crash_site), 'red')
+
+            ## scenarios:
+            #   - if trajectory was negative, we search radius in (0, positive direction)
+            #   - if trajectory was 0, we search radius in both negative -> positive radius
+            #   - if trajectory was positive, we search radius (-radius, 0)
+            for radius in range(search_radius):
+                if (vr < 0):
+                    row_range = range(0, radius)
+                elif (vr == 0):
+                    row_range = range(-radius, radius)
+                else:
+                    row_range = range(-radius, 1)
+
+                for row_offset in row_range:
+                    r = cr + row_offset
+                    c_radius = radius - abs(row_offset)
+
+                    # c_radius is constrained by row radius
+                    # we follow similar trajectory handling to above
+                    if (vc < 0):
+                        column_range = range(0, cc + c_radius)
+                    elif (vc == 0):
+                        column_range = range(cc - c_radius, cc + c_radius)
+                    else:
+                        column_range = range(cc - c_radius, cc)
+
+                    for c in column_range:
+                        if (r < 0 or c < 0 or r >= nrows or c >= ncols):
+                            continue
+
+                        if (r, c) in track_pts:
+                            return(r, c)
+
             return self.position
         else:
             return self.start_pos
@@ -144,12 +187,13 @@ class TrackSimulator():
             vc = self.velocity[1] + run
 
             # ensure velocity doesn't go below min velocity or above max velocity
-            self.velocity[0] = max(vr, self.min_velocity) if (vr < 0) else min(vr, self.max_velocity)
-            self.velocity[1] = max(vc, self.min_velocity) if (vc < 0) else min(vc, self.max_velocity)
+            vr2 = max(vr, self.min_velocity) if (vr < 0) else min(vr, self.max_velocity)
+            vc2 = max(vc, self.min_velocity) if (vc < 0) else min(vc, self.max_velocity)
+            self.velocity = (vr2, vc2)
         #     print('v2', self.velocity)
         # else:
-            # cprint('accelerate failed', 'red')
-            # print('v1', self.velocity)
+        #     cprint('accelerate failed', 'red')
+        #     print('v1', self.velocity)
         
         return self.velocity
 
@@ -170,13 +214,14 @@ class TrackSimulator():
     def finalize_move(self):
         # cprint('finalize move', 'green')
         # print('pos1', self.position)
+        # print()
         self.position = self.temp_position
         self.path.append(self.position)
 
     ## helper that runs through with predetermined test path to finish line
     ## track is initialized on a start position already
     def test_run(self):
-        self.velocity = [0, 1]
-        for i in range(10):
-            self.accelerate(0, 1) # rise, run
-            self.move()
+        self.velocity = [-1, 1]
+        self.accelerate(0, 0) # rise, run
+        self.move()
+        self.finalize_move()

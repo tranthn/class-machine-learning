@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import numpy as np
 import random
+import copy
 from termcolor import colored, cprint
 
 # velocity options range from -5 to 5
@@ -160,9 +161,13 @@ class ValueIteration():
         threshold = 0.8
         epsilon = self.epsilon
         gamma = self.gamma
+        max_vchange = 0.01
 
+        # while max_vchange < epsilon:
         # 4-nested for loop to iterate through all state combinations
         # S = (r, c, vr, vc, reward)
+        vtable_prior = copy.deepcopy(self.vtable)
+
         for r in range(rows):
             for c in range(cols):
                 for vr in vopts:
@@ -193,17 +198,51 @@ class ValueIteration():
                             self.env.finalize_move()
 
                             # compare values
-                            val1 = self.vtable[pos1[0], pos1[1], vel1[0], vel1[1]]
-                            val2 = self.vtable[pos2[0], pos2[1], vel2[0], vel2[1]]
-                            val_no_acc = self.vtable[pos_no_acc[0], pos_no_acc[1], vel_no_acc[0], vel_no_acc[1]]
+                            val1 = vtable_prior[pos1[0], pos1[1], vel1[0], vel1[1]]
+                            val2 = vtable_prior[pos2[0], pos2[1], vel2[0], vel2[1]]
+                            val_no_acc = vtable_prior[pos_no_acc[0], pos_no_acc[1], vel_no_acc[0], vel_no_acc[1]]
 
                             # take transition probabilities into account
                             new_value = (1 - threshold) * val_no_acc + threshold * val2
                             self.qtable[r, c, vr, vc, aidx] = reward + gamma * new_value 
 
                             # determine which action had highest q-value, to use to set value
-                            act_maxq = np.argmax(self.qtable[r, c, vr, vc])
-                            maxq = self.qtable[r, c, vr, vc, act_maxq]
+                            act_maxq_idx = np.argmax(self.qtable[r, c, vr, vc])
+                            maxq = self.qtable[r, c, vr, vc, act_maxq_idx]
                             self.vtable[r, c, vr, vc] = maxq
-        
-        self.pretty_print_table(self.vtable)
+
+            max_vchange = self.find_max_vchange(abs(self.vtable - vtable_prior))
+
+        # store final optimal action for a given state combo
+        policy = {}
+        for r in range(rows):
+            for c in range(cols):
+                for vr in vopts:
+                    for vc in vopts:
+                        act_maxq_idx = np.argmax(self.qtable[r, c, vr, vc])
+                        best_action = self.actions[act_maxq_idx]
+                        policy[(r,c,vr,vc)] = best_action
+
+        return policy
+
+    def find_max_vchange(self, vtable_diff):
+        # max_(s in S) abs ( V_t (s) - V_t-1(s) )
+        rows = self.env.nrows()
+        cols = self.env.ncols()
+        vopts = self.vl_opts
+        max_r = max_c = max_vr = max_vc = 0
+        max_change = -1
+
+        for r in range(rows):
+            for c in range(cols):
+                for vr in vopts:
+                    for vc in vopts:
+                        current = vtable_diff[r, c, vr, vc]
+                        if (current > max_change):
+                                max_r = r
+                                max_c = c
+                                max_vr = vr
+                                max_vc = vc
+                                max_change = current
+
+        return max_change

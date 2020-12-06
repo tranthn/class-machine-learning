@@ -21,11 +21,12 @@ vl_opts = [0, 1, -1] # shortened for speed/ease while testing
 # tiny test track
 track = dl.load_tinytrack()
 simulator = TrackSimulator(track = track, min_velocity = min(vl_opts), max_velocity = max(vl_opts))
+simulator.initialize_track()
 simulator.pretty_print()
 learner = ValueIteration(env = simulator, vl_opts = vl_opts, actions = actions,
                         gamma = 1.0, epsilon = 0.1)
-
-learner.value_iteration()
+policy = learner.value_iteration()
+# print(policy)
 
 # l-track
 # track = dl.load_l()
