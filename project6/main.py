@@ -14,9 +14,10 @@ def write_output_helper(file_prefix, input):
 
 def trial_helper(simulator, learner, iterations, trial_runs, trackname):
     print('\nstart of training, for {0} total iterations'.format(iterations))
+    st = time.time()
     policy = learner.value_iteration(iterations = iterations)
-    print('\npolicy finalized, now running trials')
-    print('\n# trials to run: ', trial_runs)
+    print('\npolicy finalized after {:.2f}s'.format(time.time() - st))
+    print('\n# time trials to run: ', trial_runs)
     print()
     for i in range(trial_runs):
         start_time = time.time()
@@ -48,10 +49,10 @@ vl_opts = [0, 1,  2, 3, 4, 5, -5, -4, -3, -2, -1]
 track = dl.load_tinytrack()
 simulator = TrackSimulator(track = track, min_velocity = min(vl_opts), max_velocity = max(vl_opts), crash_restart = False)
 learner = ValueIteration(env = simulator, vl_opts = vl_opts, actions = actions,
-                        gamma = 1.0, epsilon = 0.1)
+                        gamma = 1.0, epsilon = 0.01)
 
 simulator.pretty_print()
-trial_helper(simulator, learner, 20, 10, 'tinytrack')
+# trial_helper(simulator, learner, 30, 10, 'tinytrack')
 
 # l-track
 ################################################################################
@@ -61,10 +62,10 @@ print('=' * 100)
 print('RUNNING L TRACK')
 simulator = TrackSimulator(track = track, min_velocity = min(vl_opts), max_velocity = max(vl_opts), crash_restart = False)
 learner = ValueIteration(env = simulator, vl_opts = vl_opts, actions = actions,
-                        gamma = 0.9, epsilon = 0.1)
+                        gamma = 0.9, epsilon = 0.001)
 
 simulator.pretty_print()
-trial_helper(simulator, learner, 35, 10, 'L-track')
+trial_helper(simulator, learner, 50, 10, 'L-track')
 
 # r-track
 ################################################################################
@@ -74,10 +75,10 @@ print('=' * 100)
 print('RUNNING R TRACK')
 simulator = TrackSimulator(track = track, min_velocity = min(vl_opts), max_velocity = max(vl_opts), crash_restart = False)
 learner = ValueIteration(env = simulator, vl_opts = vl_opts, actions = actions,
-                        gamma = 0.9, epsilon = 0.1)
+                        gamma = 0.9, epsilon = 0.001)
 
 simulator.pretty_print()
-trial_helper(simulator, learner, 35, 10, 'R-track')
+# trial_helper(simulator, learner, 50, 10, 'R-track')
 
 # o-track
 ################################################################################
@@ -87,7 +88,7 @@ print('=' * 100)
 print('RUNNING O TRACK')
 simulator = TrackSimulator(track = track, min_velocity = min(vl_opts), max_velocity = max(vl_opts), crash_restart = False)
 learner = ValueIteration(env = simulator, vl_opts = vl_opts, actions = actions,
-                        gamma = 0.9, epsilon = 0.1)
+                        gamma = 0.9, epsilon = 0.001)
 
 simulator.pretty_print()
-trial_helper(simulator, learner, 35, 10, 'O-track')
+# trial_helper(simulator, learner, 50, 10, 'O-track')

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import numpy as np
+import time
 import random
 import copy
 from termcolor import colored, cprint
@@ -164,19 +165,19 @@ class ValueIteration():
         gamma = self.gamma
 
         for i in range(iterations):
-            max_vchange = 0.01
             vtable_prior = copy.deepcopy(self.vtable)
             print('value iteration learning, #', i)
 
             # 4-nested for loop to iterate through all state combinations
             # S = (r, c, vr, vc)
+            start = time.time()
             for r in range(rows):
                 for c in range(cols):
                     for vr in vopts:
                         for vc in vopts:
                             # penalize wall states and move on to next state
                             if track[r, c] == '#':
-                                self.vtable[r, c, vr, vc] = -10
+                                self.vtable[r, c, vr, vc] = -9.9
                                 continue
                         
                             # on a given state, we'll look at available actions
@@ -212,6 +213,9 @@ class ValueIteration():
                             act_maxq_idx = np.argmax(self.qtable[r, c, vr, vc])
                             maxq = self.qtable[r, c, vr, vc, act_maxq_idx]
                             self.vtable[r, c, vr, vc] = maxq
+                    
+            print('internal timer for restart position:\t{:.3f}s'.format(self.env.internal_timer))
+            print('nested loop runtime:\t{:.2f}s'.format(time.time() - start))
 
             # set reward of finish states
             for r in range(rows):
@@ -222,12 +226,20 @@ class ValueIteration():
                                 self.vtable[r, c, vr, vc] = 0
 
             # early break if the maximal state value change has dropped low enough
-            max_vchange = self.find_max_vchange(abs(self.vtable - vtable_prior))
-            if max_vchange < epsilon:
-                break
+            # max_vchange = self.find_max_vchange(abs(self.vtable - vtable_prior))
+            # if max_vchange < epsilon:
+            #     print('max vchange has dropped below epsilon: ', max_vchange, epsilon)
+            #     policy = self.build_policy()
+            #     break
 
         # store final optimal action for a given state combo
+        policy = self.build_policy(rows, cols, vopts)
+
+        return policy
+
+    def build_policy(self, rows, cols, vopts):
         policy = {}
+        start = time.time()
         for r in range(rows):
             for c in range(cols):
                 for vr in vopts:
@@ -236,6 +248,7 @@ class ValueIteration():
                         best_action = self.actions[act_maxq_idx]
                         policy[(r,c,vr,vc)] = best_action
 
+        print('policy backtrack took:\t{:.2f}s'.format(time.time() - start))
         return policy
 
     def find_max_vchange(self, vtable_diff):

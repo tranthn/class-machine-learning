@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import numpy as np
+import time
 import random
 from termcolor import colored, cprint
 
@@ -16,6 +17,7 @@ class TrackSimulator():
         self.crash_restart = crash_restart
         self.min_velocity = min_velocity
         self.max_velocity = max_velocity
+        self.internal_timer = 0
         
         print('track simulator initialized')
         print('restart upon crash =', crash_restart)
@@ -110,6 +112,7 @@ class TrackSimulator():
             2 - move to start
     """
     def get_restart_position(self, crash_site):
+        start = time.time()
         if not self.crash_restart:
             track_pts = self.get_all_points_of('.')
             start_pts = self.get_all_points_of('S')
@@ -155,11 +158,14 @@ class TrackSimulator():
                             continue
 
                         if (r, c) in track_pts:
-                            return(r, c)
-
+                            new_pos = (r, c)
+                            elapsed = time.time() - start
+                            self.internal_timer += elapsed
+                            return new_pos
+            
             return self.position
         else:
-            return self.start_pos
+            return self._find_coordinate('S')
 
     # gives next position based off current position and velocity
     def get_next_position(self):
