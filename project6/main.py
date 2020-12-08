@@ -8,7 +8,7 @@ from value_iteration import ValueIteration
 def write_output_helper(file_prefix, input):
     # timestamp to append to file, month-day_hour
     timestamp = time.strftime('%m-%d_%H', time.localtime())
-    filename = file_prefix + timestamp + '.out'
+    filename = file_prefix + '_' + timestamp + '.out'
     with open(filename, 'w') as f:
         print(input, file = f)
 
@@ -56,30 +56,38 @@ trial_helper(simulator, learner, 20, 10, 'tinytrack')
 # l-track
 ################################################################################
 track = dl.load_l()
+print()
+print('=' * 100)
+print('RUNNING L TRACK')
 simulator = TrackSimulator(track = track, min_velocity = min(vl_opts), max_velocity = max(vl_opts), crash_restart = False)
 learner = ValueIteration(env = simulator, vl_opts = vl_opts, actions = actions,
                         gamma = 0.9, epsilon = 0.1)
 
 simulator.pretty_print()
-trial_helper(simulator, learner, 20, 10, 'L-track')
+trial_helper(simulator, learner, 35, 10, 'L-track')
 
 # r-track
 ################################################################################
 track = dl.load_r()
+print()
+print('=' * 100)
+print('RUNNING R TRACK')
 simulator = TrackSimulator(track = track, min_velocity = min(vl_opts), max_velocity = max(vl_opts), crash_restart = False)
 learner = ValueIteration(env = simulator, vl_opts = vl_opts, actions = actions,
                         gamma = 0.9, epsilon = 0.1)
 
 simulator.pretty_print()
-trial_helper(simulator, learner, 20, 10, 'R-track')
+trial_helper(simulator, learner, 35, 10, 'R-track')
 
 # o-track
 ################################################################################
 track = dl.load_o()
+print()
+print('=' * 100)
+print('RUNNING O TRACK')
 simulator = TrackSimulator(track = track, min_velocity = min(vl_opts), max_velocity = max(vl_opts), crash_restart = False)
-simulator.pretty_print()
 learner = ValueIteration(env = simulator, vl_opts = vl_opts, actions = actions,
                         gamma = 0.9, epsilon = 0.1)
 
 simulator.pretty_print()
-trial_helper(simulator, learner, 20, 10, 'O-track')
+trial_helper(simulator, learner, 35, 10, 'O-track')

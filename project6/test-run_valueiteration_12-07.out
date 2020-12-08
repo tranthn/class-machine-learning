@@ -1,0 +1,316 @@
+track simulator initialized
+restart upon crash = False
+
+           0  1  2  3  4  
+        0  X  #  #  #  #  
+        1  S  .  .  .  F  
+        2  S  .  .  .  F  
+        3  S  .  .  .  F  
+        4  #  #  #  #  #  
+
+
+start of training, for 20 total iterations
+value iteration learning, # 0
+value iteration learning, # 1
+value iteration learning, # 2
+value iteration learning, # 3
+value iteration learning, # 4
+value iteration learning, # 5
+value iteration learning, # 6
+value iteration learning, # 7
+value iteration learning, # 8
+value iteration learning, # 9
+value iteration learning, # 10
+value iteration learning, # 11
+value iteration learning, # 12
+value iteration learning, # 13
+value iteration learning, # 14
+value iteration learning, # 15
+value iteration learning, # 16
+value iteration learning, # 17
+value iteration learning, # 18
+value iteration learning, # 19
+
+policy finalized, now running trials
+
+# trials to run:  10
+
+        trial 0
+        # moves taken:  8
+        trial runtime:  0.00s
+
+        trial 1
+        # moves taken:  2
+        trial runtime:  0.01s
+
+        trial 2
+        # moves taken:  5
+        trial runtime:  0.01s
+
+        trial 3
+        # moves taken:  4
+        trial runtime:  0.01s
+
+        trial 4
+        # moves taken:  7
+        trial runtime:  0.01s
+
+        trial 5
+        # moves taken:  6
+        trial runtime:  0.01s
+
+        trial 6
+        # moves taken:  4
+        trial runtime:  0.01s
+
+        trial 7
+        # moves taken:  4
+        trial runtime:  0.01s
+
+        trial 8
+        # moves taken:  3
+        trial runtime:  0.01s
+
+        trial 9
+        # moves taken:  4
+        trial runtime:  0.01s
+
+====================================================================================================
+
+====================================================================================================
+RUNNING L TRACK
+track simulator initialized
+restart upon crash = False
+
+           0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 
+        0  X  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+        1  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  F  F  F  F  #  
+        2  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        3  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        4  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        5  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        6  #  S  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  
+        7  #  S  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  
+        8  #  S  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  
+        9  #  S  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  
+        10 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+
+
+start of training, for 35 total iterations
+value iteration learning, # 0
+value iteration learning, # 1
+
+policy finalized, now running trials
+
+# trials to run:  10
+
+        trial 0
+        # moves taken:  299
+        trial runtime:  0.16s
+
+        trial 1
+        # moves taken:  299
+        trial runtime:  0.16s
+
+        trial 2
+        # moves taken:  299
+        trial runtime:  0.17s
+
+        trial 3
+        # moves taken:  299
+        trial runtime:  0.16s
+
+        trial 4
+        # moves taken:  299
+        trial runtime:  0.16s
+
+        trial 5
+        # moves taken:  299
+        trial runtime:  0.16s
+
+        trial 6
+        # moves taken:  299
+        trial runtime:  0.16s
+
+        trial 7
+        # moves taken:  299
+        trial runtime:  0.17s
+
+        trial 8
+        # moves taken:  299
+        trial runtime:  0.17s
+
+        trial 9
+        # moves taken:  299
+        trial runtime:  0.16s
+
+====================================================================================================
+
+====================================================================================================
+RUNNING R TRACK
+track simulator initialized
+restart upon crash = False
+
+           0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 
+        0  X  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+        1  #  #  #  #  #  #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  #  #  #  #  
+        2  #  #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+        3  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+        4  #  #  .  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  .  .  #  #  #  #  #  
+        5  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  #  #  #  #  
+        6  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  
+        7  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  
+        8  #  #  .  .  .  .  .  #  #  #  #  #  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  
+        9  #  #  .  .  .  .  .  #  #  #  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  
+        10 #  #  .  .  .  .  .  #  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+        11 #  #  .  .  .  .  .  #  #  #  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  
+        12 #  .  .  .  .  .  #  #  #  #  #  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  
+        13 #  .  .  .  .  .  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  
+        14 #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  
+        15 #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  #  #  #  #  
+        16 #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  .  .  #  #  
+        17 #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  
+        18 #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  
+        19 #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  
+        20 #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  
+        21 #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  
+        22 #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  
+        23 #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  
+        24 #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  
+        25 #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  
+        26 #  S  S  S  S  S  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  F  F  F  F  F  #  
+        27 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+
+
+start of training, for 35 total iterations
+value iteration learning, # 0
+value iteration learning, # 1
+
+policy finalized, now running trials
+
+# trials to run:  10
+
+        trial 0
+        # moves taken:  299
+        trial runtime:  0.32s
+
+        trial 1
+        # moves taken:  299
+        trial runtime:  0.35s
+
+        trial 2
+        # moves taken:  299
+        trial runtime:  0.34s
+
+        trial 3
+        # moves taken:  299
+        trial runtime:  0.32s
+
+        trial 4
+        # moves taken:  299
+        trial runtime:  0.34s
+
+        trial 5
+        # moves taken:  299
+        trial runtime:  0.34s
+
+        trial 6
+        # moves taken:  299
+        trial runtime:  0.33s
+
+        trial 7
+        # moves taken:  299
+        trial runtime:  0.32s
+
+        trial 8
+        # moves taken:  299
+        trial runtime:  0.35s
+
+        trial 9
+        # moves taken:  299
+        trial runtime:  0.34s
+
+====================================================================================================
+
+====================================================================================================
+RUNNING O TRACK
+track simulator initialized
+restart upon crash = False
+
+           0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 
+        0  X  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+        1  #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+        2  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+        3  #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+        4  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+        5  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        6  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        7  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        8  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        9  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        10 #  S  S  S  S  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        11 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        12 #  F  F  F  F  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        13 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        14 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        15 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        16 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        17 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        18 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        19 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        20 #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+        21 #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+        22 #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+        23 #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+        24 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+
+
+start of training, for 35 total iterations
+value iteration learning, # 0
+value iteration learning, # 1
+
+policy finalized, now running trials
+
+# trials to run:  10
+
+        trial 0
+        # moves taken:  299
+        trial runtime:  0.23s
+
+        trial 1
+        # moves taken:  299
+        trial runtime:  0.26s
+
+        trial 2
+        # moves taken:  299
+        trial runtime:  0.24s
+
+        trial 3
+        # moves taken:  299
+        trial runtime:  0.25s
+
+        trial 4
+        # moves taken:  299
+        trial runtime:  0.25s
+
+        trial 5
+        # moves taken:  299
+        trial runtime:  0.25s
+
+        trial 6
+        # moves taken:  299
+        trial runtime:  0.24s
+
+        trial 7
+        # moves taken:  299
+        trial runtime:  0.24s
+
+        trial 8
+        # moves taken:  299
+        trial runtime:  0.24s
+
+        trial 9
+        # moves taken:  299
+        trial runtime:  0.23s
+
+====================================================================================================
