@@ -11,9 +11,9 @@ from termcolor import colored, cprint
 """
 
 class TrackSimulator():
-    def __init__(self, track = None, min_velocity = -5, max_velocity = 5):
+    def __init__(self, track = None, min_velocity = -5, max_velocity = 5, crash_restart = False):
         self.track = track
-
+        self.crash_restart = False
         self.min_velocity = min_velocity
         self.max_velocity = max_velocity
 
@@ -60,7 +60,7 @@ class TrackSimulator():
             spacer = two_spacer 
 
             # if we're on current position or on path, print with color for visual indication
-            if (self.position == coords or (coords[0], coords[1]) in self.path):
+            if (self.position == coords):
                 cprint('X' + spacer, 'green', end = '')
             else:
                 print(value + spacer, end = '')
@@ -71,11 +71,6 @@ class TrackSimulator():
     
 ####################################################################################
 ####################################################################################
-
-    # sets initial start position at first S cell found
-    def initialize_track(self):
-        self.position = self._find_coordinate('S')
-        self.start_pos = self.position
 
     # helper that returns all open positions within racetrack
     def get_all_points_of(self, target = ''):
@@ -110,8 +105,8 @@ class TrackSimulator():
             1 - move to x,y closest to crash point
             2 - move to start
     """
-    def get_restart_position(self, crash_site, goto_start = False):
-        if not goto_start:
+    def get_restart_position(self, crash_site):
+        if not self.crash_restart:
             track_pts = self.get_all_points_of('.')
             start_pts = self.get_all_points_of('S')
             open_track = track_pts.append(start_pts)
@@ -190,11 +185,11 @@ class TrackSimulator():
             vr2 = max(vr, self.min_velocity) if (vr < 0) else min(vr, self.max_velocity)
             vc2 = max(vc, self.min_velocity) if (vc < 0) else min(vc, self.max_velocity)
             self.velocity = (vr2, vc2)
-        #     print('v2', self.velocity)
+            # print('v2', self.velocity)
         # else:
-        #     cprint('accelerate failed', 'red')
-        #     print('v1', self.velocity)
-        
+            # cprint('accelerate failed', 'red')
+            # print('v1', self.velocity)
+
         return self.velocity
 
     # method tries to adjust position, checking boundaries first
@@ -204,7 +199,6 @@ class TrackSimulator():
         if (self.boundary_check(position)):
             self.temp_position = position
         else:
-            # cprint('restart', 'yellow')
             self.velocity = [0,0]
             self.temp_position = self.get_restart_position(position)
 
@@ -212,11 +206,32 @@ class TrackSimulator():
 
     # sets position officially
     def finalize_move(self):
-        # cprint('finalize move', 'green')
-        # print('pos1', self.position)
-        # print()
         self.position = self.temp_position
-        self.path.append(self.position)
+
+    def run_trial(self, policy):
+        # stop racing after 300 moves, all tracks have < 300 open spots
+        # just to prevent excessive runs early in learning process
+        stop_after = 300
+        self.position = self._find_coordinate('S')
+        moves = 1
+
+        for moves in range(stop_after):
+            r = self.position[0]
+            c = self.position[1]
+            vr = self.velocity[0]
+            vc = self.velocity[1]
+
+            if self.track[r,c] == 'F':
+                break
+
+            next_action = policy[(r, c, vr, vc)]
+            
+            # accelerate and move
+            self.accelerate(next_action[0], next_action[1])
+            self.move()
+            self.finalize_move()
+
+        return moves
 
     ## helper that runs through with predetermined test path to finish line
     ## track is initialized on a start position already

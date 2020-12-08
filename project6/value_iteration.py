@@ -50,7 +50,8 @@ actual pseudocode
 """
 
 class ValueIteration():
-    def __init__(self, env = None, vl_opts = [-1, 0, 1], actions = [(0,0), (0,1), (1,0)],
+    def __init__(self, env = None, vl_opts = [-1, 0, 1], 
+                        actions = [(0,0), (0,1), (1,0)],
                         gamma = 1.0, epsilon = 0.1):
         # TrackSimulator object
         self.env = env
@@ -152,7 +153,7 @@ class ValueIteration():
         
         self.qtable = table
 
-    def value_iteration(self):
+    def value_iteration(self, iterations = 5):
         self.initialize()
         rows = self.env.nrows()
         cols = self.env.ncols()
@@ -161,57 +162,68 @@ class ValueIteration():
         threshold = 0.8
         epsilon = self.epsilon
         gamma = self.gamma
-        max_vchange = 0.01
 
-        # while max_vchange < epsilon:
-        # 4-nested for loop to iterate through all state combinations
-        # S = (r, c, vr, vc, reward)
-        vtable_prior = copy.deepcopy(self.vtable)
+        for i in range(iterations):
+            max_vchange = 0.01
+            vtable_prior = copy.deepcopy(self.vtable)
 
-        for r in range(rows):
-            for c in range(cols):
-                for vr in vopts:
-                    for vc in vopts:
-                        # penalize wall states and move on to next state
-                        if track[r, c] == '#':
-                            self.vtable[r, c, vr, vc] = -10
-                            continue
-                    
-                        # on a given state, we'll look at available actions
-                        for aidx, action in enumerate(self.actions):
-                            # set current running reward, 0 if on finish cell
-                            reward = 0 if (track[r, c] == 'F') else -1
+            # 4-nested for loop to iterate through all state combinations
+            # S = (r, c, vr, vc)
+            for r in range(rows):
+                for c in range(cols):
+                    for vr in vopts:
+                        for vc in vopts:
+                            # penalize wall states and move on to next state
+                            if track[r, c] == '#':
+                                self.vtable[r, c, vr, vc] = -10
+                                continue
+                        
+                            # on a given state, we'll look at available actions
+                            for aidx, action in enumerate(self.actions):
+                                # set current running reward, 0 if on finish cell
+                                reward = 0 if (track[r, c] == 'F') else -1
 
-                            # get current position/coordinates
-                            vel1 = self.env.velocity
-                            pos1 = self.env.position
+                                # set current position/coordinates based on loop values
+                                self.env.position = pos1 = (r, c)
+                                self.env.velocity = vel1 = (vr, vc)
 
-                            # get value if no acceleration change
-                            pos_no_acc = self.env.move()
-                            vel_no_acc = self.env.velocity
+                                # get value if no acceleration change
+                                pos_no_acc = self.env.move()
 
-                            # take current action on track simulator
-                            # accelerate(): internally handles chance of acceleration failure and adjusts velocity accordingly
-                            # move(): handles updating position and restarting if crashed
-                            vel2 = self.env.accelerate(action[0], action[1])
-                            pos2 = self.env.move()
-                            self.env.finalize_move()
+                                # take current action on track simulator
+                                # accelerate(): internally handles chance of acceleration failure and adjusts velocity accordingly
+                                # move(): handles updating position and restarting if crashed
+                                next_vel = self.env.accelerate(action[0], action[1])
+                                next_pos = self.env.move()
+                                self.env.finalize_move()
 
-                            # compare values
-                            val1 = vtable_prior[pos1[0], pos1[1], vel1[0], vel1[1]]
-                            val2 = vtable_prior[pos2[0], pos2[1], vel2[0], vel2[1]]
-                            val_no_acc = vtable_prior[pos_no_acc[0], pos_no_acc[1], vel_no_acc[0], vel_no_acc[1]]
+                                # compare values
+                                # val_old = vtable_prior[pos1[0], pos1[1], vel1[0], vel1[1]]
+                                val_new = vtable_prior[next_pos[0], next_pos[1], next_vel[0], next_vel[1]]
+                                val_no_acc = vtable_prior[pos_no_acc[0], pos_no_acc[1], vel1[0], vel1[1]]
 
-                            # take transition probabilities into account
-                            new_value = (1 - threshold) * val_no_acc + threshold * val2
-                            self.qtable[r, c, vr, vc, aidx] = reward + gamma * new_value 
+                                # take transition probabilities into account
+                                future_reward = (1 - threshold) * val_no_acc + threshold * val_new
+                                qvalue = reward + (gamma * future_reward)
+                                self.qtable[r, c, vr, vc, aidx] = qvalue
 
                             # determine which action had highest q-value, to use to set value
                             act_maxq_idx = np.argmax(self.qtable[r, c, vr, vc])
                             maxq = self.qtable[r, c, vr, vc, act_maxq_idx]
                             self.vtable[r, c, vr, vc] = maxq
 
+            # set reward of finish states
+            for r in range(rows):
+                for c in range(cols):
+                    if (track[r, c]) == 'F':
+                        for vc in vopts:
+                            for vr in vopts:
+                                self.vtable[r, c, vr, vc] = 0
+
+            # early break if the maximal state value change has dropped low enough
             max_vchange = self.find_max_vchange(abs(self.vtable - vtable_prior))
+            if max_vchange < epsilon:
+                break
 
         # store final optimal action for a given state combo
         policy = {}
