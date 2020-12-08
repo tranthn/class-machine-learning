@@ -13,9 +13,13 @@ from termcolor import colored, cprint
 class TrackSimulator():
     def __init__(self, track = None, min_velocity = -5, max_velocity = 5, crash_restart = False):
         self.track = track
-        self.crash_restart = False
+        self.crash_restart = crash_restart
         self.min_velocity = min_velocity
         self.max_velocity = max_velocity
+        
+        print('track simulator initialized')
+        print('restart upon crash =', crash_restart)
+        print()
 
         # position = r, c 
         # r = row, c = column to match dataframe/matrix representation

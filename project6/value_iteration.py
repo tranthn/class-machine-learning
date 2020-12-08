@@ -166,6 +166,7 @@ class ValueIteration():
         for i in range(iterations):
             max_vchange = 0.01
             vtable_prior = copy.deepcopy(self.vtable)
+            print('value iteration learning, #', i)
 
             # 4-nested for loop to iterate through all state combinations
             # S = (r, c, vr, vc)
