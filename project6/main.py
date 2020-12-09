@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import time
+import json
+import random
 import data_loader as dl
 from simulator import TrackSimulator
 from learner import QLearner
@@ -8,14 +10,32 @@ from value_iteration import ValueIteration
 def write_output_helper(file_prefix, input):
     # timestamp to append to file, month-day_hour
     timestamp = time.strftime('%m-%d_%H', time.localtime())
-    filename = file_prefix + '_' + timestamp + '.out'
+    # filename = 'out/' + file_prefix + '_' + timestamp + '.out'
+    filename = 'out/' + file_prefix + '.out'
     with open(filename, 'w') as f:
-        print(input, file = f)
+        for k,v in input.items():
+            print("{0}:{1}".format(k,v), file = f)
 
-def trial_helper(simulator, learner, iterations, trial_runs, trackname):
+def load_policy(file):
+    policy = {}
+    with open(file) as f:
+        for line in f:
+            # print(line)
+            parts = line.split(':')
+            key = eval(parts[0])
+            val = eval(parts[1])
+            policy[key] = val
+    
+    return policy
+
+def trial_helper(simulator, learner, iterations, trial_runs, trackname, policy):
     print('\nstart of training, for {0} total iterations'.format(iterations))
     st = time.time()
-    policy = learner.value_iteration(iterations = iterations)
+    if policy is None:
+        policy = learner.value_iteration(iterations = iterations)
+    else:
+        print('using loaded policy')
+
     print('\npolicy finalized after {:.2f}s'.format(time.time() - st))
     print('\n# time trials to run: ', trial_runs)
     print()
@@ -42,7 +62,6 @@ actions = [
 ]
 
 vl_opts = [0, 1,  2, 3, 4, 5, -5, -4, -3, -2, -1]
-# vl_opts = [0, 1, -1] # shortened for speed/ease while testing
 
 # tiny test track
 ################################################################################
@@ -51,7 +70,7 @@ simulator = TrackSimulator(track = track, min_velocity = min(vl_opts), max_veloc
 learner = ValueIteration(env = simulator, vl_opts = vl_opts, actions = actions,
                         gamma = 1.0, epsilon = 0.01)
 
-simulator.pretty_print()
+# simulator.pretty_print()
 # trial_helper(simulator, learner, 30, 10, 'tinytrack')
 
 # l-track
@@ -62,10 +81,12 @@ print('=' * 100)
 print('RUNNING L TRACK')
 simulator = TrackSimulator(track = track, min_velocity = min(vl_opts), max_velocity = max(vl_opts), crash_restart = False)
 learner = ValueIteration(env = simulator, vl_opts = vl_opts, actions = actions,
-                        gamma = 0.9, epsilon = 0.001)
+                        gamma = 1.0, epsilon = 0.001)
 
-simulator.pretty_print()
-trial_helper(simulator, learner, 50, 10, 'L-track')
+# simulator.pretty_print()
+# policy = None
+# policy = load_policy('out/L-track.out')
+# trial_helper(simulator, learner, 35, 10, 'L-track', policy = policy)
 
 # r-track
 ################################################################################
@@ -75,10 +96,12 @@ print('=' * 100)
 print('RUNNING R TRACK')
 simulator = TrackSimulator(track = track, min_velocity = min(vl_opts), max_velocity = max(vl_opts), crash_restart = False)
 learner = ValueIteration(env = simulator, vl_opts = vl_opts, actions = actions,
-                        gamma = 0.9, epsilon = 0.001)
+                        gamma = 1.0, epsilon = 0.001)
 
-simulator.pretty_print()
-# trial_helper(simulator, learner, 50, 10, 'R-track')
+# simulator.pretty_print()
+# policy = None
+# policy = load_policy('out/R-track.out')
+# trial_helper(simulator, learner, 50, 10, 'R-track', policy = policy)
 
 # o-track
 ################################################################################
@@ -88,7 +111,9 @@ print('=' * 100)
 print('RUNNING O TRACK')
 simulator = TrackSimulator(track = track, min_velocity = min(vl_opts), max_velocity = max(vl_opts), crash_restart = False)
 learner = ValueIteration(env = simulator, vl_opts = vl_opts, actions = actions,
-                        gamma = 0.9, epsilon = 0.001)
+                        gamma = 1.0, epsilon = 0.001)
 
 simulator.pretty_print()
-# trial_helper(simulator, learner, 50, 10, 'O-track')
+policy = None
+# policy = load_policy('out/O-track.out')
+trial_helper(simulator, learner, 60, 10, 'O-track', policy = policy)

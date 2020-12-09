@@ -1,0 +1,801 @@
+
+====================================================================================================
+RUNNING L TRACK
+track simulator initialized
+restart upon crash = False
+
+           0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 
+        0  X  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+        1  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  F  F  F  F  #  
+        2  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        3  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        4  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        5  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+        6  #  S  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  
+        7  #  S  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  
+        8  #  S  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  
+        9  #  S  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  
+        10 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+
+
+start of training, for 35 total iterations
+
+value iteration learning, # 0
+
+value iteration learning, # 1
+
+value iteration learning, # 2
+
+value iteration learning, # 3
+
+value iteration learning, # 4
+
+value iteration learning, # 5
+
+value iteration learning, # 6
+
+value iteration learning, # 7
+
+value iteration learning, # 8
+
+value iteration learning, # 9
+
+value iteration learning, # 10
+
+value iteration learning, # 11
+
+value iteration learning, # 12
+
+value iteration learning, # 13
+
+value iteration learning, # 14
+
+value iteration learning, # 15
+
+value iteration learning, # 16
+
+value iteration learning, # 17
+
+value iteration learning, # 18
+
+value iteration learning, # 19
+
+value iteration learning, # 20
+
+value iteration learning, # 21
+
+value iteration learning, # 22
+
+value iteration learning, # 23
+
+value iteration learning, # 24
+
+value iteration learning, # 25
+
+value iteration learning, # 26
+
+value iteration learning, # 27
+
+value iteration learning, # 28
+
+value iteration learning, # 29
+
+value iteration learning, # 30
+
+value iteration learning, # 31
+
+value iteration learning, # 32
+
+value iteration learning, # 33
+
+value iteration learning, # 34
+policy backtrack took:  0.11s
+
+policy finalized after 176.60s
+
+# time trials to run:  10
+
+        trial 0
+        # moves taken:  69
+        trial runtime:  0.09s
+
+        trial 1
+        # moves taken:  34
+        trial runtime:  0.10s
+
+        trial 2
+        # moves taken:  20
+        trial runtime:  0.09s
+
+        trial 3
+        # moves taken:  12
+        trial runtime:  0.09s
+
+        trial 4
+        # moves taken:  41
+        trial runtime:  0.09s
+
+        trial 5
+        # moves taken:  19
+        trial runtime:  0.09s
+
+        trial 6
+        # moves taken:  14
+        trial runtime:  0.09s
+
+        trial 7
+        # moves taken:  25
+        trial runtime:  0.10s
+
+        trial 8
+        # moves taken:  46
+        trial runtime:  0.10s
+
+        trial 9
+        # moves taken:  17
+        trial runtime:  0.09s
+
+====================================================================================================
+
+====================================================================================================
+RUNNING R TRACK
+track simulator initialized
+restart upon crash = False
+
+           0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 
+        0  X  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+        1  #  #  #  #  #  #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  #  #  #  #  
+        2  #  #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+        3  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+        4  #  #  .  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  .  .  #  #  #  #  #  
+        5  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  #  #  #  #  
+        6  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  
+        7  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  
+        8  #  #  .  .  .  .  .  #  #  #  #  #  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  
+        9  #  #  .  .  .  .  .  #  #  #  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  
+        10 #  #  .  .  .  .  .  #  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+        11 #  #  .  .  .  .  .  #  #  #  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  
+        12 #  .  .  .  .  .  #  #  #  #  #  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  
+        13 #  .  .  .  .  .  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  
+        14 #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  
+        15 #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  #  #  #  #  
+        16 #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  .  .  #  #  
+        17 #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  
+        18 #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  
+        19 #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  
+        20 #  #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  
+        21 #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  
+        22 #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  
+        23 #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  #  
+        24 #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  
+        25 #  .  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  .  #  
+        26 #  S  S  S  S  S  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  F  F  F  F  F  #  
+        27 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+
+
+start of training, for 50 total iterations
+
+value iteration learning, # 0
+
+value iteration learning, # 1
+
+value iteration learning, # 2
+
+value iteration learning, # 3
+
+value iteration learning, # 4
+
+value iteration learning, # 5
+
+value iteration learning, # 6
+
+value iteration learning, # 7
+
+value iteration learning, # 8
+
+value iteration learning, # 9
+
+value iteration learning, # 10
+
+value iteration learning, # 11
+
+value iteration learning, # 12
+
+value iteration learning, # 13
+
+value iteration learning, # 14
+
+value iteration learning, # 15
+
+value iteration learning, # 16
+
+value iteration learning, # 17
+
+value iteration learning, # 18
+
+value iteration learning, # 19
+
+value iteration learning, # 20
+
+value iteration learning, # 21
+
+value iteration learning, # 22
+
+value iteration learning, # 23
+
+value iteration learning, # 24
+
+value iteration learning, # 25
+
+value iteration learning, # 26
+
+value iteration learning, # 27
+
+value iteration learning, # 28
+
+value iteration learning, # 29
+
+value iteration learning, # 30
+
+value iteration learning, # 31
+
+value iteration learning, # 32
+
+value iteration learning, # 33
+
+value iteration learning, # 34
+
+value iteration learning, # 35
+
+value iteration learning, # 36
+
+value iteration learning, # 37
+
+value iteration learning, # 38
+
+value iteration learning, # 39
+
+value iteration learning, # 40
+
+value iteration learning, # 41
+
+value iteration learning, # 42
+
+value iteration learning, # 43
+
+value iteration learning, # 44
+
+value iteration learning, # 45
+
+value iteration learning, # 46
+
+value iteration learning, # 47
+
+value iteration learning, # 48
+
+value iteration learning, # 49
+policy backtrack took:  0.26s
+
+policy finalized after 439.29s
+
+# time trials to run:  10
+
+        trial 0
+        # moves taken:  37
+        trial runtime:  0.19s
+
+        trial 1
+        # moves taken:  49
+        trial runtime:  0.20s
+
+        trial 2
+        # moves taken:  299
+        trial runtime:  0.20s
+
+        trial 3
+        # moves taken:  38
+        trial runtime:  0.19s
+
+        trial 4
+        # moves taken:  58
+        trial runtime:  0.19s
+
+        trial 5
+        # moves taken:  67
+        trial runtime:  0.19s
+
+        trial 6
+        # moves taken:  61
+        trial runtime:  0.19s
+
+        trial 7
+        # moves taken:  47
+        trial runtime:  0.19s
+
+        trial 8
+        # moves taken:  59
+        trial runtime:  0.20s
+
+        trial 9
+        # moves taken:  47
+        trial runtime:  0.20s
+
+        ====================================================================================================
+        RUNNING O TRACK
+        track simulator initialized
+        restart upon crash = False
+        
+                   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 
+                0  X  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+                1  #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+                2  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+                3  #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+                4  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+                5  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                6  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                7  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                8  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                9  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                10 #  S  S  S  S  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                11 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                12 #  F  F  F  F  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                13 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                14 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                15 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                16 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                17 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                18 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                19 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                20 #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+                21 #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+                22 #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+                23 #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+                24 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+        
+        
+        start of training, for 60 total iterations
+        
+        value iteration learning, # 0
+        
+        value iteration learning, # 1
+        
+        value iteration learning, # 2
+        
+        value iteration learning, # 3
+        
+        value iteration learning, # 4
+        
+        value iteration learning, # 5
+        
+        value iteration learning, # 6
+        
+        value iteration learning, # 7
+        
+        value iteration learning, # 8
+        
+        value iteration learning, # 9
+        
+        value iteration learning, # 10
+        
+        value iteration learning, # 11
+        
+        value iteration learning, # 12
+        
+        value iteration learning, # 13
+        
+        value iteration learning, # 14
+        
+        value iteration learning, # 15
+        
+        value iteration learning, # 16
+        
+        value iteration learning, # 17
+        
+        value iteration learning, # 18
+        
+        value iteration learning, # 19
+        
+        value iteration learning, # 20
+        
+        value iteration learning, # 21
+        
+        value iteration learning, # 22
+        
+        value iteration learning, # 23
+        
+        value iteration learning, # 24
+        
+        value iteration learning, # 25
+        
+        value iteration learning, # 26
+        
+        value iteration learning, # 27
+        
+        value iteration learning, # 28
+        
+        value iteration learning, # 29
+        
+        value iteration learning, # 30
+        
+        value iteration learning, # 31
+        
+        value iteration learning, # 32
+        
+        value iteration learning, # 33
+        
+        value iteration learning, # 34
+        
+        value iteration learning, # 35
+        
+        value iteration learning, # 36
+        
+        value iteration learning, # 37
+        
+        value iteration learning, # 38
+        
+        value iteration learning, # 39
+        
+        value iteration learning, # 40
+        
+        value iteration learning, # 41
+        
+        value iteration learning, # 42
+        
+        value iteration learning, # 43
+        
+        value iteration learning, # 44
+        
+        value iteration learning, # 45
+        
+        value iteration learning, # 46
+        
+        value iteration learning, # 47
+        
+        value iteration learning, # 48
+        
+        value iteration learning, # 49
+        
+        value iteration learning, # 50
+        
+        value iteration learning, # 51
+        
+        value iteration learning, # 52
+        
+        value iteration learning, # 53
+        
+        value iteration learning, # 54
+        
+        value iteration learning, # 55
+        
+        value iteration learning, # 56
+        
+        value iteration learning, # 57
+        
+        value iteration learning, # 58
+        
+        value iteration learning, # 59
+        policy backtrack took:  0.18s
+        
+        policy finalized after 462.86s
+        
+        # time trials to run:  10
+        
+                trial 0
+                   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 
+                0  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+                1  #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+                2  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+                3  #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+                4  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+                5  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                6  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                7  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                8  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                9  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                10 #  S  S  X  S  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                11 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                12 #  F  F  F  F  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                13 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                14 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                15 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                16 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                17 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                18 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                19 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                20 #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+                21 #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+                22 #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+                23 #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+                24 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+        
+        trial end on position 12 1
+                # moves taken:  5
+                trial runtime:  0.14s
+        
+                trial 1
+                   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 
+                0  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+                1  #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+                2  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+                3  #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+                4  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+                5  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                6  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                7  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                8  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                9  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                10 #  S  S  X  S  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                11 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                12 #  F  F  F  F  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                13 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                14 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                15 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                16 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                17 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                18 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                19 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                20 #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+                21 #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+                22 #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+                23 #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+                24 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+        
+        trial end on position 12 1
+                # moves taken:  1
+                trial runtime:  0.14s
+        
+                trial 2
+                   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 
+                0  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+                1  #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+                2  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+                3  #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+                4  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+                5  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                6  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                7  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                8  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                9  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                10 #  S  S  X  S  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                11 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                12 #  F  F  F  F  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                13 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                14 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                15 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                16 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                17 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                18 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                19 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                20 #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+                21 #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+                22 #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+                23 #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+                24 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+        
+        trial end on position 12 1
+                # moves taken:  1
+                trial runtime:  0.14s
+        
+                trial 3
+                   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 
+                0  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+                1  #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+                2  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+                3  #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+                4  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+                5  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                6  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                7  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                8  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                9  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                10 #  S  S  S  X  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                11 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                12 #  F  F  F  F  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                13 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                14 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                15 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                16 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                17 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                18 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                19 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                20 #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+                21 #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+                22 #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+                23 #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+                24 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+        
+        trial end on position 12 1
+                # moves taken:  7
+                trial runtime:  0.14s
+        
+                trial 4
+                   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 
+                0  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+                1  #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+                2  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+                3  #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+                4  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+                5  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                6  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                7  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                8  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                9  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                10 #  S  S  S  X  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                11 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                12 #  F  F  F  F  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                13 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                14 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                15 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                16 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                17 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                18 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                19 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                20 #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+                21 #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+                22 #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+                23 #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+                24 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+        
+        trial end on position 12 2
+                # moves taken:  1
+                trial runtime:  0.14s
+        
+                trial 5
+                   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 
+                0  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+                1  #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+                2  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+                3  #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+                4  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+                5  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                6  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                7  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                8  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                9  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                10 #  X  S  S  S  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                11 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                12 #  F  F  F  F  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                13 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                14 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                15 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                16 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                17 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                18 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                19 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                20 #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+                21 #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+                22 #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+                23 #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+                24 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+        
+                # moves taken:  299
+                trial runtime:  0.15s
+        
+                trial 6
+                   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 
+                0  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+                1  #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+                2  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+                3  #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+                4  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+                5  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                6  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                7  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                8  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                9  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                10 #  S  S  X  S  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                11 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                12 #  F  F  F  F  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                13 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                14 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                15 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                16 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                17 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                18 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                19 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                20 #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+                21 #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+                22 #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+                23 #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+                24 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+        
+        trial end on position 12 1
+                # moves taken:  5
+                trial runtime:  0.14s
+        
+                trial 7
+                   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 
+                0  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+                1  #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+                2  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+                3  #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+                4  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+                5  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                6  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                7  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                8  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                9  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                10 #  S  S  S  X  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                11 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                12 #  F  F  F  F  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                13 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                14 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                15 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                16 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                17 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                18 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                19 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                20 #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+                21 #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+                22 #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+                23 #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+                24 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+        
+        trial end on position 12 2
+                # moves taken:  1
+                trial runtime:  0.15s
+        
+                trial 8
+                   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 
+                0  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+                1  #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+                2  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+                3  #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+                4  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+                5  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                6  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                7  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                8  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                9  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                10 #  X  S  S  S  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                11 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                12 #  F  F  F  F  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                13 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                14 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                15 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                16 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                17 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                18 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                19 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                20 #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+                21 #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+                22 #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+                23 #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+                24 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+        
+                # moves taken:  299
+                trial runtime:  0.15s
+        
+                trial 9
+                   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 
+                0  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+                1  #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+                2  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+                3  #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+                4  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+                5  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                6  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                7  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                8  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                9  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                10 #  S  S  X  S  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                11 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                12 #  F  F  F  F  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                13 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                14 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                15 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                16 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                17 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                18 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                19 #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  
+                20 #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  
+                21 #  #  #  .  .  .  .  #  #  #  #  #  #  #  #  #  #  #  .  .  .  .  #  #  #  
+                22 #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  
+                23 #  #  #  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  #  #  #  #  
+                24 #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  
+        
+        trial end on position 12 1
+                # moves taken:  7
+                trial runtime:  0.14s
+        
+        ====================================================================================================

@@ -17,7 +17,6 @@ class TrackSimulator():
         self.crash_restart = crash_restart
         self.min_velocity = min_velocity
         self.max_velocity = max_velocity
-        self.internal_timer = 0
         
         print('track simulator initialized')
         print('restart upon crash =', crash_restart)
@@ -77,6 +76,10 @@ class TrackSimulator():
     
 ####################################################################################
 ####################################################################################
+    def start(self):
+        pts = self.get_all_points_of('S')
+        random.shuffle(pts)
+        self.position = pts[0]
 
     # helper that returns all open positions within racetrack
     def get_all_points_of(self, target = ''):
@@ -87,8 +90,35 @@ class TrackSimulator():
 
         return targets
 
-    # checks if given position hits a wall or goes out of bounds
-    def boundary_check(self, position):
+    # Source: https://www.geeksforgeeks.org/bresenhams-line-generation-algorithm/
+    # 1) Line is drawn from left to right.  
+    # 2) c1 < c2 and r1 < r2  
+    # 3) Slope of the line is between 0 and 1.  
+    # We draw a line from lower left to upper right
+    # function for line generation
+    def bresenham(self, r1, c1, r2, c2):
+        m_new = 2 * (r2 - r1)  
+        slope_error_new = m_new - (c2 - c1) 
+        r = r1 
+        pts = []
+        for c in range(c1, c2 + 1):  
+            pts.append((r, c))
+    
+            # Add slope to increment angle formed  
+            slope_error_new = slope_error_new + m_new  
+    
+            # Slope error reached limit, time to increment e and update slope error
+            if (slope_error_new >= 0):  
+                r = r + 1
+                slope_error_new = slope_error_new - 2 * (c2 - c1)  
+        
+        return pts
+
+    # checks if given position:
+    #   - hits a wall
+    #   - goes out of bounds
+    #   - crosses a wall (but lands in a safe spot) - this prevents clipping through walls
+    def boundary_check(self, old_position, position):
         r = position[0]
         c = position[1]
         rows = self.track.shape[0]
@@ -101,10 +131,17 @@ class TrackSimulator():
 
         # reverse y, x since y indicates row position, while x indicates column position
         elif (self.track[r, c] == '#'):
-            # cprint('hit a wall', 'magenta')
             return False
         else:
-            return True
+            # determine if moving between old and new position crosses a wall
+            intervening_pts = self.bresenham(old_position[0], old_position[1], r, c)
+            # print('calc intervening pts between:{0} and {1},{2}'.format(old_position, r, c))
+            for pts in intervening_pts:
+                # print(pts)
+                if self.track[pts] == '#':
+                    return False
+        
+        return True
 
     """
         two handling strategies
@@ -112,12 +149,7 @@ class TrackSimulator():
             2 - move to start
     """
     def get_restart_position(self, crash_site):
-        start = time.time()
         if not self.crash_restart:
-            track_pts = self.get_all_points_of('.')
-            start_pts = self.get_all_points_of('S')
-            open_track = track_pts.append(start_pts)
-
             nrows = self.nrows()
             ncols = self.ncols()
             vr = self.velocity[0]
@@ -147,7 +179,7 @@ class TrackSimulator():
                     # c_radius is constrained by row radius
                     # we follow similar trajectory handling to above
                     if (vc < 0):
-                        column_range = range(0, cc + c_radius)
+                        column_range = range(cc, cc + c_radius)
                     elif (vc == 0):
                         column_range = range(cc - c_radius, cc + c_radius)
                     else:
@@ -157,15 +189,13 @@ class TrackSimulator():
                         if (r < 0 or c < 0 or r >= nrows or c >= ncols):
                             continue
 
-                        if (r, c) in track_pts:
-                            new_pos = (r, c)
-                            elapsed = time.time() - start
-                            self.internal_timer += elapsed
-                            return new_pos
-            
+                        if self.track[r,c] in ['.', 'S', 'F']:
+                            return (r, c)
             return self.position
         else:
-            return self._find_coordinate('S')
+            start_pts = self.get_all_points_of('S')
+            random.shuffle(start_pts)
+            return start_pts[0]
 
     # gives next position based off current position and velocity
     def get_next_position(self):
@@ -206,7 +236,7 @@ class TrackSimulator():
     # if new position goes off track, we will restart position
     def move(self):
         position = self.get_next_position()
-        if (self.boundary_check(position)):
+        if (self.boundary_check(position = position, old_position = self.position)):
             self.temp_position = position
         else:
             self.velocity = [0,0]
@@ -222,9 +252,11 @@ class TrackSimulator():
         # stop racing after 300 moves, all tracks have < 300 open spots
         # just to prevent excessive runs early in learning process
         stop_after = 300
-        self.position = self._find_coordinate('S')
+        start_pts = self.get_all_points_of('S')
+        random.shuffle(start_pts)
+        self.position = start_pts[0]
         moves = 1
-
+        self.pretty_print()
         for moves in range(stop_after):
             r = self.position[0]
             c = self.position[1]
@@ -232,6 +264,7 @@ class TrackSimulator():
             vc = self.velocity[1]
 
             if self.track[r,c] == 'F':
+                print('trial end on position', r, c)
                 break
 
             next_action = policy[(r, c, vr, vc)]
@@ -242,11 +275,3 @@ class TrackSimulator():
             self.finalize_move()
 
         return moves
-
-    ## helper that runs through with predetermined test path to finish line
-    ## track is initialized on a start position already
-    def test_run(self):
-        self.velocity = [-1, 1]
-        self.accelerate(0, 0) # rise, run
-        self.move()
-        self.finalize_move()

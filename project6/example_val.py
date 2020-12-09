@@ -27,8 +27,10 @@ ALGORITHM_NAME = "Value_Iteration"
 # THIS_TRACK = "tinytrack"
 # FILENAME = "data/L-track.txt"
 # THIS_TRACK = "L_track"
-FILENAME = "data/R-track.txt"
-THIS_TRACK = "R_track"
+# FILENAME = "data/R-track.txt"
+# THIS_TRACK = "R_track"
+FILENAME = "data/O-track.txt"
+THIS_TRACK = "O_track"
 START = 'S'
 GOAL = 'F'
 WALL = '#'
@@ -226,7 +228,6 @@ def get_nearest_open_cell(environment, y_crash, x_crash, vy = 0, vx = (0), open 
                 # If we find and open cell, return that (y,x) open cell
                 if environment[y][x] in open:
                     elapsed = time.time() - start
-                    print(internal_timer)
                     internal_timer += elapsed 
                     return(y,x)        
      
@@ -481,7 +482,7 @@ def main():
     option_1 = """1. Starts from the nearest position on the track to the place where it crashed."""
     option_2 = """2. Returns back to the original starting position."""
     crash_scenario = 1
-    no_training_iter = 50
+    no_training_iter = 20
     print("\nThe race car is training. Please wait...")
  
     # Directory where the racetrack is located
@@ -508,7 +509,7 @@ def main():
                             no_training_iter=no_training_iter)
 
     for each_race in range(races):
-        total_steps += do_time_trial(racetrack, policy, bad_crash = (bad_crash), animate = False)
+        total_steps += do_time_trial(racetrack, policy, bad_crash = (bad_crash), animate = True)
 
     print("Number of Training Iterations: " + str(no_training_iter))
     if crash_scenario == 1: print("Bad Crash Scenario: " + option_1)

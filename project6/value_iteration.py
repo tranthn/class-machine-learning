@@ -163,10 +163,11 @@ class ValueIteration():
         threshold = 0.8
         epsilon = self.epsilon
         gamma = self.gamma
+        max_vchange = 100
 
         for i in range(iterations):
             vtable_prior = copy.deepcopy(self.vtable)
-            print('value iteration learning, #', i)
+            print('\nvalue iteration learning, #', i)
 
             # 4-nested for loop to iterate through all state combinations
             # S = (r, c, vr, vc)
@@ -213,9 +214,6 @@ class ValueIteration():
                             act_maxq_idx = np.argmax(self.qtable[r, c, vr, vc])
                             maxq = self.qtable[r, c, vr, vc, act_maxq_idx]
                             self.vtable[r, c, vr, vc] = maxq
-                    
-            print('internal timer for restart position:\t{:.3f}s'.format(self.env.internal_timer))
-            print('nested loop runtime:\t{:.2f}s'.format(time.time() - start))
 
             # set reward of finish states
             for r in range(rows):
@@ -227,10 +225,10 @@ class ValueIteration():
 
             # early break if the maximal state value change has dropped low enough
             # max_vchange = self.find_max_vchange(abs(self.vtable - vtable_prior))
-            # if max_vchange < epsilon:
-            #     print('max vchange has dropped below epsilon: ', max_vchange, epsilon)
-            #     policy = self.build_policy()
-            #     break
+            if max_vchange < epsilon:
+                print('max vchange has dropped below epsilon: ', max_vchange, epsilon)
+                policy = self.build_policy(rows, cols, vopts)
+                break
 
         # store final optimal action for a given state combo
         policy = self.build_policy(rows, cols, vopts)
