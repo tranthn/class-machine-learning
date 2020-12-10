@@ -26,17 +26,16 @@ Q_t+1(s, a) = (1 - alpha_t (s, a)) * Q_t(s, a) + alpha_t (s, a) [ reward(s, a) +
 """
 
 class QLearner():
-    def __init__(self, env = None, vl_opts = [-1, 0, 1], 
-                        actions = [(0,0), (0,1), (1,0)],
-                        alpha = 0.5, gamma = 1.0, epsilon = 0.1):
-        
+    def __init__(self, env = None, vl_opts = [-1, 0, 1],
+                    actions = [(0,0), (0,1), (1,0)],
+                    alpha = 0.5, gamma = 1.0):
+
         # TrackSimulator object
         self.env = env
         self.vl_opts = vl_opts
         self.actions = actions
         self.alpha = alpha
         self.gamma = gamma
-        self.epsilon = epsilon
 
     def _print_qtable(self, row):
         print('vr, vc')
@@ -84,7 +83,7 @@ class QLearner():
         c = self.env.ncols()
         vr_opts = vc_opts = len(self.vl_opts) # values range from -5 to 5
         act_opts = len(self.actions)
-        table = np.full((r, c, vr_opts, vc_opts, act_opts), -1)
+        table = np.random.rand(r, c, vr_opts, vc_opts, act_opts)
 
         # set reward values for F / finish states to 0
         finish_pts = self.env.get_all_points_of(target = 'F')
@@ -93,19 +92,16 @@ class QLearner():
 
         self.qtable = table
 
-    def value_iteration(self, iterations = 5):
+    def train(self, iterations = 5):
         self.initialize()
         rows = self.env.nrows()
         cols = self.env.ncols()
         vopts = self.vl_opts
         track = self.env.track
-        threshold = 0.8
-        epsilon = self.epsilon
         gamma = self.gamma
         lr = self.alpha
-        max_vchange = 100
 
-        # q-value for finish states
+        # set initial q-value for finish states
         for r in range(rows):
             for c in range(cols):
                 if (track[r, c]) == 'F':
@@ -115,22 +111,30 @@ class QLearner():
                                 self.qtable[r, c, vr, vc, aidx] = 0
 
         for i in range(iterations):
-            print('\nq-learning iteration, #', i)
+            # print('q learner iteration, #', i)
 
-            r = np.random(range(rows))
-            c = np.random(range(cols))
-            vr = np.random(range(vopts))
-            vc = np.random(range(vopts))
+            # reset q-value for finish states
+            for r in range(rows):
+                for c in range(cols):
+                    if (track[r, c]) == 'F':
+                        for vc in vopts:
+                            for vr in vopts:
+                                for aidx, action in enumerate(self.actions):
+                                    self.qtable[r, c, vr, vc, aidx] = 0
 
-            for r in range(10):
+            r = np.random.choice(range(rows))
+            c = np.random.choice(range(cols))
+            vr = np.random.choice(vopts)
+            vc = np.random.choice(vopts)
+
+            for j in range(10):
                 # set current running reward, 0 if on finish cell
                 if (track[r, c] == 'F' or track[r, c] == '#'):
                     break
-                    
-                # pick next action
+
+                # pick current maximal action
                 act_maxq_idx = np.argmax(self.qtable[r, c, vr, vc])
-                maxq = self.qtable[r, c, vr, vc, act_maxq_idx]
-                next_action = self.actions(act_maxq_idx)
+                next_action = self.actions[act_maxq_idx]
 
                 # set current position/coordinates based on loop values
                 self.env.position = pos1 = (r, c)
@@ -139,16 +143,22 @@ class QLearner():
                 # take current action on track simulator
                 # accelerate(): internally handles chance of acceleration failure and adjusts velocity accordingly
                 # move(): handles updating position and restarting if crashed
-                next_vel = self.env.accelerate(action[0], action[1])
+                # we won't commit the move since we're randomizing states and jumping around
+                next_vel = self.env.accelerate(next_action[0], next_action[1])
                 next_pos = self.env.move()
-                self.env.finalize_move()
                 reward = -1
 
                 # take transition probabilities into account
-                # val_new = vtable_prior[next_pos[0], next_pos[1], next_vel[0], next_vel[1]]
-                # val_no_acc = vtable_prior[pos_no_acc[0], pos_no_acc[1], vel1[0], vel1[1]]
-                future_reward = reward + gamma * self.qtable[next_pos[0], next_pos[1], next_vel[0], next_vel[1], act_maxq_idx]
-                qvalue = lr * self.qtable[r, c, vr, vc, act_maxq_idx]
+                current_reward = (1 - lr) * self.qtable[r, c, vr, vc, act_maxq_idx]
+                future_q = max(self.qtable[next_pos[0], next_pos[1], next_vel[0], next_vel[1]])
+                future_reward = lr  * (reward + gamma * future_q)
+                self.qtable[r, c, vr, vc, act_maxq_idx] = current_reward + future_reward
+
+                # set values for next iteration
+                r = next_pos[0]
+                c = next_pos[1]
+                vr = next_vel[0]
+                vc = next_vel[1]
 
         # store final optimal action for a given state combo
         policy = self.build_policy(rows, cols, vopts)

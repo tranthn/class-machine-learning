@@ -154,7 +154,7 @@ class ValueIteration():
         
         self.qtable = table
 
-    def value_iteration(self, iterations = 5):
+    def train(self, iterations = 5):
         self.initialize()
         rows = self.env.nrows()
         cols = self.env.ncols()

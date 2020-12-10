@@ -264,7 +264,7 @@ class TrackSimulator():
             vc = self.velocity[1]
 
             if self.track[r,c] == 'F':
-                print('trial end on position', r, c)
+                print('\ttrial ended on position', r, c)
                 break
 
             next_action = policy[(r, c, vr, vc)]
@@ -273,5 +273,6 @@ class TrackSimulator():
             self.accelerate(next_action[0], next_action[1])
             self.move()
             self.finalize_move()
+            # self.pretty_print()
 
         return moves

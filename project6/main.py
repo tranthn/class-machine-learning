@@ -4,7 +4,7 @@ import json
 import random
 import data_loader as dl
 from simulator import TrackSimulator
-from learner import QLearner
+from q_learner import QLearner
 from value_iteration import ValueIteration
 
 def write_output_helper(file_prefix, input):
@@ -32,7 +32,7 @@ def trial_helper(simulator, learner, iterations, trial_runs, trackname, policy):
     print('\nstart of training, for {0} total iterations'.format(iterations))
     st = time.time()
     if policy is None:
-        policy = learner.value_iteration(iterations = iterations)
+        policy = learner.train(iterations = iterations)
     else:
         print('using loaded policy')
 
@@ -42,7 +42,7 @@ def trial_helper(simulator, learner, iterations, trial_runs, trackname, policy):
     for i in range(trial_runs):
         start_time = time.time()
         print('\ttrial', i)
-        steps = simulator.run_trial(policy)
+        steps = simulator.run_trial(policy)        
 
         # store policy for later use if needed
         write_output_helper(trackname, policy)
@@ -54,7 +54,6 @@ def trial_helper(simulator, learner, iterations, trial_runs, trackname, policy):
     print('=' * 100)
 
 ################################################################################
-
 actions = [
     (-1,-1), (0,-1), (1,-1),
     (-1, 0), (0, 0), (1, 0),
@@ -70,8 +69,11 @@ simulator = TrackSimulator(track = track, min_velocity = min(vl_opts), max_veloc
 learner = ValueIteration(env = simulator, vl_opts = vl_opts, actions = actions,
                         gamma = 1.0, epsilon = 0.01)
 
-# simulator.pretty_print()
-# trial_helper(simulator, learner, 30, 10, 'tinytrack')
+learner = QLearner(env = simulator, vl_opts = vl_opts,
+                    actions = actions, alpha = 0.25, gamma = 0.9)
+
+simulator.pretty_print()
+trial_helper(simulator, learner, 10000, 10, 'tinytrack', policy = None)
 
 # l-track
 ################################################################################
@@ -83,10 +85,13 @@ simulator = TrackSimulator(track = track, min_velocity = min(vl_opts), max_veloc
 learner = ValueIteration(env = simulator, vl_opts = vl_opts, actions = actions,
                         gamma = 1.0, epsilon = 0.001)
 
-# simulator.pretty_print()
-# policy = None
+learner = QLearner(env = simulator, vl_opts = vl_opts,
+                    actions = actions, alpha = 0.25, gamma = 0.9)
+
+simulator.pretty_print()
+policy = None
 # policy = load_policy('out/L-track.out')
-# trial_helper(simulator, learner, 35, 10, 'L-track', policy = policy)
+trial_helper(simulator, learner, 35, 10, 'L-track', policy = policy)
 
 # r-track
 ################################################################################
@@ -98,10 +103,13 @@ simulator = TrackSimulator(track = track, min_velocity = min(vl_opts), max_veloc
 learner = ValueIteration(env = simulator, vl_opts = vl_opts, actions = actions,
                         gamma = 1.0, epsilon = 0.001)
 
-# simulator.pretty_print()
-# policy = None
+learner = QLearner(env = simulator, vl_opts = vl_opts,
+                    actions = actions, alpha = 0.25, gamma = 0.9)
+
+simulator.pretty_print()
+policy = None
 # policy = load_policy('out/R-track.out')
-# trial_helper(simulator, learner, 50, 10, 'R-track', policy = policy)
+trial_helper(simulator, learner, 1000000, 10, 'R-track', policy = policy)
 
 # o-track
 ################################################################################
@@ -113,7 +121,10 @@ simulator = TrackSimulator(track = track, min_velocity = min(vl_opts), max_veloc
 learner = ValueIteration(env = simulator, vl_opts = vl_opts, actions = actions,
                         gamma = 1.0, epsilon = 0.001)
 
+learner = QLearner(env = simulator, vl_opts = vl_opts,
+                    actions = actions, alpha = 0.25, gamma = 0.9)
+
 simulator.pretty_print()
 policy = None
 # policy = load_policy('out/O-track.out')
-trial_helper(simulator, learner, 60, 10, 'O-track', policy = policy)
+trial_helper(simulator, learner, 1000000, 10, 'O-track', policy = policy)
