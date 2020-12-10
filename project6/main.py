@@ -91,7 +91,7 @@ learner = QLearner(env = simulator, vl_opts = vl_opts,
 simulator.pretty_print()
 policy = None
 # policy = load_policy('out/L-track.out')
-trial_helper(simulator, learner, 35, 10, 'L-track', policy = policy)
+trial_helper(simulator, learner, 1000000, 10, 'L-track-q', policy = policy)
 
 # r-track
 ################################################################################
@@ -109,7 +109,7 @@ learner = QLearner(env = simulator, vl_opts = vl_opts,
 simulator.pretty_print()
 policy = None
 # policy = load_policy('out/R-track.out')
-trial_helper(simulator, learner, 1000000, 10, 'R-track', policy = policy)
+trial_helper(simulator, learner, 1000000, 10, 'R-track-q', policy = policy)
 
 # o-track
 ################################################################################
@@ -127,4 +127,4 @@ learner = QLearner(env = simulator, vl_opts = vl_opts,
 simulator.pretty_print()
 policy = None
 # policy = load_policy('out/O-track.out')
-trial_helper(simulator, learner, 1000000, 10, 'O-track', policy = policy)
+trial_helper(simulator, learner, 1000000, 10, 'O-track-q', policy = policy)
