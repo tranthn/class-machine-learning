@@ -28,7 +28,8 @@ Q_t+1(s, a) = (1 - alpha_t (s, a)) * Q_t(s, a) + alpha_t (s, a) [ reward(s, a) +
 class QLearner():
     def __init__(self, env = None, vl_opts = [-1, 0, 1],
                     actions = [(0,0), (0,1), (1,0)],
-                    alpha = 0.5, gamma = 1.0):
+                    alpha = 0.5, gamma = 1.0,
+                    sarsa = False):
 
         # TrackSimulator object
         self.env = env
@@ -36,6 +37,7 @@ class QLearner():
         self.actions = actions
         self.alpha = alpha
         self.gamma = gamma
+        self.sarsa = sarsa
 
     def _print_qtable(self, row):
         print('vr, vc')
@@ -118,12 +120,8 @@ class QLearner():
             c = np.random.choice(range(cols))
             vr = np.random.choice(vopts)
             vc = np.random.choice(vopts)
-            # print('iteration #', i)
             
             for j in range(10):
-                # print('episode ', j)
-                # print(r, c, vr, vc)
-                # print()
                 # set current running reward, 0 if on finish cell
                 if (track[r, c] == 'F' or track[r, c] == '#'):
                     break
@@ -144,11 +142,20 @@ class QLearner():
                 next_pos = self.env.move()
                 reward = -1
 
+                # no_opt action
+                no_action_idx = self.actions.index((0,0))
+
                 # take transition probabilities into account
-                current_reward = (1 - lr) * self.qtable[r, c, vr, vc, act_maxq_idx]
-                future_q = max(self.qtable[next_pos[0], next_pos[1], next_vel[0], next_vel[1]])
-                future_reward = lr  * (reward + gamma * future_q)
-                self.qtable[r, c, vr, vc, act_maxq_idx] = current_reward + future_reward
+                if self.sarsa:
+                    current_reward = (1 - lr) * self.qtable[r, c, vr, vc, no_action_idx]
+                    future_q = self.qtable[next_pos[0], next_pos[1], next_vel[0], next_vel[1], act_maxq_idx]
+                    future_reward = lr  * (reward + gamma * future_q)                    
+                    self.qtable[r, c, vr, vc, act_maxq_idx] = current_reward + future_reward
+                else:
+                    current_reward = (1 - lr) * self.qtable[r, c, vr, vc, no_action_idx]
+                    future_q = max(self.qtable[next_pos[0], next_pos[1], next_vel[0], next_vel[1]])
+                    future_reward = lr  * (reward + gamma * future_q)
+                    self.qtable[r, c, vr, vc, act_maxq_idx] = current_reward + future_reward
 
                 # set values for next iteration
                 r = next_pos[0]

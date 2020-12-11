@@ -66,14 +66,18 @@ vl_opts = [0, 1,  2, 3, 4, 5, -5, -4, -3, -2, -1]
 ################################################################################
 track = dl.load_tinytrack()
 simulator = TrackSimulator(track = track, min_velocity = min(vl_opts), max_velocity = max(vl_opts), crash_restart = False)
+
 learner = ValueIteration(env = simulator, vl_opts = vl_opts, actions = actions,
                         gamma = 1.0, epsilon = 0.01)
 
 learner = QLearner(env = simulator, vl_opts = vl_opts,
                     actions = actions, alpha = 0.25, gamma = 0.9)
 
-simulator.pretty_print()
-# trial_helper(simulator, learner, 10000, 10, 'tinytrack', policy = None)
+learner = QLearner(env = simulator, vl_opts = vl_opts, actions = actions,
+                    alpha = 0.25, gamma = 0.9, sarsa = True)
+
+# simulator.pretty_print()
+# trial_helper(simulator, learner, 100000, 10, 'tinytrack', policy = None)
 
 # l-track
 ################################################################################
@@ -85,13 +89,22 @@ simulator = TrackSimulator(track = track, min_velocity = min(vl_opts), max_veloc
 learner = ValueIteration(env = simulator, vl_opts = vl_opts, actions = actions,
                         gamma = 1.0, epsilon = 0.001)
 
-learner = QLearner(env = simulator, vl_opts = vl_opts,
+qlearner = QLearner(env = simulator, vl_opts = vl_opts,
                     actions = actions, alpha = 0.25, gamma = 0.9)
+
+sarsalearner = QLearner(env = simulator, vl_opts = vl_opts, actions = actions,
+                    alpha = 0.25, gamma = 0.9, sarsa = True)
 
 simulator.pretty_print()
 policy = None
 # policy = load_policy('out/L-track.out')
-# trial_helper(simulator, learner, 500000, 10, 'L-track-q', policy = policy)
+
+# print('=' * 100)
+# print('-- Q-learning --')
+# trial_helper(simulator, qlearner, 500000, 10, 'L-track-q', policy = policy)
+print('=' * 100)
+print('-- SARSA --')
+trial_helper(simulator, sarsalearner, 500000, 10, 'L-track-sarsa', policy = policy)
 
 # r-track
 ################################################################################
@@ -103,13 +116,22 @@ simulator = TrackSimulator(track = track, min_velocity = min(vl_opts), max_veloc
 learner = ValueIteration(env = simulator, vl_opts = vl_opts, actions = actions,
                         gamma = 1.0, epsilon = 0.001)
 
-learner = QLearner(env = simulator, vl_opts = vl_opts,
+qlearner = QLearner(env = simulator, vl_opts = vl_opts,
                     actions = actions, alpha = 0.25, gamma = 0.9)
+
+sarsalearner = QLearner(env = simulator, vl_opts = vl_opts, actions = actions, 
+                        alpha = 0.25, gamma = 0.9, sarsa = True)
 
 simulator.pretty_print()
 policy = None
 # policy = load_policy('out/R-track.out')
-# trial_helper(simulator, learner, 500000, 10, 'R-track-q', policy = policy)
+
+# print('=' * 100)
+# print('-- Q-learning --')
+# trial_helper(simulator, qlearner, 500000, 10, 'R-track-q', policy = policy)
+print('=' * 100)
+print('-- SARSA --')
+trial_helper(simulator, sarsalearner, 500000, 10, 'R-track-sarsa', policy = policy)
 
 # o-track
 ################################################################################
@@ -118,13 +140,23 @@ print()
 print('=' * 100)
 print('RUNNING O TRACK')
 simulator = TrackSimulator(track = track, min_velocity = min(vl_opts), max_velocity = max(vl_opts), crash_restart = False)
+
 learner = ValueIteration(env = simulator, vl_opts = vl_opts, actions = actions,
                         gamma = 1.0, epsilon = 0.001)
 
-learner = QLearner(env = simulator, vl_opts = vl_opts,
+qlearner = QLearner(env = simulator, vl_opts = vl_opts,
                     actions = actions, alpha = 0.25, gamma = 0.9)
+
+sarsalearner = QLearner(env = simulator, vl_opts = vl_opts, actions = actions,
+                    alpha = 0.25, gamma = 0.9, sarsa = True)
 
 simulator.pretty_print()
 policy = None
 # policy = load_policy('out/O-track.out')
-trial_helper(simulator, learner, 500000, 10, 'O-track-q', policy = policy)
+
+# print('=' * 100)
+# print('-- Q-learning --')
+# trial_helper(simulator, qlearner, 500000, 10, 'O-track-q', policy = policy)
+print('=' * 100)
+print('-- SARSA --')
+trial_helper(simulator, sarsalearner, 500000, 10, 'O-track-sarsa', policy = policy)
