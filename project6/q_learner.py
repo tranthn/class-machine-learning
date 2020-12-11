@@ -73,9 +73,6 @@ class QLearner():
                 print('\n')
 
 ################################################################################
-    def initialize(self):
-        self.initialize_q_table()
-
     def initialize_q_table(self):
         # this table needs to hold Q-values
         # i.e. all positionals x all velocity x action combos
@@ -84,22 +81,17 @@ class QLearner():
         vr_opts = vc_opts = len(self.vl_opts) # values range from -5 to 5
         act_opts = len(self.actions)
         table = np.random.rand(r, c, vr_opts, vc_opts, act_opts)
-
-        # set reward values for F / finish states to 0
-        finish_pts = self.env.get_all_points_of(target = 'F')
-        for pts in finish_pts:
-            table[pts[0], pts[1]] = 0
-
         self.qtable = table
 
     def train(self, iterations = 5):
-        self.initialize()
         rows = self.env.nrows()
         cols = self.env.ncols()
         vopts = self.vl_opts
         track = self.env.track
         gamma = self.gamma
         lr = self.alpha
+
+        self.initialize_q_table()
 
         # set initial q-value for finish states
         for r in range(rows):
@@ -126,8 +118,12 @@ class QLearner():
             c = np.random.choice(range(cols))
             vr = np.random.choice(vopts)
             vc = np.random.choice(vopts)
-
+            # print('iteration #', i)
+            
             for j in range(10):
+                # print('episode ', j)
+                # print(r, c, vr, vc)
+                # print()
                 # set current running reward, 0 if on finish cell
                 if (track[r, c] == 'F' or track[r, c] == '#'):
                     break

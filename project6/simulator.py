@@ -251,7 +251,7 @@ class TrackSimulator():
     def run_trial(self, policy):
         # stop racing after 300 moves, all tracks have < 300 open spots
         # just to prevent excessive runs early in learning process
-        stop_after = 300
+        stop_after = 500
         start_pts = self.get_all_points_of('S')
         random.shuffle(start_pts)
         self.position = start_pts[0]
