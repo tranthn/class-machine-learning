@@ -87,7 +87,7 @@ track = dl.load_tinytrack()
 simulator = TrackSimulator(track = track, min_velocity = min(vl_opts), max_velocity = max(vl_opts), crash_restart = False)
 
 learner = ValueIteration(env = simulator, vl_opts = vl_opts, actions = actions,
-                        gamma = 1.0, epsilon = 0.01)
+                        gamma = 1.0, epsilon = 0.001)
 
 learner = Q_SARSA_Learner(env = simulator, vl_opts = vl_opts,
                     actions = actions, alpha = 0.25, gamma = 0.9)
@@ -95,8 +95,10 @@ learner = Q_SARSA_Learner(env = simulator, vl_opts = vl_opts,
 learner = Q_SARSA_Learner(env = simulator, vl_opts = vl_opts, actions = actions,
                     alpha = 0.25, gamma = 0.9, sarsa = True)
 
-# simulator.pretty_print()
-# trial_helper(simulator, learner, 100000, 10, 'tinytrack', policy = None)
+simulator.pretty_print()
+trial_helper(simulator, learner, 50, 10, 'tinytrack', policy = None)
+trial_helper(simulator, learner, 100000, 10, 'tinytrack-q', policy = None)
+trial_helper(simulator, learner, 100000, 10, 'tinytrack-sarsa', policy = None)
 
 # l-track
 ################################################################################

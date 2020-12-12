@@ -135,7 +135,7 @@ class TrackSimulator():
 
         returns:
             - True or False depending on if car crashes or crosses a wall boundary
-    """"
+    """
     def boundary_check(self, old_position, position):
         r = position[0]
         c = position[1]

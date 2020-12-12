@@ -148,7 +148,7 @@ class ValueIteration():
             - vr = velocity along rows (y)
             - vc = velocity along columns (x)
             - a = # possible actions, aka the acceleration options
-    """"
+    """
     def initialize_q_table(self):
         r = self.env.nrows()
         c = self.env.ncols()
