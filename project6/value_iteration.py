@@ -23,7 +23,7 @@ so if I want value for a cell with velocity [-1, -5], it will work but its true 
 # value iteration is essentially a form of dynamic programming
 
 """ PSEUDOCODE
-short hands
+short hand
 --------------------------------------------
     gm = discount factor
     epsilon = exploration factor, 0 = greedy, higher value = better results, slower performance
@@ -61,6 +61,7 @@ class ValueIteration():
         self.gamma = gamma
         self.epsilon = epsilon
 
+    # helper method to print v-table during debugging
     def _print_vtable(self, row):
         print('vr, vc')
         for vr in self.vl_opts:
@@ -70,6 +71,7 @@ class ValueIteration():
                     print(row[col, vr, vc], '\t', end = '')
                 print()
 
+    # helper method to print q-table during debugging
     def _print_qtable(self, row):
         print('vr, vc')
         for vr in self.vl_opts:
@@ -83,6 +85,7 @@ class ValueIteration():
                     print()
                 print()
 
+    # helper to print values (4-d) or qtable (5-d)
     def pretty_print_table(self, table):
         if (len(table.shape) == 4):
             print('\t', end = '')
@@ -110,14 +113,17 @@ class ValueIteration():
         self.initialize_state_table()
         self.initialize_q_table()
 
+    """
+        initializes table to hold values
+
+        i.e. all positionals x all velocity combos
+        would have 4 dimensions to track:
+            - r
+            - c
+            - vr - velocity along rows (y)
+            - vc - velocity along columns (x)
+    """
     def initialize_state_table(self):
-        # this table needs to hold values for all our states
-        # i.e. all positionals x all velocity combos
-        # would have 4 dimensions to track:
-        #   - r
-        #   - c
-        #   - vr - velocity along rows (y)
-        #   - vc - velocity along columns (x)
         r = self.env.nrows()
         c = self.env.ncols()
         vr_opts = vc_opts = len(self.vl_opts) # values range from -5 to 5
@@ -132,15 +138,18 @@ class ValueIteration():
         
         self.vtable = table
 
+    """
+        initializes table to hold q-values
+
+        i.e. all positionals x all velocity x action combos
+        would have 5 dimensions to track:
+            - r
+            - c
+            - vr = velocity along rows (y)
+            - vc = velocity along columns (x)
+            - a = # possible actions, aka the acceleration options
+    """"
     def initialize_q_table(self):
-        # this table needs to hold Q-values
-        # i.e. all positionals x all velocity x action combos
-        # would have 5 dimensions to track:
-        #   - r
-        #   - c
-        #   - vr = velocity along rows (y)
-        #   - vc = velocity along columns (x)
-        #   - a = # possible actions, aka the acceleration options
         r = self.env.nrows()
         c = self.env.ncols()
         vr_opts = vc_opts = len(self.vl_opts) # values range from -5 to 5
@@ -154,6 +163,20 @@ class ValueIteration():
         
         self.qtable = table
 
+    """
+        Main training method for ValueIteration
+            - initialize value table
+            - initializes Q-value table
+            - runs training iterations and nested loop for finding optimal action
+            - stops early if the max value-change is dropping below epsilon
+            - returns finalized built policy at the end
+
+        arguments:
+            - iterations: default is 5
+
+        returns:
+            - policy: dictionary representing the optimal state-action combos
+    """
     def train(self, iterations = 5):
         self.initialize()
         rows = self.env.nrows()
@@ -224,7 +247,7 @@ class ValueIteration():
                                 self.vtable[r, c, vr, vc] = 0
 
             # early break if the maximal state value change has dropped low enough
-            # max_vchange = self.find_max_vchange(abs(self.vtable - vtable_prior))
+            max_vchange = self.find_max_vchange(abs(self.vtable - vtable_prior))
             if max_vchange < epsilon:
                 print('max vchange has dropped below epsilon: ', max_vchange, epsilon)
                 policy = self.build_policy(rows, cols, vopts)
@@ -235,6 +258,11 @@ class ValueIteration():
 
         return policy
 
+    """
+    Helper that builds the policy based on the Q-value table
+        - backtracks through all grid cells and velocity combos
+        - finds the action with maximal q-value and picks that action
+    """
     def build_policy(self, rows, cols, vopts):
         policy = {}
         start = time.time()
@@ -249,6 +277,15 @@ class ValueIteration():
         print('policy backtrack took:\t{:.2f}s'.format(time.time() - start))
         return policy
 
+    """
+        calculates the highest value change in the value table before and after action
+
+        arguments:
+            - vtable_diff: absolute value of differences between value table and prior value table
+
+        returns:
+            - max change value
+    """
     def find_max_vchange(self, vtable_diff):
         # max_(s in S) abs ( V_t (s) - V_t-1(s) )
         rows = self.env.nrows()

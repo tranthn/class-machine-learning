@@ -25,7 +25,7 @@ short hands
 Q_t+1(s, a) = (1 - alpha_t (s, a)) * Q_t(s, a) + alpha_t (s, a) [ reward(s, a) + gamma * max (Q_t(s', a')) ]
 """
 
-class QLearner():
+class Q_SARSA_Learner():
     def __init__(self, env = None, vl_opts = [-1, 0, 1],
                     actions = [(0,0), (0,1), (1,0)],
                     alpha = 0.5, gamma = 1.0,
@@ -39,6 +39,7 @@ class QLearner():
         self.gamma = gamma
         self.sarsa = sarsa
 
+    # helper method to print q-table during debugging
     def _print_qtable(self, row):
         print('vr, vc')
         for vr in self.vl_opts:
@@ -52,6 +53,7 @@ class QLearner():
                     print()
                 print()
 
+    # helper to print values (4-d) or qtable (5-d)
     def pretty_print_table(self, table):
         if (len(table.shape) == 4):
             print('\t', end = '')
@@ -75,6 +77,8 @@ class QLearner():
                 print('\n')
 
 ################################################################################
+    
+    # initializes 5-d Q-value table with random values between 0 - 1
     def initialize_q_table(self):
         # this table needs to hold Q-values
         # i.e. all positionals x all velocity x action combos
@@ -85,6 +89,19 @@ class QLearner():
         table = np.random.rand(r, c, vr_opts, vc_opts, act_opts)
         self.qtable = table
 
+    """
+        Main training method for Q-Learning/SARSA
+            - initializes Q-value table
+            - runs training iterations and 10 epochs within each iteration
+            - updates Q-values on each iteration x epoch
+            - returns finalized built policy at the end
+
+        arguments:
+            - iterations: default is 5
+
+        returns:
+            - policy: dictionary representing the optimal state-action combos
+    """
     def train(self, iterations = 5):
         rows = self.env.nrows()
         cols = self.env.ncols()
@@ -168,6 +185,11 @@ class QLearner():
 
         return policy
 
+    """
+        Helper that builds the policy based on the Q-value table
+            - backtracks through all grid cells and velocity combos
+            - finds the action with maximal q-value and picks that action
+    """
     def build_policy(self, rows, cols, vopts):
         policy = {}
         start = time.time()
