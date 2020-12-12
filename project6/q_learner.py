@@ -25,11 +25,19 @@ short hands
 Q_t+1(s, a) = (1 - alpha_t (s, a)) * Q_t(s, a) + alpha_t (s, a) [ reward(s, a) + gamma * max (Q_t(s', a')) ]
 """
 
+global print_qvalues
+print_qvalues = True
+global print_random_choice
+print_random_choice = True
+
 class Q_SARSA_Learner():
     def __init__(self, env = None, vl_opts = [-1, 0, 1],
                     actions = [(0,0), (0,1), (1,0)],
                     alpha = 0.5, gamma = 1.0,
                     sarsa = False):
+        
+        global print_qvalues
+        print_qvalues = True
 
         # TrackSimulator object
         self.env = env
@@ -103,6 +111,9 @@ class Q_SARSA_Learner():
             - policy: dictionary representing the optimal state-action combos
     """
     def train(self, iterations = 5):
+        global print_qvalues
+        global print_random_choice
+
         rows = self.env.nrows()
         cols = self.env.ncols()
         vopts = self.vl_opts
@@ -137,6 +148,11 @@ class Q_SARSA_Learner():
             c = np.random.choice(range(cols))
             vr = np.random.choice(vopts)
             vc = np.random.choice(vopts)
+
+            if print_random_choice:
+                print('\trandom choice for r, c, vr, vc\t{0}, {1}, {2}, {3}'.format(r,c,vr,vc))
+                print()
+                print_random_choice = False
             
             for j in range(10):
                 # set current running reward, 0 if on finish cell
@@ -173,6 +189,12 @@ class Q_SARSA_Learner():
                     future_q = max(self.qtable[next_pos[0], next_pos[1], next_vel[0], next_vel[1]])
                     future_reward = lr  * (reward + gamma * future_q)
                     self.qtable[r, c, vr, vc, act_maxq_idx] = current_reward + future_reward
+
+                if print_qvalues:
+                    print('current reward {:.2f}'.format(current_reward))
+                    print('future reward {:.2f}'.format(future_reward))
+                    print('\nupdated qtable for state ({0}, {1}, {2}, {3}) with reward {:.2f}'.format(r, c, vr, vc, current_reward))
+                    print_qvalues  = False
 
                 # set values for next iteration
                 r = next_pos[0]

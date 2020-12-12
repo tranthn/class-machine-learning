@@ -50,6 +50,9 @@ actual pseudocode
     return pi_t
 """
 
+global print_values
+print_values = True
+
 class ValueIteration():
     def __init__(self, env = None, vl_opts = [-1, 0, 1], 
                         actions = [(0,0), (0,1), (1,0)],
@@ -190,7 +193,8 @@ class ValueIteration():
 
         for i in range(iterations):
             vtable_prior = copy.deepcopy(self.vtable)
-            print('\nvalue iteration learning, #', i)
+            if (i % 5 == 0):
+                print('\nvalue iteration learning, #', i)
 
             # 4-nested for loop to iterate through all state combinations
             # S = (r, c, vr, vc)
@@ -236,6 +240,10 @@ class ValueIteration():
                             # determine which action had highest q-value, to use to set value
                             act_maxq_idx = np.argmax(self.qtable[r, c, vr, vc])
                             maxq = self.qtable[r, c, vr, vc, act_maxq_idx]
+
+                            # if print_values:
+                            #     print('')
+
                             self.vtable[r, c, vr, vc] = maxq
 
             # set reward of finish states

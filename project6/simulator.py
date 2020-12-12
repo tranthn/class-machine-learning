@@ -14,6 +14,15 @@ from termcolor import colored, cprint
     – # – This square is off the racetrack (i.e., a wall).
 """
 
+global print_boundary_check
+print_boundary_check = True
+global print_restart
+print_restart = True
+global print_trial_track
+print_trial_track = True
+global print_accelerate
+print_accelerate = True
+
 class TrackSimulator():
     def __init__(self, track = None, min_velocity = -5, max_velocity = 5, crash_restart = False):
         self.track = track
@@ -30,8 +39,18 @@ class TrackSimulator():
         self.position = (0,0)
         self.velocity = (0,0)
 
-        # array of coordinates to indicate path taken (for printing)
-        self.path = []
+    # reinitialize values
+    def _reinit(self):
+        global print_boundary_check
+        global print_restart
+        global print_trial_track
+        global print_accelerate
+        print_boundary_check = True
+        print_restart = True
+        # print_trial_track = True
+        print_accelerate = True
+        self.position = (0,0)
+        self.velocity = (0,0)
 
     # helper that returns coordinates of a given feature in track (S, F, ./track, #/wall)
     def _find_coordinate(self, char = ''):
@@ -137,28 +156,46 @@ class TrackSimulator():
             - True or False depending on if car crashes or crosses a wall boundary
     """
     def boundary_check(self, old_position, position):
+        global print_boundary_check
         r = position[0]
         c = position[1]
         rows = self.track.shape[0]
         cols = self.track.shape[1]
 
+        if print_boundary_check:
+            print('\nboundary check')
+            print('old position\t', old_position)
+            print('new position\t ({0}, {1})'.format(r, c))
+
         # check for out of bounds coordinates
         if (r < 0 or c < 0 or r >= rows or c >= cols):
             # cprint('out of bounds', 'magenta')
+            if print_boundary_check:
+                print('valid bounds?\t', False)
+                print_boundary_check = False
             return False
 
         # reverse y, x since y indicates row position, while x indicates column position
         elif (self.track[r, c] == '#'):
+            if print_boundary_check:
+                print('valid bounds?\t', False)
+                print_boundary_check = False
             return False
         else:
             # determine if moving between old and new position crosses a wall
             intervening_pts = self.bresenham(old_position[0], old_position[1], r, c)
-            # print('calc intervening pts between:{0} and {1},{2}'.format(old_position, r, c))
             for pts in intervening_pts:
-                # print(pts)
+                if print_boundary_check:
+                    print('bresenham pts\t {0}'.format(pts))
+
                 if self.track[pts] == '#':
+                    if print_boundary_check:
+                        print('valid bounds?\t', False)
+                        print_boundary_check = False
                     return False
-        
+        if print_boundary_check:
+            print('valid bounds?\t', True)
+            print_boundary_check = False
         return True
 
     """
@@ -175,6 +212,13 @@ class TrackSimulator():
             - new restart position
     """
     def get_restart_position(self, crash_site):
+        global print_restart
+        ret_val = self.position
+
+        if print_restart:
+            print('\ncrash site\t', crash_site)
+            print('restart at S?\t', self.crash_restart)
+
         if not self.crash_restart:
             nrows = self.nrows()
             ncols = self.ncols()
@@ -216,11 +260,17 @@ class TrackSimulator():
                             continue
 
                         if self.track[r,c] in ['.', 'S', 'F']:
+                            if print_restart:
+                                print('new open cell\t ({0}, {1})'.format(r, c))
+                                print_restart = False
                             return (r, c)
             return self.position
         else:
             start_pts = self.get_all_points_of('S')
             random.shuffle(start_pts)
+            if print_restart:
+                print('restart at new start position')
+                print_restart = False
             return start_pts[0]
 
     # gives next position based off current position and velocity
@@ -242,6 +292,7 @@ class TrackSimulator():
             - run: the x-value or which column we adjust to within the 2d track array
     """
     def accelerate(self, rise, run):
+        global print_accelerate
         percent = round(random.random() * 100, 0)
         if (percent > 20):  
             vr = self.velocity[0] + rise
@@ -251,11 +302,13 @@ class TrackSimulator():
             vr2 = max(vr, self.min_velocity) if (vr < 0) else min(vr, self.max_velocity)
             vc2 = max(vc, self.min_velocity) if (vc < 0) else min(vc, self.max_velocity)
             self.velocity = (vr2, vc2)
-            # print('v2', self.velocity)
-        # else:
-            # cprint('accelerate failed', 'red')
-            # print('v1', self.velocity)
+            if print_accelerate:
+                cprint('accelerate success\t{0}'.format(self.velocity), 'green')
+        else:
+            if print_accelerate:
+                cprint('accelerate failed\t{0}'.format(self.velocity), 'red')
 
+        print_accelerate = False
         return self.velocity
 
     # method tries to adjust position, checking boundaries first
@@ -285,6 +338,7 @@ class TrackSimulator():
             - number of moves taken to finish run
     """
     def run_trial(self, policy):
+        global print_trial_track
         # stop racing after 300 moves, all tracks have < 300 open spots
         # just to prevent excessive runs early in learning process
         stop_after = 500
@@ -292,7 +346,6 @@ class TrackSimulator():
         random.shuffle(start_pts)
         self.position = start_pts[0]
         moves = 1
-        self.pretty_print()
         for moves in range(stop_after):
             r = self.position[0]
             c = self.position[1]
@@ -309,6 +362,8 @@ class TrackSimulator():
             self.accelerate(next_action[0], next_action[1])
             self.move()
             self.finalize_move()
-            # self.pretty_print()
+            if print_trial_track:
+                self.pretty_print()
 
+        print_trial_track = False
         return moves
