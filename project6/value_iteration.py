@@ -190,6 +190,7 @@ class ValueIteration():
         epsilon = self.epsilon
         gamma = self.gamma
         max_vchange = 100
+        global print_values
 
         for i in range(iterations):
             vtable_prior = copy.deepcopy(self.vtable)
@@ -241,8 +242,10 @@ class ValueIteration():
                             act_maxq_idx = np.argmax(self.qtable[r, c, vr, vc])
                             maxq = self.qtable[r, c, vr, vc, act_maxq_idx]
 
-                            # if print_values:
-                            #     print('')
+                            if print_values:
+                                print('V with no action\t', val_no_acc)
+                                print('V with new action\t', val_new)
+                                print_values = False
 
                             self.vtable[r, c, vr, vc] = maxq
 
