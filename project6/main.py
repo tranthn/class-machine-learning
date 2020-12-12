@@ -126,6 +126,12 @@ trial_helper(simulator, learner, 35, 2, 'L-track-val', policy = policy)
 simulator._reinit()
 
 print('=' * 100)
+print('-- Value Learning --')
+simulator.crash_restart = True
+trial_helper(simulator, learner, 35, 2, 'L-track-val', policy = policy)
+simulator._reinit()
+
+print('=' * 100)
 print('-- Q-learning --')
 trial_helper(simulator, qlearner, 5, 10, 'L-track-q', policy = policy)
 simulator._reinit()

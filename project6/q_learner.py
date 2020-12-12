@@ -39,6 +39,9 @@ class Q_SARSA_Learner():
         global print_qvalues
         print_qvalues = True
 
+        global print_random_choice
+        print_random_choice = True
+
         # TrackSimulator object
         self.env = env
         self.vl_opts = vl_opts
@@ -133,7 +136,6 @@ class Q_SARSA_Learner():
                                 self.qtable[r, c, vr, vc, aidx] = 0
 
         for i in range(iterations):
-            # print('q learner iteration, #', i)
 
             # reset q-value for finish states
             for r in range(rows):
@@ -193,7 +195,8 @@ class Q_SARSA_Learner():
                 if print_qvalues:
                     print('current reward {:.2f}'.format(current_reward))
                     print('future reward {:.2f}'.format(future_reward))
-                    print('\nupdated qtable for state ({0}, {1}, {2}, {3}) with reward {:.2f}'.format(r, c, vr, vc, current_reward))
+                    new_reward = round(current_reward + future_reward, 2)
+                    print('\nupdated qtable for state ({0}, {1}, {2}, {3}) with reward {4}'.format(r, c, vr, vc, new_reward))
                     print_qvalues  = False
 
                 # set values for next iteration

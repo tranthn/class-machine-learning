@@ -22,6 +22,8 @@ global print_trial_track
 print_trial_track = True
 global print_accelerate
 print_accelerate = True
+global print_accelerate_failure
+print_accelerate_failure = True
 
 class TrackSimulator():
     def __init__(self, track = None, min_velocity = -5, max_velocity = 5, crash_restart = False):
@@ -49,6 +51,7 @@ class TrackSimulator():
         print_restart = True
         # print_trial_track = True
         print_accelerate = True
+        print_accelerate_failure = True
         self.position = (0,0)
         self.velocity = (0,0)
 
@@ -293,6 +296,8 @@ class TrackSimulator():
     """
     def accelerate(self, rise, run):
         global print_accelerate
+        global print_accelerate_failure
+
         percent = round(random.random() * 100, 0)
         if (percent > 20):  
             vr = self.velocity[0] + rise
@@ -305,8 +310,9 @@ class TrackSimulator():
             if print_accelerate:
                 cprint('accelerate success\t{0}'.format(self.velocity), 'green')
         else:
-            if print_accelerate:
+            if print_accelerate_failure:
                 cprint('accelerate failed\t{0}'.format(self.velocity), 'red')
+                print_accelerate_failure = False
 
         print_accelerate = False
         return self.velocity
@@ -363,6 +369,9 @@ class TrackSimulator():
             self.move()
             self.finalize_move()
             if print_trial_track:
+                print('move')
+                print('accelerated\t', next_action)
+                print('new velocity\t', self.velocity)
                 self.pretty_print()
 
         print_trial_track = False
